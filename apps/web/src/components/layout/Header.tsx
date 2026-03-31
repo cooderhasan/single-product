@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { ShoppingCart, User, Menu, X, Search, Phone } from 'lucide-react';
+import { ShoppingCart, User, Menu, X, Search, Phone, Heart } from 'lucide-react';
 import { useCartStore } from '@/store/cart';
 import { useAuthStore } from '@/store/auth';
 import { cn } from '@/lib/utils';
@@ -101,6 +101,14 @@ export function Header() {
             >
               <Search className="w-5 h-5" />
             </button>
+
+            <Link
+              href="/favoriler"
+              className="p-2 text-gray-700 hover:text-primary-600 transition-colors"
+              aria-label="Favoriler"
+            >
+              <Heart className="w-5 h-5" />
+            </Link>
 
             <Link
               href={isAuthenticated ? '/hesabim' : '/giris'}

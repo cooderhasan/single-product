@@ -2,10 +2,14 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Star, Truck, Shield, Award, Check } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { Star, Truck, Shield, Award, Check, Heart, ShoppingCart, Minus, Plus } from 'lucide-react';
+import { useCartStore } from '@/store/cart';
+import toast from 'react-hot-toast';
 
 interface ProductClientProps {
   product: {
+    id: string;
     name: string;
     description: string;
     price: number;
@@ -20,19 +24,48 @@ interface ProductClientProps {
 }
 
 export default function ProductClient({ product }: ProductClientProps) {
+  const router = useRouter();
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
+  const { addItem, isLoading } = useCartStore();
 
   const discount = product.comparePrice 
     ? Math.round(((product.comparePrice - product.price) / product.comparePrice) * 100)
     : 0;
 
-  const handleAddToCart = () => {
-    alert(`Sepete ${quantity} adet ürün eklendi! (Demo)`);
+  const handleAddToCart = async () => {
+    try {
+      await addItem(product.id, quantity);
+      toast.success('Ürün sepete eklendi!');
+    } catch {
+      toast.error('Ürün eklenirken bir hata oluştu');
+    }
+  };
+
+  const handleBuyNow = async () => {
+    try {
+      await addItem(product.id, quantity);
+      router.push('/sepet');
+    } catch {
+      toast.error('Ürün eklenirken bir hata oluştu');
+    }
   };
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Breadcrumb */}
+      <div className="bg-white border-b">
+        <div className="container mx-auto px-4 py-4">
+          <nav className="text-sm">
+            <Link href="/" className="text-gray-500 hover:text-gray-700">Ana Sayfa</Link>
+            <span className="mx-2 text-gray-400">/</span>
+            <Link href="/urunler" className="text-gray-500 hover:text-gray-700">Ürünler</Link>
+            <span className="mx-2 text-gray-400">/</span>
+            <span className="text-gray-900">{product.name}</span>
+          </nav>
+        </div>
+      </div>
+
       <div className="container mx-auto px-4 py-12">
         <div className="grid lg:grid-cols-2 gap-12 max-w-7xl mx-auto">
           {/* Images */}
@@ -49,10 +82,10 @@ export default function ProductClient({ product }: ProductClientProps) {
               {product.images.map((image, index) => (
                 <button
                   key={index}
-                  className={`aspect-square bg-white rounded-lg shadow-sm overflow-hidden border-2 ${
+                  onClick={() => setSelectedImage(index)}
+                  className={`aspect-square bg-white rounded-lg shadow-sm overflow-hidden border-2 transition-colors ${
                     selectedImage === index ? 'border-primary-500' : 'border-transparent'
                   }`}
-                  onClick={() => setSelectedImage(index)}
                 >
                   <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
                     <div className="w-8 h-8 bg-gray-300 rounded"></div>
@@ -104,17 +137,18 @@ export default function ProductClient({ product }: ProductClientProps) {
               <span className="font-medium">Adet:</span>
               <div className="flex items-center border rounded-lg">
                 <button
-                  className="px-3 py-1 hover:bg-gray-50"
+                  className="px-3 py-2 hover:bg-gray-50 disabled:opacity-50"
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                  disabled={quantity <= 1}
                 >
-                  -
+                  <Minus className="w-4 h-4" />
                 </button>
-                <span className="px-4 py-1 border-x">{quantity}</span>
+                <span className="px-4 py-2 border-x min-w-[3rem] text-center font-medium">{quantity}</span>
                 <button
-                  className="px-3 py-1 hover:bg-gray-50"
+                  className="px-3 py-2 hover:bg-gray-50"
                   onClick={() => setQuantity(quantity + 1)}
                 >
-                  +
+                  <Plus className="w-4 h-4" />
                 </button>
               </div>
             </div>
@@ -130,19 +164,28 @@ export default function ProductClient({ product }: ProductClientProps) {
               ))}
             </div>
 
-            {/* Add to Cart Button */}
+            {/* Add to Cart Buttons */}
             <div className="flex gap-4">
               <button 
-                className="flex-1 bg-primary-600 hover:bg-primary-700 text-white font-medium py-3 px-6 rounded-lg transition-colors"
+                className="flex-1 bg-primary-600 hover:bg-primary-700 text-white font-medium py-3 px-6 rounded-lg transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
                 onClick={handleAddToCart}
+                disabled={isLoading}
               >
-                Sepete Ekle
+                <ShoppingCart className="w-5 h-5" />
+                {isLoading ? 'Ekleniyor...' : 'Sepete Ekle'}
               </button>
               <button 
-                className="p-3 border border-gray-300 rounded-lg hover:bg-gray-50"
-                onClick={() => alert('Favorilere eklendi! (Demo)')}
+                className="flex-1 bg-gray-900 hover:bg-gray-800 text-white font-medium py-3 px-6 rounded-lg transition-colors"
+                onClick={handleBuyNow}
+                disabled={isLoading}
               >
-                ❤️
+                Hemen Al
+              </button>
+              <button 
+                className="p-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                onClick={() => toast.success('Favorilere eklendi!')}
+              >
+                <Heart className="w-6 h-6 text-gray-600" />
               </button>
             </div>
 
