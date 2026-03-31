@@ -1,0 +1,642 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ==================== USER & AUTH ====================
+
+model User {
+  id            String    @id @default(uuid())
+  email         String    @unique
+  password      String?
+  firstName     String?
+  lastName      String?
+  phone         String?
+  role          UserRole  @default(CUSTOMER)
+  emailVerified DateTime?
+  
+  // Adresler
+  addresses     Address[]
+  
+  // Siparişler
+  orders        Order[]
+  
+  // Sepet
+  cartItems     CartItem[]
+  
+  // Favoriler
+  favorites     Favorite[]
+  
+  // Yorumlar
+  reviews       Review[]
+  
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@index([email])
+  @@index([role])
+  @@map("users")
+}
+
+model Address {
+  id        String  @id @default(uuid())
+  userId    String
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  title     String  // Ev, İş, vb.
+  fullName  String
+  phone     String
+  city      String
+  district  String
+  neighborhood String?
+  address   String
+  zipCode   String?
+  isDefault Boolean @default(false)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@map("addresses")
+}
+
+enum UserRole {
+  CUSTOMER
+  ADMIN
+  MANAGER
+}
+
+// ==================== CATEGORIES ====================
+
+model Category {
+  id          String    @id @default(uuid())
+  slug        String    @unique
+  name        String
+  description String?
+  image       String?
+  sortOrder   Int       @default(0)
+  isActive    Boolean   @default(true)
+  
+  // Hiyerarşi
+  parentId    String?
+  parent      Category? @relation("CategoryHierarchy", fields: [parentId], references: [id])
+  children    Category[] @relation("CategoryHierarchy")
+  
+  // Ürünler
+  products    Product[]
+  
+  // SEO
+  metaTitle       String?
+  metaDescription String?
+  
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([slug])
+  @@index([parentId])
+  @@index([isActive])
+  @@map("categories")
+}
+
+// ==================== PRODUCTS ====================
+
+model Product {
+  id          String   @id @default(uuid())
+  slug        String   @unique
+  sku         String   @unique
+  name        String
+  description String   @db.Text
+  shortDesc   String?  @db.VarChar(500)
+  
+  // Fiyatlandırma
+  price       Decimal  @db.Decimal(10, 2)
+  comparePrice Decimal? @db.Decimal(10, 2)
+  costPrice   Decimal? @db.Decimal(10, 2)
+  
+  // Stok
+  stock       Int      @default(0)
+  stockStatus StockStatus @default(IN_STOCK)
+  trackStock  Boolean  @default(true)
+  lowStockThreshold Int @default(5)
+  
+  // Durum
+  isActive    Boolean  @default(true)
+  isFeatured  Boolean  @default(false)
+  
+  // Medya
+  images      ProductImage[]
+  
+  // Kategoriler
+  categoryId  String
+  category    Category @relation(fields: [categoryId], references: [id])
+  
+  // Varyantlar
+  variants    ProductVariant[]
+  attributes  ProductAttribute[]
+  
+  // İlişkiler
+  orderItems  OrderItem[]
+  cartItems   CartItem[]
+  favorites   Favorite[]
+  reviews     Review[]
+  
+  // SEO
+  metaTitle       String?
+  metaDescription String?
+  keywords        String?
+  
+  // İstatistikler
+  viewCount   Int      @default(0)
+  salesCount  Int      @default(0)
+  rating      Decimal? @db.Decimal(2, 1)
+  reviewCount Int      @default(0)
+  
+  // Filtreleme için
+  tags        Tag[]
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([slug])
+  @@index([categoryId])
+  @@index([isActive])
+  @@index([isFeatured])
+  @@index([price])
+  @@map("products")
+}
+
+model ProductImage {
+  id        String  @id @default(uuid())
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  
+  url       String
+  alt       String?
+  sortOrder Int     @default(0)
+  isMain    Boolean @default(false)
+  
+  createdAt DateTime @default(now())
+
+  @@index([productId])
+  @@map("product_images")
+}
+
+model ProductVariant {
+  id        String   @id @default(uuid())
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  
+  sku       String   @unique
+  name      String   // "Kırmızı - Büyük"
+  
+  // Varyant değerleri
+  options   VariantOption[]
+  
+  // Fiyat
+  price     Decimal  @db.Decimal(10, 2)
+  stock     Int      @default(0)
+  isActive  Boolean  @default(true)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([productId])
+  @@map("product_variants")
+}
+
+model VariantOption {
+  id          String   @id @default(uuid())
+  variantId   String
+  variant     ProductVariant @relation(fields: [variantId], references: [id], onDelete: Cascade)
+  
+  attributeId String
+  attribute   ProductAttribute @relation(fields: [attributeId], references: [id])
+  
+  value       String   // "Kırmızı", "Büyük"
+
+  @@unique([variantId, attributeId])
+  @@map("variant_options")
+}
+
+model ProductAttribute {
+  id       String @id @default(uuid())
+  name     String // "Renk", "Boyut"
+  values   String[] // ["Kırmızı", "Mavi", "Yeşil"]
+  
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  
+  options   VariantOption[]
+
+  @@map("product_attributes")
+}
+
+model Tag {
+  id       String    @id @default(uuid())
+  name     String    @unique
+  products Product[]
+
+  @@map("tags")
+}
+
+enum StockStatus {
+  IN_STOCK
+  OUT_OF_STOCK
+  LOW_STOCK
+  PRE_ORDER
+}
+
+// ==================== CART ====================
+
+model CartItem {
+  id        String  @id @default(uuid())
+  
+  // Kullanıcı veya session
+  userId    String?
+  user      User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sessionId String?
+  
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  
+  variantId String?
+  
+  quantity  Int     @default(1)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, productId, variantId])
+  @@unique([sessionId, productId, variantId])
+  @@index([userId])
+  @@index([sessionId])
+  @@map("cart_items")
+}
+
+// ==================== ORDERS ====================
+
+model Order {
+  id          String      @id @default(uuid())
+  orderNumber String      @unique
+  
+  // Kullanıcı (misafir alışveriş için null olabilir)
+  userId      String?
+  user        User?       @relation(fields: [userId], references: [id])
+  
+  // Misafir bilgileri
+  guestEmail  String?
+  guestPhone  String?
+  
+  // Durum
+  status      OrderStatus @default(PENDING)
+  paymentStatus PaymentStatus @default(PENDING)
+  
+  // Fiyatlandırma
+  subtotal    Decimal     @db.Decimal(10, 2)
+  shippingCost Decimal    @db.Decimal(10, 2) @default(0)
+  discountAmount Decimal @db.Decimal(10, 2) @default(0)
+  taxAmount   Decimal     @db.Decimal(10, 2) @default(0)
+  total       Decimal     @db.Decimal(10, 2)
+  
+  // İndirim
+  couponId    String?
+  coupon      Coupon?     @relation(fields: [couponId], references: [id])
+  couponCode  String?
+  
+  // Kargo
+  shippingAddress Json
+  billingAddress  Json
+  
+  // Ödeme
+  paymentMethod   PaymentMethod
+  payment         Payment?
+  
+  // Notlar
+  customerNote    String?
+  adminNote       String?
+  
+  // İlişkiler
+  items       OrderItem[]
+  
+  // Kargo
+  trackingNumber  String?
+  shippingCompany String?
+  shippedAt       DateTime?
+  deliveredAt     DateTime?
+  
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@index([userId])
+  @@index([orderNumber])
+  @@index([status])
+  @@index([paymentStatus])
+  @@index([createdAt])
+  @@map("orders")
+}
+
+model OrderItem {
+  id        String  @id @default(uuid())
+  orderId   String
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+  
+  variantId String?
+  variantName String?
+  
+  productName String
+  sku       String
+  price     Decimal @db.Decimal(10, 2)
+  quantity  Int
+  total     Decimal @db.Decimal(10, 2)
+  
+  createdAt DateTime @default(now())
+
+  @@index([orderId])
+  @@map("order_items")
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+  REFUNDED
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+  CANCELLED
+}
+
+enum PaymentMethod {
+  CREDIT_CARD
+  BANK_TRANSFER
+  PAYTR
+  CASH_ON_DELIVERY
+}
+
+// ==================== PAYMENTS ====================
+
+model Payment {
+  id            String    @id @default(uuid())
+  orderId       String    @unique
+  order         Order     @relation(fields: [orderId], references: [id])
+  
+  // PayTR
+  merchantOid   String?   @unique
+  paymentAmount Decimal   @db.Decimal(10, 2)
+  currency      String    @default("TL")
+  
+  // İşlem detayları
+  status        String    // success, failed, pending
+  errorCode     String?
+  errorMessage  String?
+  
+  // Kart bilgileri (maskeli)
+  cardType      String?
+  cardLastFour  String?
+  
+  // PayTR cevabı
+  paytrResponse Json?
+  
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@map("payments")
+}
+
+// ==================== COUPONS ====================
+
+model Coupon {
+  id          String    @id @default(uuid())
+  code        String    @unique
+  description String?
+  
+  // İndirim tipi
+  type        CouponType
+  value       Decimal   @db.Decimal(10, 2) // Yüzde veya sabit tutar
+  
+  // Limitler
+  minOrderAmount Decimal? @db.Decimal(10, 2)
+  maxDiscount    Decimal? @db.Decimal(10, 2)
+  
+  // Kullanım
+  usageLimit     Int?
+  usageCount     Int       @default(0)
+  usagePerUser   Int       @default(1)
+  
+  // Tarihler
+  startDate      DateTime
+  endDate        DateTime?
+  
+  // Durum
+  isActive       Boolean   @default(true)
+  
+  // İlişkiler
+  orders         Order[]
+  
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  @@index([code])
+  @@index([isActive])
+  @@map("coupons")
+}
+
+enum CouponType {
+  PERCENTAGE
+  FIXED_AMOUNT
+  FREE_SHIPPING
+}
+
+// ==================== FAVORITES ====================
+
+model Favorite {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, productId])
+  @@index([userId])
+  @@map("favorites")
+}
+
+// ==================== REVIEWS ====================
+
+model Review {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  orderId   String?
+  
+  rating    Int      // 1-5
+  title     String?
+  comment   String   @db.Text
+  
+  // Onay
+  isApproved Boolean @default(false)
+  
+  // Yanıt
+  adminReply String? @db.Text
+  repliedAt DateTime?
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([productId])
+  @@index([isApproved])
+  @@map("reviews")
+}
+
+// ==================== BLOG ====================
+
+model BlogPost {
+  id          String   @id @default(uuid())
+  slug        String   @unique
+  title       String
+  excerpt     String?  @db.VarChar(500)
+  content     String   @db.Text
+  
+  // Medya
+  featuredImage String?
+  
+  // Durum
+  status      PostStatus @default(DRAFT)
+  publishedAt DateTime?
+  
+  // SEO
+  metaTitle       String?
+  metaDescription String?
+  keywords        String?
+  
+  // Kategori
+  categoryId  String?
+  category    BlogCategory? @relation(fields: [categoryId], references: [id])
+  
+  // İstatistikler
+  viewCount   Int      @default(0)
+  
+  // Yazar
+  authorName  String   @default("Admin")
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([slug])
+  @@index([status])
+  @@index([categoryId])
+  @@map("blog_posts")
+}
+
+model BlogCategory {
+  id          String     @id @default(uuid())
+  slug        String     @unique
+  name        String
+  description String?
+  posts       BlogPost[]
+  
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  @@map("blog_categories")
+}
+
+enum PostStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+// ==================== BANNERS & SLIDERS ====================
+
+model Banner {
+  id          String      @id @default(uuid())
+  title       String
+  subtitle    String?
+  image       String
+  mobileImage String?
+  
+  // Link
+  link        String?
+  buttonText  String?
+  
+  // Pozisyon
+  position    BannerPosition @default(HOME_HERO)
+  sortOrder   Int         @default(0)
+  
+  // Tarihler
+  startDate   DateTime?
+  endDate     DateTime?
+  
+  // Durum
+  isActive    Boolean     @default(true)
+  
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@index([position])
+  @@index([isActive])
+  @@map("banners")
+}
+
+enum BannerPosition {
+  HOME_HERO
+  HOME_MIDDLE
+  HOME_BOTTOM
+  CATEGORY_PAGE
+  PRODUCT_PAGE
+}
+
+// ==================== SETTINGS ====================
+
+model Setting {
+  id    String @id @default(uuid())
+  key   String @unique
+  value String
+  group String @default("general")
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([key])
+  @@index([group])
+  @@map("settings")
+}
+
+// ==================== ACTIVITY LOG ====================
+
+model ActivityLog {
+  id          String   @id @default(uuid())
+  userId      String?
+  action      String
+  entityType  String   // product, order, user, vb.
+  entityId    String?
+  oldValues   Json?
+  newValues   Json?
+  ipAddress   String?
+  userAgent   String?
+  createdAt   DateTime @default(now())
+
+  @@index([userId])
+  @@index([entityType])
+  @@index([createdAt])
+  @@map("activity_logs")
+}
