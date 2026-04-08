@@ -1,0 +1,594 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import Image from 'next/image';
+import { motion } from 'framer-motion';
+import { 
+  ShoppingCart, 
+  Truck, 
+  Shield, 
+  RotateCcw, 
+  Check,
+  X,
+  ChevronLeft,
+  ChevronRight,
+  Star,
+  Package,
+  HelpCircle,
+  Heart,
+  Share2,
+  Zap,
+  Award,
+  Clock
+} from 'lucide-react';
+import { useCartStore } from '@/store/cart';
+import Link from 'next/link';
+import toast from 'react-hot-toast';
+
+// Görseller veritabanından dinamik olarak çekiliyor
+const variants = [
+  { id: '10mm', name: '10 MM', price: 3722 },
+  { id: '8mm', name: '8 MM', price: 3722 },
+  { id: '6mm', name: '6 MM', price: 3722 },
+];
+
+
+const features = [
+  { icon: Truck, title: 'Ücretsiz Kargo', desc: 'Tüm Türkiye\'ye' },
+  { icon: Shield, title: '2 Yıl Garanti', desc: 'Tam garanti' },
+  { icon: RotateCcw, title: '14 Gün İade', desc: 'Koşulsuz iade' },
+  { icon: Clock, title: 'Aynı Gün Kargo', desc: '15:00\'a kadar' },
+];
+
+export default function ProductPage() {
+  const [selectedImage, setSelectedImage] = useState(0);
+  const [selectedVariant, setSelectedVariant] = useState(variants[0]);
+  const [quantity, setQuantity] = useState(1);
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const [activeTab, setActiveTab] = useState<'desc' | 'specs'>('desc');
+  const { addItem } = useCartStore();
+
+  // Dynamic content state
+  const [productId, setProductId] = useState<string>('');
+  const [productImages, setProductImages] = useState<string[]>([]);
+  const [sixReasons, setSixReasons] = useState<any[]>([]);
+  const [comparisonData, setComparisonData] = useState<any[]>([]);
+  const [testimonials, setTestimonials] = useState<any[]>([]);
+  const [faqs, setFaqs] = useState<any[]>([]);
+  const [productDescription, setProductDescription] = useState<any>(null);
+  const [productSpecs, setProductSpecs] = useState<any[]>([]);
+  const [testimonialStats, setTestimonialStats] = useState<any>(null);
+
+  // Fetch dynamic content from API
+  useEffect(() => {
+    const fetchContent = async () => {
+      try {
+        const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3041';
+        const API_URL = `${API_BASE}/api/v1/site-content`;
+        
+        // Fetch product data for images
+        const productRes = await fetch(`${API_BASE}/api/v1/products/universal-motosiklet-kaldirma-sehpasi-360-derece-doner-kilitli`);
+        if (productRes.ok) {
+          const productData = await productRes.json();
+          if (productData.id) {
+            setProductId(productData.id);
+          }
+          if (productData.images && productData.images.length > 0) {
+            const urls = productData.images.map((img: any) => 
+               img.url.startsWith('http') ? img.url : `${API_BASE}${img.url}`
+            );
+            setProductImages(urls);
+          }
+        }
+
+        // Fetch reasons
+        const reasonsRes = await fetch(`${API_URL}/product_360sehpa_reasons`);
+        if (reasonsRes.ok) {
+          const reasonsData = await reasonsRes.json();
+          if (reasonsData?.data?.items) setSixReasons(reasonsData.data.items);
+        }
+
+        // Fetch comparison
+        const comparisonRes = await fetch(`${API_URL}/product_360sehpa_comparison`);
+        if (comparisonRes.ok) {
+          const compData = await comparisonRes.json();
+          if (compData?.data?.rows) setComparisonData(compData.data.rows);
+        }
+
+        // Fetch testimonials
+        const testimonialsRes = await fetch(`${API_URL}/product_360sehpa_testimonials`);
+        if (testimonialsRes.ok) {
+          const testData = await testimonialsRes.json();
+          if (testData?.data?.reviews) setTestimonials(testData.data.reviews);
+          if (testData?.data?.stats) setTestimonialStats(testData.data.stats);
+        }
+
+        // Fetch FAQs
+        const faqsRes = await fetch(`${API_URL}/product_360sehpa_faqs`);
+        if (faqsRes.ok) {
+          const faqsData = await faqsRes.json();
+          if (faqsData?.data?.faqs) setFaqs(faqsData.data.faqs);
+        }
+
+        // Fetch description
+        const descRes = await fetch(`${API_URL}/product_360sehpa_description`);
+        if (descRes.ok) {
+          const descData = await descRes.json();
+          setProductDescription(descData);
+        }
+
+        // Fetch specs
+        const specsRes = await fetch(`${API_URL}/product_360sehpa_specs`);
+        if (specsRes.ok) {
+          const specsData = await specsRes.json();
+          if (specsData?.data?.specs) setProductSpecs(specsData.data.specs);
+        }
+      } catch (error) {
+        console.error('Error fetching content:', error);
+      }
+    };
+
+    fetchContent();
+  }, []);
+
+  const handleAddToCart = async () => {
+    try {
+      if (!productId) {
+        toast.error('Ürün bilgisi yüklenemedi, lütfen sayfayı yenileyin');
+        return;
+      }
+      await addItem(productId, quantity, selectedVariant.id);
+      toast.success('Ürün sepete eklendi!');
+    } catch (error: any) {
+      console.error('Sepete ekleme hatası:', error);
+      toast.error(error.message || 'Ürün eklenirken bir hata oluştu');
+    }
+  };
+
+  const currentPrice = selectedVariant.price;
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {/* Breadcrumb */}
+      <div className="bg-white border-b sticky top-0 z-40">
+        <div className="container mx-auto px-4 py-3">
+          <nav className="flex items-center gap-2 text-sm text-gray-500">
+            <Link href="/" className="hover:text-primary-600 transition-colors">Ana Sayfa</Link>
+            <ChevronRight className="w-4 h-4" />
+            <span className="text-gray-900 font-medium">360 Sehpa / Padog</span>
+          </nav>
+        </div>
+      </div>
+
+      {/* Hero Section - Product Main */}
+      <section className="bg-white">
+        <div className="container mx-auto px-4 py-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            {/* Left - Image Gallery */}
+            <div className="space-y-4">
+              {/* Main Image */}
+              <div className="relative aspect-square bg-gradient-to-br from-gray-100 to-gray-200 rounded-3xl overflow-hidden shadow-lg">
+                <motion.div
+                  key={selectedImage}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="absolute inset-0 flex items-center justify-center"
+                >
+                  <div className="w-full h-full">
+                    {productImages.length > 0 ? (
+                      <img
+                        src={productImages[selectedImage]}
+                        alt={`Universal Motosiklet Kaldırma Sehpası 360 Derece Kilitli Paddock Görsel ${selectedImage + 1}`}
+                        className="w-full h-full object-cover"
+                        fetchPriority={selectedImage === 0 ? "high" : "auto"}
+                        loading={selectedImage === 0 ? "eager" : "lazy"}
+                      />
+                    ) : (
+                      <div className="flex flex-col items-center justify-center w-full h-full">
+                        <Package className="w-32 h-32 mx-auto text-gray-400 mb-4" />
+                        <p className="text-gray-500 font-medium">Ürün Görseli {selectedImage + 1}</p>
+                      </div>
+                    )}
+                  </div>
+                </motion.div>
+                
+                {/* Badges */}
+                <div className="absolute top-4 left-4 flex flex-col gap-2">
+                  <span className="bg-primary-600 text-white px-3 py-1 rounded-full text-sm font-bold">%10 İNDİRİM</span>
+                  <span className="bg-green-500 text-white px-3 py-1 rounded-full text-sm font-medium flex items-center gap-1">
+                    <Check className="w-3 h-3" /> Stokta
+                  </span>
+                </div>
+
+                {/* Navigation */}
+                <button onClick={() => setSelectedImage(prev => prev === 0 ? productImages.length - 1 : prev - 1)} 
+                  className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/90 rounded-full flex items-center justify-center shadow-lg hover:bg-white transition-all">
+                  <ChevronLeft className="w-5 h-5" />
+                </button>
+                <button onClick={() => setSelectedImage(prev => prev === productImages.length - 1 ? 0 : prev + 1)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/90 rounded-full flex items-center justify-center shadow-lg hover:bg-white transition-all">
+                  <ChevronRight className="w-5 h-5" />
+                </button>
+              </div>
+
+              {/* Thumbnails */}
+              <div className="flex gap-3 overflow-x-auto pb-2">
+                {productImages.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setSelectedImage(index)}
+                    className={`flex-shrink-0 w-20 h-20 rounded-xl border-2 transition-all overflow-hidden ${
+                      selectedImage === index ? 'border-primary-600 ring-2 ring-primary-100' : 'border-gray-200 hover:border-gray-300'
+                    }`}
+                  >
+                    <div className="w-full h-full bg-gray-100 flex items-center justify-center border-gray-200">
+                      {productImages.length > index ? (
+                        <img 
+                          src={productImages[index]} 
+                          alt={`Universal Motosiklet Kaldırma Sehpası Küçük Görsel ${index + 1}`} 
+                          className="w-full h-full object-cover" 
+                          loading="lazy"
+                        />
+                      ) : (
+                        <Package className="w-8 h-8 text-gray-400" />
+                      )}
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Right - Product Info */}
+            <div className="space-y-6">
+              {/* Title */}
+              <div>
+                <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3 leading-tight">
+                  Universal Motosiklet Kaldırma Sehpası
+                  <span className="block text-primary-600">360° Döner - Kilitli</span>
+                </h1>
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-1">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className="w-5 h-5 fill-yellow-400 text-yellow-400" />
+                    ))}
+                  </div>
+                  <span className="text-gray-500">127 Değerlendirme</span>
+                  <span className="text-green-600 text-sm font-medium">● Stokta Var</span>
+                </div>
+              </div>
+
+              {/* Price Card */}
+              <div className="bg-gradient-to-r from-primary-50 to-primary-100 border border-primary-100 rounded-2xl p-6">
+                <div className="flex items-baseline gap-3 mb-2">
+                  <span className="text-4xl font-bold text-primary-600">{currentPrice.toLocaleString('tr-TR')} TL</span>
+                  <span className="text-lg text-gray-400 line-through">4.500 TL</span>
+                </div>
+                <p className="text-gray-600 text-sm">KDV Dahil - Ücretsiz Kargo</p>
+              </div>
+
+              {/* Variant Selection */}
+              <div className="space-y-3">
+                <label className="text-sm font-semibold text-gray-700">Kaldırma Takoz Ebatı</label>
+                <div className="flex gap-3">
+                  {variants.map((variant) => (
+                    <button
+                      key={variant.id}
+                      onClick={() => setSelectedVariant(variant)}
+                      className={`flex-1 py-3 px-4 rounded-xl border-2 font-semibold transition-all ${
+                        selectedVariant.id === variant.id
+                          ? 'border-primary-600 bg-primary-600 text-white shadow-lg shadow-primary-600/30'
+                          : 'border-gray-200 bg-white text-gray-700 hover:border-gray-300'
+                      }`}
+                    >
+                      {variant.name}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Quantity & Add to Cart */}
+              <div className="flex gap-4">
+                <div className="flex items-center border-2 border-gray-200 rounded-xl">
+                  <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="w-12 h-12 flex items-center justify-center hover:bg-gray-50 text-xl font-semibold">-</button>
+                  <span className="w-12 text-center font-semibold text-lg">{quantity}</span>
+                  <button onClick={() => setQuantity(quantity + 1)} className="w-12 h-12 flex items-center justify-center hover:bg-gray-50 text-xl font-semibold">+</button>
+                </div>
+                <button
+                  onClick={handleAddToCart}
+                  className="flex-1 bg-primary-600 hover:bg-primary-700 text-white font-bold text-lg rounded-xl transition-all hover:scale-[1.02] flex items-center justify-center gap-3 shadow-lg shadow-primary-600/30"
+                >
+                  <ShoppingCart className="w-6 h-6" />
+                  SEPETE EKLE
+                </button>
+                <button className="w-14 h-14 border-2 border-gray-200 rounded-xl flex items-center justify-center hover:border-primary-600 hover:text-primary-600 transition-colors">
+                  <Heart className="w-6 h-6" />
+                </button>
+              </div>
+
+              {/* Features Grid */}
+              <div className="grid grid-cols-4 gap-3">
+                {features.map((feature, index) => (
+                  <div key={index} className="text-center p-3 bg-gray-50 rounded-xl">
+                    <feature.icon className="w-6 h-6 mx-auto mb-2 text-primary-600" />
+                    <p className="text-xs font-semibold text-gray-900">{feature.title}</p>
+                    <p className="text-xs text-gray-500">{feature.desc}</p>
+                  </div>
+                ))}
+              </div>
+
+              {/* Shipping Badge */}
+              <div className="flex items-center gap-3 p-4 bg-green-50 border border-green-100 rounded-xl text-green-800">
+                <Truck className="w-6 h-6" />
+                <div>
+                  <p className="font-semibold">Aynı Gün Kargo</p>
+                  <p className="text-sm text-green-600">15:00&apos;dan önceki siparişlerde</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 6 Reasons Section */}
+      <section className="py-16 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <span className="text-primary-400 font-semibold text-sm uppercase tracking-wider">Avantajlar</span>
+            <h2 className="text-3xl md:text-4xl font-bold mt-2">Almanız İçin 6 Neden</h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {sixReasons.map((item, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 hover:bg-white/20 transition-all border border-white/10"
+              >
+                <div className="text-4xl mb-4">{item.icon}</div>
+                <h3 className="text-lg font-bold mb-2">{item.title}</h3>
+                <p className="text-gray-300 text-sm">{item.desc}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Comparison Table */}
+      <section className="py-16 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <span className="text-primary-600 font-semibold text-sm uppercase tracking-wider">Karşılaştırma</span>
+            <h2 className="text-3xl md:text-4xl font-bold mt-2 text-gray-900">Neden 360° Döner Sehpa?</h2>
+          </div>
+          
+          {/* Desktop Table */}
+          <div className="hidden md:block max-w-4xl mx-auto overflow-hidden rounded-2xl shadow-xl">
+            <table className="w-full">
+              <thead>
+                <tr className="bg-gray-900 text-white">
+                  <th className="py-4 px-6 text-left">Özellik</th>
+                  <th className="py-4 px-6 text-center bg-primary-600">✅ 360° Sehpa</th>
+                  <th className="py-4 px-6 text-center text-gray-400">⚪ Standart</th>
+                </tr>
+              </thead>
+              <tbody>
+                {comparisonData.map((row, index) => (
+                  <tr key={index} className={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
+                    <td className="py-4 px-6 font-medium text-gray-900">{row.feature}</td>
+                    <td className="py-4 px-6 text-center">
+                      <span className="inline-flex items-center gap-1 text-green-600 font-semibold bg-green-50 px-3 py-1 rounded-full text-sm">
+                        <Check className="w-4 h-4" /> {row.ours}
+                      </span>
+                    </td>
+                    <td className="py-4 px-6 text-center">
+                      <span className="inline-flex items-center gap-1 text-gray-500 bg-gray-100 px-3 py-1 rounded-full text-sm">
+                        <X className="w-4 h-4" /> {row.theirs}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Mobile Cards */}
+          <div className="md:hidden space-y-4">
+            {comparisonData.map((row, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.05 }}
+                className="bg-gray-50 rounded-xl p-4 border border-gray-200"
+              >
+                <h3 className="font-semibold text-gray-900 mb-3">{row.feature}</h3>
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between bg-white rounded-lg p-3">
+                    <span className="text-sm font-medium text-green-600 flex items-center gap-2">
+                      <Check className="w-4 h-4" /> 360° Sehpa
+                    </span>
+                    <span className="text-sm text-gray-700 font-medium">{row.ours}</span>
+                  </div>
+                  <div className="flex items-center justify-between bg-white rounded-lg p-3">
+                    <span className="text-sm font-medium text-gray-400 flex items-center gap-2">
+                      <X className="w-4 h-4" /> Standart
+                    </span>
+                    <span className="text-sm text-gray-500">{row.theirs}</span>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials */}
+      <section className="py-16 bg-gradient-to-br from-gray-50 to-gray-100">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <span className="text-primary-600 font-semibold text-sm uppercase tracking-wider">Yorumlar</span>
+            <h2 className="text-3xl md:text-4xl font-bold mt-2 text-gray-900">Kullanıcılar Ne Diyor</h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {testimonials.map((review, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow"
+              >
+                <div className="flex gap-1 mb-4">
+                  {[...Array(review.rating)].map((_, i) => (
+                    <Star key={i} className="w-5 h-5 fill-yellow-400 text-yellow-400" />
+                  ))}
+                </div>
+                <h3 className="text-lg font-bold text-gray-900 mb-3">"{review.title}"</h3>
+                <p className="text-gray-600 text-sm mb-6 leading-relaxed">{review.content}</p>
+                <div className="flex items-center gap-3 pt-4 border-t">
+                  <div className="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center">
+                    <span className="text-primary-600 font-bold">{review.name[0]}</span>
+                  </div>
+                  <div>
+                    <p className="font-semibold text-gray-900">{review.name}</p>
+                    <p className="text-sm text-gray-500">{review.location}</p>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+          {testimonialStats && (
+            <div className="mt-10 flex flex-wrap justify-center gap-8">
+              <div className="flex items-center gap-2 text-gray-600">
+                <Award className="w-5 h-5 text-primary-600" />
+                <span className="text-sm font-medium">{testimonialStats.totalReviews}+ Olumlu Değerlendirme</span>
+              </div>
+              <div className="flex items-center gap-2 text-gray-600">
+                <Zap className="w-5 h-5 text-yellow-500" />
+                <span className="text-sm font-medium">%{testimonialStats.satisfaction} Memnuniyet</span>
+              </div>
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* Product Details Tabs */}
+      <section className="py-16 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto">
+            {/* Tabs */}
+            <div className="flex gap-4 border-b mb-8">
+              <button
+                onClick={() => setActiveTab('desc')}
+                className={`pb-4 px-4 font-semibold transition-colors relative ${
+                  activeTab === 'desc' ? 'text-primary-600' : 'text-gray-500 hover:text-gray-700'
+                }`}
+              >
+                Ürün Açıklaması
+                {activeTab === 'desc' && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary-600" />}
+              </button>
+              <button
+                onClick={() => setActiveTab('specs')}
+                className={`pb-4 px-4 font-semibold transition-colors relative ${
+                  activeTab === 'specs' ? 'text-primary-600' : 'text-gray-500 hover:text-gray-700'
+                }`}
+              >
+                Teknik Özellikler
+                {activeTab === 'specs' && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary-600" />}
+              </button>
+            </div>
+
+            {/* Tab Content */}
+            <div className="prose prose-lg max-w-none text-gray-600">
+              {activeTab === 'desc' ? (
+                <div className="space-y-4">
+                  {productDescription ? (
+                    <>
+                      {productDescription.description && (
+                        <p dangerouslySetInnerHTML={{ __html: productDescription.description }} />
+                      )}
+                      {productDescription.data?.features && productDescription.data.features.length > 0 && (
+                        <ul className="space-y-2 mt-6">
+                          {productDescription.data.features.map((feature: string, idx: number) => (
+                            <li key={idx} className="flex items-center gap-2">
+                              <Check className="w-5 h-5 text-green-500" /> {feature}
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </>
+                  ) : (
+                    <p className="text-gray-400">İçerik yükleniyor...</p>
+                  )}
+                </div>
+              ) : (
+                <table className="w-full">
+                  <tbody className="divide-y">
+                    {productSpecs.length > 0 ? productSpecs.map((spec, idx) => (
+                      <tr key={idx}>
+                        <td className="py-3 font-medium text-gray-900 w-1/3">{spec.label}</td>
+                        <td className="py-3">{spec.value}</td>
+                      </tr>
+                    )) : (
+                      <tr>
+                        <td colSpan={2} className="py-3 text-center text-gray-400">İçerik yükleniyor...</td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section className="py-16 bg-gray-50">
+        <div className="container mx-auto px-4">
+          <div className="max-w-3xl mx-auto">
+            <div className="text-center mb-12">
+              <span className="text-primary-600 font-semibold text-sm uppercase tracking-wider">SSS</span>
+              <h2 className="text-3xl md:text-4xl font-bold mt-2 text-gray-900">Sık Sorulan Sorular</h2>
+            </div>
+            <div className="space-y-4">
+              {faqs.map((faq, index) => (
+                <div key={index} className="bg-white rounded-xl overflow-hidden shadow-sm">
+                  <button
+                    onClick={() => setOpenFaq(openFaq === index ? null : index)}
+                    className="w-full flex items-center justify-between p-5 text-left hover:bg-gray-50 transition-colors"
+                  >
+                    <span className="font-semibold text-gray-900">{faq.question}</span>
+                    <ChevronRight className={`w-5 h-5 text-gray-400 transition-transform ${openFaq === index ? 'rotate-90' : ''}`} />
+                  </button>
+                  {openFaq === index && (
+                    <div className="px-5 pb-5 text-gray-600">
+                      {faq.answer}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-16 bg-gradient-to-r from-primary-600 to-primary-700">
+        <div className="container mx-auto px-4 text-center">
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Hemen Sipariş Verin</h2>
+          <p className="text-primary-100 mb-8">Profesyonel garaj konforu artık her sürücünün ulaşabileceği kadar yakın!</p>
+          <button
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            className="bg-white text-primary-600 font-bold text-lg px-12 py-4 rounded-xl hover:scale-105 transition-transform shadow-lg"
+          >
+            Şimdi Satın Al
+          </button>
+        </div>
+      </section>
+    </div>
+  );
+}
