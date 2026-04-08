@@ -9,6 +9,7 @@ COPY apps/admin/package.json ./apps/admin/
 RUN npm install
 COPY . .
 
+RUN npx turbo run db:generate --filter=@ecommerce/admin
 RUN npx turbo run build --filter=@ecommerce/admin
 
 # Production image

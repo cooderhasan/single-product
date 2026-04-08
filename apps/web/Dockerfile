@@ -11,6 +11,7 @@ COPY apps/web/package.json ./apps/web/
 RUN npm install
 COPY . .
 
+RUN npx turbo run db:generate --filter=@ecommerce/web
 RUN npx turbo run build --filter=@ecommerce/web
 
 # Production image

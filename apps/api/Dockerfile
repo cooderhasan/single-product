@@ -15,6 +15,9 @@ RUN npm install
 # Copy source code
 COPY . .
 
+# Generate database client first
+RUN npx turbo run db:generate --filter=@ecommerce/api
+
 # Build specific package
 RUN npx turbo run build --filter=@ecommerce/api
 
