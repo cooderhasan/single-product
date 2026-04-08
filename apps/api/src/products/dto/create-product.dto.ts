@@ -65,6 +65,11 @@ export class CreateProductDto {
 
   @ApiPropertyOptional()
   @IsOptional()
+  @IsBoolean()
+  isActive?: boolean;
+
+  @ApiPropertyOptional()
+  @IsOptional()
   @IsArray()
   @IsString({ each: true })
   images?: string[];

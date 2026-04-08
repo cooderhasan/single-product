@@ -1,0 +1,173 @@
+- generic [active] [ref=e1]:
+  - link "İçeriğe atla" [ref=e2] [cursor=pointer]:
+    - /url: "#MainContent"
+  - generic [ref=e5]:
+    - paragraph [ref=e6]: Saat 15.00'dan Önce Verilen Siparişler Aynı Gün Kargoda..!
+    - paragraph [ref=e7]: Tüm Türkiye'ye Ücretsiz Kargo..!
+    - paragraph [ref=e8]: 14 Gün İade Garantisi...!
+    - paragraph [ref=e9]: Saat 15.00'dan Önce Verilen Siparişler Aynı Gün Kargoda..!
+    - paragraph [ref=e10]: Tüm Türkiye'ye Ücretsiz Kargo..!
+    - paragraph [ref=e11]: 14 Gün İade Garantisi...!
+    - paragraph [ref=e12]: Saat 15.00'dan Önce Verilen Siparişler Aynı Gün Kargoda..!
+    - paragraph [ref=e13]: Tüm Türkiye'ye Ücretsiz Kargo..!
+    - paragraph [ref=e14]: 14 Gün İade Garantisi...!
+    - paragraph [ref=e15]: Saat 15.00'dan Önce Verilen Siparişler Aynı Gün Kargoda..!
+    - paragraph [ref=e16]: Tüm Türkiye'ye Ücretsiz Kargo..!
+    - paragraph [ref=e17]: 14 Gün İade Garantisi...!
+    - paragraph [ref=e18]: Saat 15.00'dan Önce Verilen Siparişler Aynı Gün Kargoda..!
+    - paragraph [ref=e19]: Tüm Türkiye'ye Ücretsiz Kargo..!
+    - paragraph [ref=e20]: 14 Gün İade Garantisi...!
+    - paragraph [ref=e21]: Saat 15.00'dan Önce Verilen Siparişler Aynı Gün Kargoda..!
+    - paragraph [ref=e22]: Tüm Türkiye'ye Ücretsiz Kargo..!
+    - paragraph [ref=e23]: 14 Gün İade Garantisi...!
+    - paragraph [ref=e24]: Saat 15.00'dan Önce Verilen Siparişler Aynı Gün Kargoda..!
+    - paragraph [ref=e25]: Tüm Türkiye'ye Ücretsiz Kargo..!
+    - paragraph [ref=e26]: 14 Gün İade Garantisi...!
+    - paragraph [ref=e27]: Saat 15.00'dan Önce Verilen Siparişler Aynı Gün Kargoda..!
+    - paragraph [ref=e28]: Tüm Türkiye'ye Ücretsiz Kargo..!
+    - paragraph [ref=e29]: 14 Gün İade Garantisi...!
+    - paragraph [ref=e30]: Saat 15.00'dan Önce Verilen Siparişler Aynı Gün Kargoda..!
+    - paragraph [ref=e31]: Tüm Türkiye'ye Ücretsiz Kargo..!
+    - paragraph [ref=e32]: 14 Gün İade Garantisi...!
+    - paragraph [ref=e33]: Saat 15.00'dan Önce Verilen Siparişler Aynı Gün Kargoda..!
+    - paragraph [ref=e34]: Tüm Türkiye'ye Ücretsiz Kargo..!
+    - paragraph [ref=e35]: 14 Gün İade Garantisi...!
+    - paragraph [ref=e36]: Saat 15.00'dan Önce Verilen Siparişler Aynı Gün Kargoda..!
+    - paragraph [ref=e37]: Tüm Türkiye'ye Ücretsiz Kargo..!
+    - paragraph [ref=e38]: 14 Gün İade Garantisi...!
+    - paragraph [ref=e39]: Saat 15.00'dan Önce Verilen Siparişler Aynı Gün Kargoda..!
+    - paragraph [ref=e40]: Tüm Türkiye'ye Ücretsiz Kargo..!
+    - paragraph [ref=e41]: 14 Gün İade Garantisi...!
+  - region "Duyuru" [ref=e43]:
+    - paragraph [ref=e45]: KREDİ KARTINA 12 TAKSİT FIRSATIYLA..!
+  - banner [ref=e48]:
+    - group [ref=e50]:
+      - button "Menü" [ref=e51] [cursor=pointer]:
+        - img [ref=e53]
+    - heading "360Sehpa" [level=1] [ref=e54]:
+      - link "360Sehpa" [ref=e55] [cursor=pointer]:
+        - /url: /
+        - img "360Sehpa" [ref=e56]
+    - generic [ref=e57]:
+      - group [ref=e59]:
+        - button "Ara" [ref=e60] [cursor=pointer]:
+          - img [ref=e62]
+      - link "Oturum aç" [ref=e64] [cursor=pointer]:
+        - /url: https://account.360sehpa.com?locale=tr&region_country=TR
+        - img [ref=e65]
+        - generic [ref=e66]: Oturum aç
+      - button "Sepet" [ref=e67] [cursor=pointer]:
+        - img [ref=e68]
+        - generic [ref=e73]: Sepet
+  - main [ref=e74]:
+    - region "Slideshow about our brand" [ref=e76]:
+      - group "1 / 1" [ref=e78]:
+        - generic [ref=e81]:
+          - heading "MOTORUNA DEĞER VERENLERİN TERCİHİ" [level=2] [ref=e82]
+          - generic [ref=e83]: Tamir , bakım ve tüm işlemlerinizi artık özgürce yapın. Klasik Hantal Sehpalardan Kurtulun..
+          - link "SATIN AL" [ref=e85] [cursor=pointer]:
+            - /url: /products/universal-motosiklet-kaldirma-sehpasi-360-derece-doner-kilitli
+    - generic [ref=e93]:
+      - heading "Motosiklet bakımını bir sanat haline getir; her açıdan eriş, her hareketi kontrol et, her an güven içinde ol." [level=2] [ref=e94]
+      - paragraph [ref=e96]: "360 Derece Tam Döner Mekanizma: Motosikletini kaldırmanın ötesinde, her yöne 360 derece döndürebilirsin! Zincir yağlama, fren balata değişimi, motor bileşenlerine erişim veya lastik tamiri gibi işlerde motosikleti istediğin açıya getir – eğilmek, zorlanmak yok! Standart sehpalarda sınırlı hareket varken, bu senin zamanını ve enerjini %50'ye varan oranda tasarruf ettirir. Bakım süren kısalır, keyfin artar!"
+      - link "SATIN AL" [ref=e97] [cursor=pointer]:
+        - /url: /products/universal-motosiklet-kaldirma-sehpasi-360-derece-doner-kilitli
+    - generic [ref=e100]:
+      - heading "Müşterilerimiz Ne Diyor" [level=2] [ref=e102]
+      - list [ref=e104]:
+        - listitem [ref=e105]:
+          - generic [ref=e107]:
+            - paragraph [ref=e108]: ★★★★★
+            - img "''" [ref=e110]
+            - heading "“Profesyonel servis konforu evde.”" [level=3] [ref=e111]
+            - paragraph [ref=e113]:
+              - text: CF Moto’mu bu sehpayla kaldırıyorum, bakım yapmak tam bir zevk.
+              - text: Dönüş mekanizması o kadar akıcı ki tek elle bile çevriliyor.
+              - text: Artık arkadaşlarım da benden ödünç istiyor :)
+            - paragraph [ref=e115]: Onur T. / Ankara
+        - listitem [ref=e116]:
+          - generic [ref=e118]:
+            - paragraph [ref=e119]: ★★★★★
+            - img "''" [ref=e121]
+            - heading "“Kendin yap kültürüne yakışan ürün.”" [level=3] [ref=e122]
+            - paragraph [ref=e124]:
+              - text: Motoruna kendi eliyle dokunan herkesin garajında bu sehpa olmalı.
+              - text: Sağlamlık, denge, pratiklik hepsi bir arada.
+              - text: Üstelik montaj derdi yok, kutudan çıkarınca direkt kullanıyorsun.
+            - paragraph [ref=e126]: Serkan D. / İzmir
+        - listitem [ref=e127]:
+          - generic [ref=e129]:
+            - paragraph [ref=e130]: ★★★★★
+            - img "''" [ref=e132]
+            - heading "“Uzun süredir böyle sağlam bir ürün görmedim.”" [level=3] [ref=e133]
+            - paragraph [ref=e135]:
+              - text: Bakım işlerini yıllardır kendim yapıyorum, birçok sehpa denedim.
+              - text: "360 Sehpa diğerlerinden bariz fark yaratıyor:"
+              - text: Gövdesi tok, dönüş mekanizması yumuşak ama sağlam.
+              - text: Ne kayma var, ne dengesizlik.Kısacası motoru sabitliyor, sana sadece işini yapmak kalıyor.
+            - paragraph [ref=e137]: Levent A. / Antalya
+  - iframe [ref=e144]:
+    - generic [ref=f8e4]:
+      - generic [ref=f8e5]: Güvenli Ödeme Seçenekleri
+      - generic [ref=f8e6]:
+        - img [ref=f8e8]
+        - img [ref=f8e10]
+        - img [ref=f8e12]
+        - img [ref=f8e14]
+        - img [ref=f8e16]
+  - contentinfo [ref=e146]:
+    - generic [ref=e148]:
+      - generic [ref=e152]:
+        - heading "Menü" [level=2] [ref=e153]
+        - list [ref=e154]:
+          - listitem [ref=e155]:
+            - link "360 Sehpa / Padog" [ref=e156] [cursor=pointer]:
+              - /url: /products/universal-motosiklet-kaldirma-sehpasi-360-derece-doner-kilitli
+          - listitem [ref=e157]:
+            - link "Kargo Takibi" [ref=e158] [cursor=pointer]:
+              - /url: https://360sehpa.com/apps/17TRACK
+          - listitem [ref=e159]:
+            - link "İletişim" [ref=e160] [cursor=pointer]:
+              - /url: /pages/contact
+      - generic [ref=e161]:
+        - heading "E-Posta Bültenine Kayıt Olun" [level=2] [ref=e162]
+        - generic [ref=e163]:
+          - paragraph [ref=e165]: Spam Eposta Almayacaksınız..
+          - generic [ref=e166]:
+            - generic [ref=e168]:
+              - textbox "E-posta" [ref=e169]
+              - generic: E-posta
+            - button "Abone ol" [ref=e170] [cursor=pointer]: Abone Ol
+    - generic [ref=e171]:
+      - generic [ref=e174]: Ödeme yöntemleri
+      - generic [ref=e176]:
+        - generic [ref=e177]:
+          - text: © 2026,
+          - link "360Sehpa" [ref=e178] [cursor=pointer]:
+            - /url: /
+        - text: Tüm Hakları Saklıdır.
+        - list [ref=e179]:
+          - listitem [ref=e180]:
+            - text: ·
+            - link "Gizlilik politikası" [ref=e182] [cursor=pointer]:
+              - /url: /policies/privacy-policy
+          - listitem [ref=e183]:
+            - text: ·
+            - link "İletişim bilgileri" [ref=e185] [cursor=pointer]:
+              - /url: /policies/contact-information
+          - listitem [ref=e186]:
+            - text: ·
+            - link "Para iade politikası" [ref=e188] [cursor=pointer]:
+              - /url: /policies/refund-policy
+          - listitem [ref=e189]:
+            - text: ·
+            - link "Hizmet şartları" [ref=e191] [cursor=pointer]:
+              - /url: /policies/terms-of-service
+          - listitem [ref=e192]:
+            - text: ·
+            - link "Kargo politikası" [ref=e194] [cursor=pointer]:
+              - /url: /policies/shipping-policy
+          - listitem [ref=e195]:
+            - text: ·
+            - link "Yasal bildirim" [ref=e197] [cursor=pointer]:
+              - /url: /policies/legal-notice

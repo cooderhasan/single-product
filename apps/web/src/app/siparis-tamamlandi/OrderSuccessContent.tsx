@@ -29,8 +29,8 @@ export default function OrderSuccessContent() {
       <div className="container mx-auto px-4 max-w-2xl">
         <div className="bg-white rounded-xl shadow-sm p-12 text-center">
           {/* Success Icon */}
-          <div className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-            <CheckCircle className="w-12 h-12 text-green-600" />
+          <div className="w-24 h-24 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <CheckCircle className="w-12 h-12 text-primary-600" />
           </div>
 
           <h1 className="text-3xl font-bold text-gray-900 mb-4">
@@ -50,17 +50,17 @@ export default function OrderSuccessContent() {
 
           {/* Info Cards */}
           <div className="grid sm:grid-cols-2 gap-4 mb-8">
-            <div className="bg-blue-50 rounded-lg p-4">
-              <Package className="w-8 h-8 text-blue-600 mx-auto mb-2" />
-              <h3 className="font-medium text-blue-900">Sipariş Takibi</h3>
-              <p className="text-sm text-blue-700">
+            <div className="bg-primary-50 rounded-lg p-4">
+              <Package className="w-8 h-8 text-primary-600 mx-auto mb-2" />
+              <h3 className="font-medium text-primary-900">Sipariş Takibi</h3>
+              <p className="text-sm text-primary-700">
                 Siparişlerim sayfasından takip edebilirsiniz
               </p>
             </div>
-            <div className="bg-purple-50 rounded-lg p-4">
-              <Mail className="w-8 h-8 text-purple-600 mx-auto mb-2" />
-              <h3 className="font-medium text-purple-900">E-posta Bildirimi</h3>
-              <p className="text-sm text-purple-700">
+            <div className="bg-slate-50 rounded-lg p-4">
+              <Mail className="w-8 h-8 text-slate-600 mx-auto mb-2" />
+              <h3 className="font-medium text-slate-900">E-posta Bildirimi</h3>
+              <p className="text-sm text-slate-700">
                 Sipariş detayları e-postanıza gönderildi
               </p>
             </div>

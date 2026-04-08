@@ -10,6 +10,15 @@ export interface CartItemInput {
 @Injectable()
 export class CartService {
   async getCart(userId?: string, sessionId?: string) {
+    // En az birinin olması gerekli
+    if (!userId && !sessionId) {
+      return {
+        items: [],
+        total: 0,
+        count: 0,
+      };
+    }
+
     const where = userId ? { userId } : { sessionId };
 
     const cartItems = await prisma.cartItem.findMany({
@@ -36,11 +45,16 @@ export class CartService {
     return {
       items: cartItems,
       total,
-      count: cartItems.length,
+      count: cartItems.reduce((sum, item) => sum + item.quantity, 0),
     };
   }
 
   async addItem(data: CartItemInput, userId?: string, sessionId?: string) {
+    // Session ID veya User ID kontrolü
+    if (!userId && !sessionId) {
+      throw new NotFoundException('Oturum bilgisi bulunamadı');
+    }
+
     const product = await prisma.product.findUnique({
       where: { id: data.productId },
     });
@@ -53,10 +67,6 @@ export class CartService {
       throw new NotFoundException('Yetersiz stok');
     }
 
-    const where = userId
-      ? { userId_productId_variantId: { userId, productId: data.productId, variantId: data.variantId || '' } }
-      : { sessionId_productId_variantId: { sessionId: sessionId!, productId: data.productId, variantId: data.variantId || '' } };
-
     // Mevcut ürünü güncelle veya yeni ekle
     const existingItem = await prisma.cartItem.findFirst({
       where: {
@@ -67,9 +77,13 @@ export class CartService {
     });
 
     if (existingItem) {
+      const newQuantity = existingItem.quantity + data.quantity;
+      if (product.stock < newQuantity) {
+        throw new NotFoundException('Yetersiz stok');
+      }
       return prisma.cartItem.update({
         where: { id: existingItem.id },
-        data: { quantity: existingItem.quantity + data.quantity },
+        data: { quantity: newQuantity },
         include: { product: true },
       });
     }
@@ -77,7 +91,7 @@ export class CartService {
     return prisma.cartItem.create({
       data: {
         productId: data.productId,
-        variantId: data.variantId,
+        variantId: data.variantId || null,
         quantity: data.quantity,
         ...(userId ? { userId } : { sessionId }),
       },

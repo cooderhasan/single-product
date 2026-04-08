@@ -1,0 +1,30 @@
+- generic [active] [ref=e1]:
+  - main [ref=e3]:
+    - generic [ref=e4]:
+      - generic [ref=e5]:
+        - heading "Ürün Yönetimi" [level=1] [ref=e7]
+        - link "Yeni Ürün" [ref=e8] [cursor=pointer]:
+          - /url: /products/new
+          - img [ref=e9]
+          - text: Yeni Ürün
+      - generic [ref=e11]:
+        - generic [ref=e13]:
+          - img [ref=e14]
+          - textbox "Ürün ara..." [ref=e16]
+        - table [ref=e18]:
+          - rowgroup [ref=e19]:
+            - row "Ürün SKU Fiyat Stok Durum İşlemler" [ref=e20]:
+              - columnheader "Ürün" [ref=e21]
+              - columnheader "SKU" [ref=e22]
+              - columnheader "Fiyat" [ref=e23]
+              - columnheader "Stok" [ref=e24]
+              - columnheader "Durum" [ref=e25]
+              - columnheader "İşlemler" [ref=e26]
+          - rowgroup
+        - generic [ref=e27]:
+          - paragraph [ref=e28]: Henüz ürün bulunmamaktadır.
+          - link "İlk Ürünü Ekle" [ref=e29] [cursor=pointer]:
+            - /url: /products/new
+            - img [ref=e30]
+            - text: İlk Ürünü Ekle
+  - alert [ref=e6]

@@ -621,6 +621,87 @@ model Setting {
   @@map("settings")
 }
 
+// ==================== SITE CONTENT ====================
+
+model SiteContent {
+  id          String   @id @default(uuid())
+  key         String   @unique  // "product_showcase", "features_section", vb.
+  title       String?
+  subtitle    String?
+  description String?  @db.Text
+  image       String?
+  buttonText  String?
+  buttonLink  String?
+  
+  // JSON olarak ek alanlar (özellikler listesi, vb.)
+  data        Json?
+  
+  // Sıralama
+  sortOrder   Int      @default(0)
+  
+  // Durum
+  isActive    Boolean  @default(true)
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([key])
+  @@index([isActive])
+  @@map("site_contents")
+}
+
+model Testimonial {
+  id          String   @id @default(uuid())
+  name        String
+  location    String?
+  title       String
+  content     String   @db.Text
+  rating      Int      @default(5)  // 1-5 arası
+  image       String?
+  
+  // Sıralama
+  sortOrder   Int      @default(0)
+  
+  // Durum
+  isActive    Boolean  @default(true)
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([isActive])
+  @@index([sortOrder])
+  @@map("testimonials")
+}
+
+model Announcement {
+  id          String   @id @default(uuid())
+  message     String
+  link        String?
+  bgColor     String   @default("primary-700")  // Tailwind class
+  textColor   String   @default("white")
+  
+  // Pozisyon: TOP_TICKER (kayan yazı), ANNOUNCEMENT_BAR (sabit bar)
+  position    String   @default("ANNOUNCEMENT_BAR")
+  
+  // Tarihler
+  startDate   DateTime?
+  endDate     DateTime?
+  
+  // Sıralama (kayan yazı için)
+  sortOrder   Int      @default(0)
+  
+  // Durum
+  isActive    Boolean  @default(true)
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([position])
+  @@index([isActive])
+  @@index([sortOrder])
+  @@map("announcements")
+}
+
 // ==================== ACTIVITY LOG ====================
 
 model ActivityLog {

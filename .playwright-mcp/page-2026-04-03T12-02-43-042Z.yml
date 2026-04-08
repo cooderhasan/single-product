@@ -1,0 +1,112 @@
+- generic [active] [ref=e1]:
+  - main [ref=e3]:
+    - generic [ref=e4]:
+      - generic [ref=e5]:
+        - heading "Ürün Yönetimi" [level=1] [ref=e7]
+        - link "Yeni Ürün" [ref=e8] [cursor=pointer]:
+          - /url: /products/new
+          - img [ref=e9]
+          - text: Yeni Ürün
+      - generic [ref=e11]:
+        - generic [ref=e13]:
+          - img [ref=e14]
+          - textbox "Ürün ara..." [ref=e16]
+        - table [ref=e18]:
+          - rowgroup [ref=e19]:
+            - row "Ürün SKU Fiyat Stok Durum İşlemler" [ref=e20]:
+              - columnheader "Ürün" [ref=e21]
+              - columnheader "SKU" [ref=e22]
+              - columnheader "Fiyat" [ref=e23]
+              - columnheader "Stok" [ref=e24]
+              - columnheader "Durum" [ref=e25]
+              - columnheader "İşlemler" [ref=e26]
+          - rowgroup [ref=e27]:
+            - row "Yok Universal Motosiklet Kaldırma Sehpası 360° Döner - Kilitli Hidrolik Sehpalar 360-SEHPA-001 ₺3722 100 Aktif" [ref=e28]:
+              - cell "Yok Universal Motosiklet Kaldırma Sehpası 360° Döner - Kilitli Hidrolik Sehpalar" [ref=e29]:
+                - generic [ref=e30]:
+                  - generic [ref=e32]: Yok
+                  - generic [ref=e33]:
+                    - generic [ref=e34]: Universal Motosiklet Kaldırma Sehpası 360° Döner - Kilitli
+                    - generic [ref=e35]: Hidrolik Sehpalar
+              - cell "360-SEHPA-001" [ref=e36]
+              - cell "₺3722" [ref=e37]
+              - cell "100" [ref=e38]
+              - cell "Aktif" [ref=e39]:
+                - generic [ref=e40]: Aktif
+              - cell [ref=e41]:
+                - generic [ref=e42]:
+                  - link "Görüntüle" [ref=e43] [cursor=pointer]:
+                    - /url: /products/90816a89-f11e-4a0a-ba90-0b3eda57e135
+                    - img [ref=e44]
+                  - link "Düzenle" [ref=e47] [cursor=pointer]:
+                    - /url: /products/edit/90816a89-f11e-4a0a-ba90-0b3eda57e135
+                    - img [ref=e48]
+                  - button "Sil" [ref=e50] [cursor=pointer]:
+                    - img [ref=e51]
+            - row "Yok Manuel Motosiklet Sehpası Ekonomik Manuel Sehpalar MAN-EKO-001 ₺5499 100 Aktif" [ref=e53]:
+              - cell "Yok Manuel Motosiklet Sehpası Ekonomik Manuel Sehpalar" [ref=e54]:
+                - generic [ref=e55]:
+                  - generic [ref=e57]: Yok
+                  - generic [ref=e58]:
+                    - generic [ref=e59]: Manuel Motosiklet Sehpası Ekonomik
+                    - generic [ref=e60]: Manuel Sehpalar
+              - cell "MAN-EKO-001" [ref=e61]
+              - cell "₺5499" [ref=e62]
+              - cell "100" [ref=e63]
+              - cell "Aktif" [ref=e64]:
+                - generic [ref=e65]: Aktif
+              - cell [ref=e66]:
+                - generic [ref=e67]:
+                  - link "Görüntüle" [ref=e68] [cursor=pointer]:
+                    - /url: /products/fbffc4c5-0331-43e7-92c7-219f3fb2b6be
+                    - img [ref=e69]
+                  - link "Düzenle" [ref=e72] [cursor=pointer]:
+                    - /url: /products/edit/fbffc4c5-0331-43e7-92c7-219f3fb2b6be
+                    - img [ref=e73]
+                  - button "Sil" [ref=e75] [cursor=pointer]:
+                    - img [ref=e76]
+            - row "Yok Hidrolik Sehpa Super Pro Hidrolik Sehpalar HYD-SUPER-001 ₺12499 30 Aktif" [ref=e78]:
+              - cell "Yok Hidrolik Sehpa Super Pro Hidrolik Sehpalar" [ref=e79]:
+                - generic [ref=e80]:
+                  - generic [ref=e82]: Yok
+                  - generic [ref=e83]:
+                    - generic [ref=e84]: Hidrolik Sehpa Super Pro
+                    - generic [ref=e85]: Hidrolik Sehpalar
+              - cell "HYD-SUPER-001" [ref=e86]
+              - cell "₺12499" [ref=e87]
+              - cell "30" [ref=e88]
+              - cell "Aktif" [ref=e89]:
+                - generic [ref=e90]: Aktif
+              - cell [ref=e91]:
+                - generic [ref=e92]:
+                  - link "Görüntüle" [ref=e93] [cursor=pointer]:
+                    - /url: /products/72d9d15a-91f3-4da8-98dc-56da6f28008e
+                    - img [ref=e94]
+                  - link "Düzenle" [ref=e97] [cursor=pointer]:
+                    - /url: /products/edit/72d9d15a-91f3-4da8-98dc-56da6f28008e
+                    - img [ref=e98]
+                  - button "Sil" [ref=e100] [cursor=pointer]:
+                    - img [ref=e101]
+            - row "Yok Hidrolik Motosiklet Sehpası Pro Hidrolik Sehpalar HYD-PRO-001 ₺8999 50 Aktif" [ref=e103]:
+              - cell "Yok Hidrolik Motosiklet Sehpası Pro Hidrolik Sehpalar" [ref=e104]:
+                - generic [ref=e105]:
+                  - generic [ref=e107]: Yok
+                  - generic [ref=e108]:
+                    - generic [ref=e109]: Hidrolik Motosiklet Sehpası Pro
+                    - generic [ref=e110]: Hidrolik Sehpalar
+              - cell "HYD-PRO-001" [ref=e111]
+              - cell "₺8999" [ref=e112]
+              - cell "50" [ref=e113]
+              - cell "Aktif" [ref=e114]:
+                - generic [ref=e115]: Aktif
+              - cell [ref=e116]:
+                - generic [ref=e117]:
+                  - link "Görüntüle" [ref=e118] [cursor=pointer]:
+                    - /url: /products/e68c53dc-fe62-440f-aa33-3c66a70038fe
+                    - img [ref=e119]
+                  - link "Düzenle" [ref=e122] [cursor=pointer]:
+                    - /url: /products/edit/e68c53dc-fe62-440f-aa33-3c66a70038fe
+                    - img [ref=e123]
+                  - button "Sil" [ref=e125] [cursor=pointer]:
+                    - img [ref=e126]
+  - alert [ref=e6]

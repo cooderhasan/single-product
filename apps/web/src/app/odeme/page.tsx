@@ -9,82 +9,75 @@ import {
   MapPin, 
   Package, 
   ChevronRight, 
-  Plus,
   Truck,
   ShieldCheck,
-  Lock
+  Lock,
+  User,
+  Phone,
+  Home
 } from 'lucide-react';
 import { useCartStore } from '@/store/cart';
 import { useAuthStore } from '@/store/auth';
-import { Address } from '@/types';
 import toast from 'react-hot-toast';
 
 type PaymentMethod = 'CREDIT_CARD' | 'BANK_TRANSFER';
 
+interface GuestAddress {
+  fullName: string;
+  phone: string;
+  city: string;
+  district: string;
+  address: string;
+}
+
 export default function CheckoutPage() {
   const router = useRouter();
   const { items, total, count, fetchCart } = useCartStore();
-  const { isAuthenticated, user } = useAuthStore();
+  const { user, isAuthenticated } = useAuthStore();
   
-  const [addresses, setAddresses] = useState<Address[]>([]);
-  const [selectedAddress, setSelectedAddress] = useState<string>('');
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('CREDIT_CARD');
   const [isLoading, setIsLoading] = useState(false);
   const [step, setStep] = useState<'address' | 'payment'>('address');
+  
+  const [guestAddress, setGuestAddress] = useState<GuestAddress>({
+    fullName: '',
+    phone: '',
+    city: '',
+    district: '',
+    address: '',
+  });
 
   useEffect(() => {
-    if (!isAuthenticated) {
-      router.push('/giris?redirect=/odeme');
-      return;
+    if (isAuthenticated && user && !guestAddress.fullName) {
+      setGuestAddress(prev => ({
+        ...prev,
+        fullName: `${user.firstName} ${user.lastName}`,
+        phone: prev.phone || '', // User phone from API if exists, otherwise fallback
+        email: user.email // optional standard metadata
+      }));
     }
-    fetchCart();
-    fetchAddresses();
-  }, [isAuthenticated, router, fetchCart]);
+  }, [isAuthenticated, user, guestAddress.fullName]);
 
-  const fetchAddresses = async () => {
-    try {
-      // API'den adresleri çek
-      const demoAddresses: Address[] = [
-        {
-          id: '1',
-          title: 'Ev',
-          fullName: user?.firstName + ' ' + user?.lastName || 'Kullanıcı',
-          phone: '0555 123 45 67',
-          city: 'İstanbul',
-          district: 'Kadıköy',
-          neighborhood: 'Caferağa',
-          address: 'Örnek Sokak No:5 D:3',
-          zipCode: '34710',
-          isDefault: true,
-        },
-      ];
-      setAddresses(demoAddresses);
-      setSelectedAddress(demoAddresses[0]?.id || '');
-    } catch {
-      toast.error('Adresler yüklenemedi');
-    }
-  };
+  useEffect(() => {
+    fetchCart();
+  }, [fetchCart]);
 
   const handleCreateOrder = async () => {
-    if (!selectedAddress) {
-      toast.error('Lütfen bir teslimat adresi seçin');
+    if (!guestAddress.fullName || !guestAddress.phone || !guestAddress.city || !guestAddress.district || !guestAddress.address) {
+      toast.error('Lütfen tüm alanları doldurun');
       return;
     }
 
     setIsLoading(true);
 
     try {
-      // Sipariş oluştur API çağrısı
       const orderNumber = 'SP-' + Date.now();
       
-      // API entegrasyonu burada yapılacak
       await new Promise(resolve => setTimeout(resolve, 1000));
 
       if (paymentMethod === 'CREDIT_CARD') {
-        // PayTR ödeme sayfasına yönlendir
         router.push(`/odeme/paytr?order=${orderNumber}`);
       } else {
-        // Havale/EFT sayfasına yönlendir
         router.push(`/odeme/havale?order=${orderNumber}`);
       }
     } catch {
@@ -92,17 +85,6 @@ export default function CheckoutPage() {
       setIsLoading(false);
     }
   };
-
-  if (!isAuthenticated) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Yükleniyor...</p>
-        </div>
-      </div>
-    );
-  }
 
   if (count === 0) {
     return (
@@ -122,7 +104,6 @@ export default function CheckoutPage() {
     );
   }
 
-  const selectedAddressData = addresses.find(a => a.id === selectedAddress);
   const shippingCost = total >= 1000 ? 0 : 75;
   const grandTotal = total + shippingCost;
 
@@ -152,79 +133,118 @@ export default function CheckoutPage() {
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-6">
             {step === 'address' ? (
-              /* Address Selection */
+              /* Address Form */
               <div className="bg-white rounded-xl shadow-sm p-6">
-                <div className="flex items-center justify-between mb-6">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                   <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
                     <MapPin className="w-5 h-5 text-primary-600" />
-                    Teslimat Adresi
+                    Teslimat Bilgileri
                   </h2>
-                  <Link
-                    href="/hesabim/adresler"
-                    className="text-sm text-primary-600 hover:text-primary-700 font-medium"
-                  >
-                    Yeni Adres Ekle
-                  </Link>
+                  
+                  {!isAuthenticated ? (
+                    <div className="text-sm bg-blue-50 text-blue-700 px-4 py-2 rounded-lg flex items-center gap-2">
+                      Zaten üye misiniz?
+                      <Link href={`/giris`} className="font-semibold underline hover:text-blue-800">
+                        Giriş Yap
+                      </Link>
+                    </div>
+                  ) : (
+                    <div className="text-sm bg-green-50 text-green-700 px-4 py-2 rounded-lg font-medium">
+                      Hesabınızdan bilgilerinizi otomatik çektik.
+                    </div>
+                  )}
                 </div>
 
-                {addresses.length === 0 ? (
-                  <div className="text-center py-8 border-2 border-dashed border-gray-200 rounded-lg">
-                    <Plus className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-                    <p className="text-gray-600 mb-4">Henüz adres eklenmemiş</p>
-                    <Link
-                      href="/hesabim/adresler"
-                      className="inline-flex items-center gap-2 bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
-                    >
-                      <Plus className="w-4 h-4" />
-                      Adres Ekle
-                    </Link>
-                  </div>
-                ) : (
-                  <div className="space-y-4">
-                    {addresses.map((address) => (
-                      <label
-                        key={address.id}
-                        className={`flex items-start gap-4 p-4 border-2 rounded-lg cursor-pointer transition-colors ${
-                          selectedAddress === address.id
-                            ? 'border-primary-500 bg-primary-50'
-                            : 'border-gray-200 hover:border-gray-300'
-                        }`}
-                      >
-                        <input
-                          type="radio"
-                          name="address"
-                          value={address.id}
-                          checked={selectedAddress === address.id}
-                          onChange={(e) => setSelectedAddress(e.target.value)}
-                          className="mt-1"
-                        />
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-1">
-                            <span className="font-semibold text-gray-900">{address.title}</span>
-                            {address.isDefault && (
-                              <span className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded">
-                                Varsayılan
-                              </span>
-                            )}
-                          </div>
-                          <p className="text-sm text-gray-600">{address.fullName}</p>
-                          <p className="text-sm text-gray-600">{address.phone}</p>
-                          <p className="text-sm text-gray-600">
-                            {address.address}, {address.neighborhood}, {address.district}, {address.city}
-                          </p>
-                        </div>
+                <div className="space-y-4">
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Ad Soyad *
                       </label>
-                    ))}
-
-                    <button
-                      onClick={() => setStep('payment')}
-                      disabled={!selectedAddress}
-                      className="w-full bg-primary-600 hover:bg-primary-700 disabled:bg-gray-300 text-white font-medium py-3 px-6 rounded-lg transition-colors"
-                    >
-                      Devam Et
-                    </button>
+                      <div className="relative">
+                        <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                        <input
+                          type="text"
+                          value={guestAddress.fullName}
+                          onChange={(e) => setGuestAddress({ ...guestAddress, fullName: e.target.value })}
+                          className="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500"
+                          placeholder="Ad Soyad"
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Telefon *
+                      </label>
+                      <div className="relative">
+                        <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                        <input
+                          type="tel"
+                          value={guestAddress.phone}
+                          onChange={(e) => setGuestAddress({ ...guestAddress, phone: e.target.value })}
+                          className="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500"
+                          placeholder="05XX XXX XX XX"
+                        />
+                      </div>
+                    </div>
                   </div>
-                )}
+
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Şehir *
+                      </label>
+                      <input
+                        type="text"
+                        value={guestAddress.city}
+                        onChange={(e) => setGuestAddress({ ...guestAddress, city: e.target.value })}
+                        className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500"
+                        placeholder="Şehir"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        İlçe *
+                      </label>
+                      <input
+                        type="text"
+                        value={guestAddress.district}
+                        onChange={(e) => setGuestAddress({ ...guestAddress, district: e.target.value })}
+                        className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500"
+                        placeholder="İlçe"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Açık Adres *
+                    </label>
+                    <div className="relative">
+                      <Home className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
+                      <textarea
+                        value={guestAddress.address}
+                        onChange={(e) => setGuestAddress({ ...guestAddress, address: e.target.value })}
+                        className="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500"
+                        rows={3}
+                        placeholder="Mahalle, Sokak, Bina No, Daire No"
+                      />
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={() => {
+                      if (!guestAddress.fullName || !guestAddress.phone || !guestAddress.city || !guestAddress.district || !guestAddress.address) {
+                        toast.error('Lütfen tüm alanları doldurun');
+                        return;
+                      }
+                      setStep('payment');
+                    }}
+                    className="w-full bg-primary-600 hover:bg-primary-700 text-white font-medium py-3 px-6 rounded-lg transition-colors"
+                  >
+                    Devam Et
+                  </button>
+                </div>
               </div>
             ) : (
               /* Payment Method Selection */
@@ -235,59 +255,65 @@ export default function CheckoutPage() {
                 </h2>
 
                 <div className="space-y-4">
-                  {/* Credit Card */}
+                  {/* Credit Card / PayTR */}
                   <label
-                    className={`flex items-center gap-4 p-4 border-2 rounded-lg cursor-pointer transition-colors ${
+                    className={`flex items-start gap-4 p-5 border-2 rounded-xl cursor-pointer transition-all duration-200 ${
                       paymentMethod === 'CREDIT_CARD'
-                        ? 'border-primary-500 bg-primary-50'
-                        : 'border-gray-200 hover:border-gray-300'
+                        ? 'border-primary-500 bg-primary-50/50 shadow-sm'
+                        : 'border-gray-200 hover:border-primary-200 hover:bg-gray-50'
                     }`}
                   >
-                    <input
-                      type="radio"
-                      name="payment"
-                      value="CREDIT_CARD"
-                      checked={paymentMethod === 'CREDIT_CARD'}
-                      onChange={(e) => setPaymentMethod(e.target.value as PaymentMethod)}
-                    />
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2">
-                        <CreditCard className="w-5 h-5 text-primary-600" />
-                        <span className="font-medium text-gray-900">Kredi Kartı</span>
-                      </div>
-                      <p className="text-sm text-gray-600 mt-1">
-                        Güvenli ödeme ile kredi/banka kartınızla ödeyin
-                      </p>
+                    <div className="mt-1">
+                      <input
+                        type="radio"
+                        name="payment"
+                        value="CREDIT_CARD"
+                        className="w-4 h-4 text-primary-600 border-gray-300 focus:ring-primary-500"
+                        checked={paymentMethod === 'CREDIT_CARD'}
+                        onChange={(e) => setPaymentMethod(e.target.value as PaymentMethod)}
+                      />
                     </div>
-                    <div className="flex items-center gap-1">
-                      <div className="w-8 h-5 bg-blue-600 rounded"></div>
-                      <div className="w-8 h-5 bg-red-500 rounded"></div>
-                      <div className="w-8 h-5 bg-yellow-500 rounded"></div>
+                    <div className="flex-1 w-full">
+                      <div className="flex sm:items-center flex-col sm:flex-row justify-between gap-2">
+                        <div className="flex items-center gap-2">
+                          <CreditCard className={`w-5 h-5 ${paymentMethod === 'CREDIT_CARD' ? 'text-primary-600' : 'text-gray-500'}`} />
+                          <span className="font-semibold text-gray-900">Kredi / Banka Kartı</span>
+                        </div>
+                        <span className="inline-flex text-xs font-bold bg-gray-100 text-gray-600 px-2 py-1 rounded max-w-max border border-gray-200">
+                          PayTR Altyapısı
+                        </span>
+                      </div>
+                      <p className="text-sm text-gray-600 mt-2">
+                        PayTR güvencesiyle tüm kredi ve banka kartlarınızla peşin veya taksitli ödeme yapabilirsiniz.
+                      </p>
                     </div>
                   </label>
 
                   {/* Bank Transfer */}
                   <label
-                    className={`flex items-center gap-4 p-4 border-2 rounded-lg cursor-pointer transition-colors ${
+                    className={`flex items-start gap-4 p-5 border-2 rounded-xl cursor-pointer transition-all duration-200 ${
                       paymentMethod === 'BANK_TRANSFER'
-                        ? 'border-primary-500 bg-primary-50'
-                        : 'border-gray-200 hover:border-gray-300'
+                        ? 'border-primary-500 bg-primary-50/50 shadow-sm'
+                        : 'border-gray-200 hover:border-primary-200 hover:bg-gray-50'
                     }`}
                   >
-                    <input
-                      type="radio"
-                      name="payment"
-                      value="BANK_TRANSFER"
-                      checked={paymentMethod === 'BANK_TRANSFER'}
-                      onChange={(e) => setPaymentMethod(e.target.value as PaymentMethod)}
-                    />
-                    <div className="flex-1">
+                    <div className="mt-1">
+                      <input
+                        type="radio"
+                        name="payment"
+                        value="BANK_TRANSFER"
+                        className="w-4 h-4 text-primary-600 border-gray-300 focus:ring-primary-500"
+                        checked={paymentMethod === 'BANK_TRANSFER'}
+                        onChange={(e) => setPaymentMethod(e.target.value as PaymentMethod)}
+                      />
+                    </div>
+                    <div className="flex-1 w-full">
                       <div className="flex items-center gap-2">
-                        <Banknote className="w-5 h-5 text-green-600" />
-                        <span className="font-medium text-gray-900">Havale / EFT</span>
+                        <Banknote className={`w-5 h-5 ${paymentMethod === 'BANK_TRANSFER' ? 'text-primary-600' : 'text-gray-500'}`} />
+                        <span className="font-semibold text-gray-900">Havale / EFT</span>
                       </div>
-                      <p className="text-sm text-gray-600 mt-1">
-                        Banka havalesi veya EFT ile ödeme yapın
+                      <p className="text-sm text-gray-600 mt-2">
+                        Siparişi onayladıktan sonra size verilecek olan IBAN numarasına gönderim yapabilirsiniz.
                       </p>
                     </div>
                   </label>
@@ -314,15 +340,15 @@ export default function CheckoutPage() {
             {/* Trust Badges */}
             <div className="flex items-center justify-center gap-8 text-sm text-gray-600">
               <div className="flex items-center gap-2">
-                <Lock className="w-4 h-4 text-green-600" />
+                <Lock className="w-4 h-4 text-primary-600" />
                 <span>256-bit SSL</span>
               </div>
               <div className="flex items-center gap-2">
-                <ShieldCheck className="w-4 h-4 text-green-600" />
+                <ShieldCheck className="w-4 h-4 text-primary-600" />
                 <span>Güvenli Ödeme</span>
               </div>
               <div className="flex items-center gap-2">
-                <Truck className="w-4 h-4 text-green-600" />
+                <Truck className="w-4 h-4 text-primary-600" />
                 <span>Hızlı Kargo</span>
               </div>
             </div>
@@ -371,13 +397,14 @@ export default function CheckoutPage() {
                 </div>
               </div>
 
-              {selectedAddressData && (
+              {step === 'payment' && (
                 <div className="mt-6 pt-6 border-t">
                   <h3 className="text-sm font-medium text-gray-900 mb-2">Teslimat Adresi</h3>
                   <p className="text-sm text-gray-600">
-                    {selectedAddressData.fullName}<br />
-                    {selectedAddressData.address}<br />
-                    {selectedAddressData.district}, {selectedAddressData.city}
+                    {guestAddress.fullName}<br />
+                    {guestAddress.phone}<br />
+                    {guestAddress.address}<br />
+                    {guestAddress.district}, {guestAddress.city}
                   </p>
                 </div>
               )}

@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import Image from 'next/image';
 import { Category } from '@/types';
 
 interface CategoriesSectionProps {
@@ -34,17 +33,34 @@ export function CategoriesSection({ categories }: CategoriesSectionProps) {
 }
 
 function CategoryCard({ category }: { category: Category }) {
+  const apiBase = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3041';
+  const imageUrl = category.image ? (category.image.startsWith('http') ? category.image : `${apiBase}${category.image}`) : null;
+
   return (
     <Link
       href={`/kategori/${category.slug}`}
       className="group relative h-64 rounded-xl overflow-hidden"
     >
-      <Image
-        src={category.image || '/images/category-placeholder.jpg'}
-        alt={category.name}
-        fill
-        className="object-cover group-hover:scale-110 transition-transform duration-700"
-      />
+      {imageUrl ? (
+        <img
+          src={imageUrl}
+          alt={category.name}
+          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+          onError={(e) => {
+            e.currentTarget.style.display = 'none';
+            const placeholder = e.currentTarget.nextElementSibling as HTMLElement;
+            if (placeholder) placeholder.style.display = 'flex';
+          }}
+        />
+      ) : null}
+      <div 
+        className="absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center"
+        style={{ display: imageUrl ? 'none' : 'flex' }}
+      >
+        <svg className="w-16 h-16 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
+        </svg>
+      </div>
       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
       <div className="absolute bottom-0 left-0 right-0 p-6">
         <h3 className="text-xl font-bold text-white mb-1">{category.name}</h3>

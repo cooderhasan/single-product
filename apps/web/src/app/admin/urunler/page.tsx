@@ -1,81 +1,111 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import {
   Plus,
   Search,
   Filter,
-  MoreVertical,
   Edit2,
   Trash2,
   Eye,
   Package,
 } from 'lucide-react';
+import toast from 'react-hot-toast';
 
-const products = [
-  {
-    id: '1',
-    name: 'Hidrolik Motosiklet Sehpası Pro',
-    sku: 'HYD-PRO-001',
-    price: 8999,
-    stock: 50,
-    category: 'Hidrolik Sehpalar',
-    status: 'Aktif',
-    sales: 45,
-  },
-  {
-    id: '2',
-    name: 'Hidrolik Sehpa Super Pro',
-    sku: 'HYD-SUPER-001',
-    price: 12499,
-    stock: 30,
-    category: 'Hidrolik Sehpalar',
-    status: 'Aktif',
-    sales: 32,
-  },
-  {
-    id: '3',
-    name: 'Manuel Motosiklet Sehpası Ekonomik',
-    sku: 'MAN-EKO-001',
-    price: 5499,
-    stock: 100,
-    category: 'Manuel Sehpalar',
-    status: 'Aktif',
-    sales: 28,
-  },
-  {
-    id: '4',
-    name: 'Motosiklet Sehpası Aksesuar Seti',
-    sku: 'AKS-SET-001',
-    price: 899,
-    stock: 5,
-    category: 'Aksesuarlar',
-    status: 'Düşük Stok',
-    sales: 67,
-  },
-  {
-    id: '5',
-    name: 'Hidrolik Pompa Yedek Parça',
-    sku: 'YED-PMP-001',
-    price: 1299,
-    stock: 0,
-    category: 'Yedek Parçalar',
-    status: 'Pasif',
-    sales: 12,
-  },
-];
+interface ProductImage {
+  url: string;
+  isMain?: boolean;
+}
+
+interface Product {
+  id: string;
+  name: string;
+  sku: string;
+  price: number;
+  stock: number;
+  category?: {
+    name: string;
+  };
+  isActive: boolean;
+  images?: ProductImage[];
+}
 
 export default function ProductsPage() {
+  const router = useRouter();
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
+  
+  const apiBase = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3041';
+  
+  const getImageUrl = (url: string | undefined) => {
+    if (!url) return '';
+    if (url.startsWith('http')) return url;
+    return `${apiBase}${url}`;
+  };
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  const fetchProducts = async () => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/products`);
+      if (response.ok) {
+        const data = await response.json();
+        setProducts(data.products || data);
+      } else {
+        toast.error('Ürünler yüklenirken hata oluştu');
+      }
+    } catch (error) {
+      console.error('Products fetch error:', error);
+      toast.error('Ürünler yüklenirken hata oluştu');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!confirm('Bu ürünü silmek istediğinize emin misiniz?')) return;
+
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/products/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        toast.success('Ürün başarıyla silindi');
+        setProducts(products.filter(p => p.id !== id));
+      } else {
+        toast.error('Ürün silinirken hata oluştu');
+      }
+    } catch (error) {
+      console.error('Delete error:', error);
+      toast.error('Ürün silinirken hata oluştu');
+    }
+  };
 
   const filteredProducts = products.filter((product) => {
-    const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         product.sku.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = !selectedCategory || product.category === selectedCategory;
+    const matchesSearch = product.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         product.sku?.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory = !selectedCategory || product.category?.name === selectedCategory;
     return matchesSearch && matchesCategory;
   });
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -107,20 +137,6 @@ export default function ProductsPage() {
               className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
             />
           </div>
-          <div className="flex items-center gap-2">
-            <Filter className="w-5 h-5 text-gray-400" />
-            <select
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
-              className="border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-            >
-              <option value="">Tüm Kategoriler</option>
-              <option value="Hidrolik Sehpalar">Hidrolik Sehpalar</option>
-              <option value="Manuel Sehpalar">Manuel Sehpalar</option>
-              <option value="Aksesuarlar">Aksesuarlar</option>
-              <option value="Yedek Parçalar">Yedek Parçalar</option>
-            </select>
-          </div>
         </div>
       </div>
 
@@ -136,7 +152,6 @@ export default function ProductsPage() {
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Stok</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Kategori</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Durum</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Satış</th>
                 <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">İşlemler</th>
               </tr>
             </thead>
@@ -145,8 +160,28 @@ export default function ProductsPage() {
                 <tr key={product.id} className="hover:bg-gray-50">
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
-                        <Package className="w-5 h-5 text-gray-400" />
+                      <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden relative">
+                        {product.images?.[0]?.url ? (
+                          <>
+                            <img 
+                              src={getImageUrl(product.images[0].url)} 
+                              alt={product.name} 
+                              className="w-full h-full object-cover"
+                              onError={(e) => {
+                                e.currentTarget.style.display = 'none';
+                                const placeholder = e.currentTarget.nextElementSibling as HTMLElement;
+                                if (placeholder) placeholder.style.display = 'flex';
+                              }}
+                            />
+                            <div className="absolute inset-0 items-center justify-center hidden bg-gray-100">
+                              <svg className="w-5 h-5 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                              </svg>
+                            </div>
+                          </>
+                        ) : (
+                          <Package className="w-5 h-5 text-gray-400" />
+                        )}
                       </div>
                       <div>
                         <p className="text-sm font-medium text-gray-900">{product.name}</p>
@@ -155,29 +190,35 @@ export default function ProductsPage() {
                   </td>
                   <td className="px-6 py-4 text-sm text-gray-600">{product.sku}</td>
                   <td className="px-6 py-4 text-sm font-medium text-gray-900">
-                    {product.price.toLocaleString('tr-TR')} ₺
+                    {Number(product.price).toLocaleString('tr-TR')} ₺
                   </td>
                   <td className="px-6 py-4 text-sm text-gray-600">{product.stock}</td>
-                  <td className="px-6 py-4 text-sm text-gray-600">{product.category}</td>
+                  <td className="px-6 py-4 text-sm text-gray-600">{product.category?.name || '-'}</td>
                   <td className="px-6 py-4">
                     <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
-                      product.status === 'Aktif' ? 'bg-green-100 text-green-800' :
-                      product.status === 'Düşük Stok' ? 'bg-yellow-100 text-yellow-800' :
-                      'bg-gray-100 text-gray-800'
+                      product.isActive ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
                     }`}>
-                      {product.status}
+                      {product.isActive ? 'Aktif' : 'Pasif'}
                     </span>
                   </td>
-                  <td className="px-6 py-4 text-sm text-gray-600">{product.sales}</td>
                   <td className="px-6 py-4">
                     <div className="flex items-center justify-end gap-2">
-                      <button className="p-2 text-gray-400 hover:text-primary-600 transition-colors">
+                      <button 
+                        onClick={() => router.push(`/urun/${product.id}`)}
+                        className="p-2 text-gray-400 hover:text-primary-600 transition-colors"
+                      >
                         <Eye className="w-4 h-4" />
                       </button>
-                      <button className="p-2 text-gray-400 hover:text-blue-600 transition-colors">
+                      <Link 
+                        href={`/admin/urunler/duzenle/${product.id}`}
+                        className="p-2 text-gray-400 hover:text-blue-600 transition-colors"
+                      >
                         <Edit2 className="w-4 h-4" />
-                      </button>
-                      <button className="p-2 text-gray-400 hover:text-red-600 transition-colors">
+                      </Link>
+                      <button 
+                        onClick={() => handleDelete(product.id)}
+                        className="p-2 text-gray-400 hover:text-red-600 transition-colors"
+                      >
                         <Trash2 className="w-4 h-4" />
                       </button>
                     </div>
@@ -200,17 +241,6 @@ export default function ProductsPage() {
           <p className="text-sm text-gray-500">
             Toplam {filteredProducts.length} ürün
           </p>
-          <div className="flex items-center gap-2">
-            <button className="px-3 py-1 border border-gray-300 rounded-lg text-sm hover:bg-gray-50 disabled:opacity-50" disabled>
-              Önceki
-            </button>
-            <button className="px-3 py-1 bg-primary-600 text-white rounded-lg text-sm">
-              1
-            </button>
-            <button className="px-3 py-1 border border-gray-300 rounded-lg text-sm hover:bg-gray-50 disabled:opacity-50" disabled>
-              Sonraki
-            </button>
-          </div>
         </div>
       </div>
     </div>

@@ -17,6 +17,7 @@ import { UsersService } from './users.service';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { UpdateProfileDto } from './dto/update-profile.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 import { CreateAddressDto } from './dto/create-address.dto';
 
 @ApiTags('Users')
@@ -53,6 +54,25 @@ export class UsersController {
     @Query('search') search?: string,
   ) {
     return this.usersService.findAll({ skip, take, role, search });
+  }
+
+  @Put(':id')
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Kullanıcı güncelle (Admin)' })
+  async updateUser(
+    @Param('id') userId: string,
+    @Body() dto: UpdateUserDto,
+  ) {
+    return this.usersService.update(userId, dto);
+  }
+
+  @Delete(':id')
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Kullanıcı sil (Admin)' })
+  async deleteUser(@Param('id') userId: string) {
+    return this.usersService.deleteUser(userId);
   }
 
   // Address routes

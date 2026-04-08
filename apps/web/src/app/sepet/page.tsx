@@ -6,12 +6,10 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { Trash2, Plus, Minus, ShoppingBag, ArrowRight } from 'lucide-react';
 import { useCartStore } from '@/store/cart';
-import { useAuthStore } from '@/store/auth';
 
 export default function CartPage() {
   const router = useRouter();
   const { items, total, count, isLoading, fetchCart, updateItem, removeItem } = useCartStore();
-  const { isAuthenticated } = useAuthStore();
 
   useEffect(() => {
     fetchCart();
@@ -60,69 +58,101 @@ export default function CartPage() {
             {items.map((item) => (
               <div
                 key={item.id}
-                className="bg-white rounded-xl shadow-sm p-4 flex gap-4"
+                className="bg-white rounded-xl shadow-sm p-4 sm:p-6 flex flex-col sm:flex-row gap-4 sm:gap-6"
               >
                 {/* Product Image */}
-                <Link href={`/urun/${item.product.slug}`} className="w-24 h-24 flex-shrink-0">
-                  <div className="w-full h-full bg-gray-100 rounded-lg flex items-center justify-center">
+                <Link href={`/urun/${item.product.slug}`} className="w-24 h-24 sm:w-28 sm:h-28 flex-shrink-0 relative border border-gray-100 rounded-lg overflow-hidden bg-gray-50 hidden sm:block">
+                  {item.product.images?.[0]?.url ? (
+                    <Image
+                      src={item.product.images[0].url}
+                      alt={item.product.name}
+                      fill
+                      className="object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-gray-300">
+                      <ShoppingBag className="w-8 h-8" />
+                    </div>
+                  )}
+                </Link>
+
+                <div className="flex sm:hidden gap-4 mb-4">
+                  <Link href={`/urun/${item.product.slug}`} className="w-20 h-20 flex-shrink-0 relative border border-gray-100 rounded-lg overflow-hidden bg-gray-50">
                     {item.product.images?.[0]?.url ? (
                       <Image
                         src={item.product.images[0].url}
                         alt={item.product.name}
-                        width={96}
-                        height={96}
-                        className="object-cover rounded-lg"
+                        fill
+                        className="object-cover"
                       />
                     ) : (
-                      <div className="w-12 h-12 bg-gray-300 rounded"></div>
+                      <div className="w-full h-full flex items-center justify-center text-gray-300">
+                        <ShoppingBag className="w-6 h-6" />
+                      </div>
                     )}
-                  </div>
-                </Link>
-
-                {/* Product Info */}
-                <div className="flex-1 min-w-0">
-                  <Link
-                    href={`/urun/${item.product.slug}`}
-                    className="font-semibold text-gray-900 hover:text-primary-600 transition-colors line-clamp-2"
-                  >
-                    {item.product.name}
                   </Link>
-                  <p className="text-sm text-gray-500 mt-1">
-                    {item.product.category?.name}
-                  </p>
-                  <div className="text-primary-600 font-bold mt-2">
-                    {Number(item.product.price).toLocaleString('tr-TR')} ₺
+                  <div className="flex-1 min-w-0">
+                    <Link
+                      href={`/urun/${item.product.slug}`}
+                      className="font-semibold text-gray-900 hover:text-primary-600 transition-colors line-clamp-2 text-sm sm:text-base leading-tight"
+                    >
+                      {item.product.name}
+                    </Link>
+                    <p className="text-xs sm:text-sm text-gray-500 mt-1">
+                      {item.product.category?.name}
+                    </p>
                   </div>
                 </div>
 
-                {/* Quantity Controls */}
-                <div className="flex flex-col items-end justify-between">
-                  <button
-                    onClick={() => removeItem(item.id)}
-                    className="text-gray-400 hover:text-red-500 transition-colors p-1"
-                    aria-label="Kaldır"
-                  >
-                    <Trash2 className="w-5 h-5" />
-                  </button>
+                {/* Product Info */}
+                <div className="flex-1 flex flex-col sm:flex-row justify-between min-w-0">
+                  <div className="hidden sm:block flex-1 pr-4 min-w-0">
+                    <Link
+                      href={`/urun/${item.product.slug}`}
+                      className="font-semibold text-lg text-gray-900 hover:text-primary-600 transition-colors line-clamp-2 mb-1"
+                    >
+                      {item.product.name}
+                    </Link>
+                    <p className="text-sm text-gray-500 mb-2">
+                      {item.product.category?.name}
+                    </p>
+                  </div>
 
-                  <div className="flex items-center border rounded-lg">
-                    <button
-                      onClick={() => updateItem(item.id, Math.max(1, item.quantity - 1))}
-                      className="p-2 hover:bg-gray-50 disabled:opacity-50"
-                      disabled={isLoading}
-                    >
-                      <Minus className="w-4 h-4" />
-                    </button>
-                    <span className="px-3 py-1 border-x min-w-[3rem] text-center">
-                      {item.quantity}
-                    </span>
-                    <button
-                      onClick={() => updateItem(item.id, item.quantity + 1)}
-                      className="p-2 hover:bg-gray-50 disabled:opacity-50"
-                      disabled={isLoading}
-                    >
-                      <Plus className="w-4 h-4" />
-                    </button>
+                  {/* Price & Quantity Controls */}
+                  <div className="flex flex-row sm:flex-col items-center sm:items-end justify-between sm:justify-start gap-4">
+                    <div className="text-primary-600 font-bold text-lg sm:text-xl">
+                      {Number(item.product.price).toLocaleString('tr-TR')} ₺
+                    </div>
+                    
+                    <div className="flex items-center gap-4">
+                      <div className="flex items-center border border-gray-200 rounded-lg shadow-sm bg-white">
+                        <button
+                          onClick={() => updateItem(item.id, Math.max(1, item.quantity - 1))}
+                          className="p-2 sm:p-2 hover:bg-gray-50 disabled:opacity-50 text-gray-600 transition-colors"
+                          disabled={isLoading}
+                        >
+                          <Minus className="w-4 h-4 sm:w-4 sm:h-4" />
+                        </button>
+                        <span className="px-3 sm:px-4 py-1.5 border-x border-gray-200 min-w-[3rem] text-center font-medium text-gray-700">
+                          {item.quantity}
+                        </span>
+                        <button
+                          onClick={() => updateItem(item.id, item.quantity + 1)}
+                          className="p-2 sm:p-2 hover:bg-gray-50 disabled:opacity-50 text-gray-600 transition-colors"
+                          disabled={isLoading}
+                        >
+                          <Plus className="w-4 h-4 sm:w-4 sm:h-4" />
+                        </button>
+                      </div>
+
+                      <button
+                        onClick={() => removeItem(item.id)}
+                        className="text-gray-400 hover:text-red-500 transition-colors p-2 bg-gray-50 hover:bg-red-50 sm:bg-transparent rounded-lg sm:rounded-none"
+                        aria-label="Kaldır"
+                      >
+                        <Trash2 className="w-5 h-5" />
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -161,10 +191,10 @@ export default function CartPage() {
               </div>
 
               <button
-                onClick={() => router.push(isAuthenticated ? '/odeme' : '/giris')}
+                onClick={() => router.push('/odeme')}
                 className="w-full bg-primary-600 hover:bg-primary-700 text-white font-medium py-3 px-6 rounded-lg transition-colors flex items-center justify-center gap-2"
               >
-                {isAuthenticated ? 'Ödemeye Geç' : 'Giriş Yap ve Devam Et'}
+                Ödemeye Geç
                 <ArrowRight className="w-5 h-5" />
               </button>
 

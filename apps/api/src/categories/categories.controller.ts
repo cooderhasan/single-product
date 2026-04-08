@@ -37,6 +37,13 @@ export class CategoriesController {
   }
 
   // Admin routes
+  @Get('admin/:id')
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Kategori detayı (ID) - Admin' })
+  async findById(@Param('id') id: string) {
+    return this.categoriesService.findById(id);
+  }
   @Post()
   @Roles(UserRole.ADMIN, UserRole.MANAGER)
   @ApiBearerAuth()

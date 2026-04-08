@@ -1,0 +1,86 @@
+- generic [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e3]:
+      - generic [ref=e4]:
+        - heading "360 Sehpa" [level=1] [ref=e5]
+        - paragraph [ref=e6]: Admin Panel
+      - navigation [ref=e7]:
+        - link "Dashboard" [ref=e8] [cursor=pointer]:
+          - /url: /dashboard
+          - img [ref=e9]
+          - text: Dashboard
+        - link "Ürünler" [ref=e11] [cursor=pointer]:
+          - /url: /products
+          - img [ref=e12]
+          - text: Ürünler
+        - link "Kategoriler" [ref=e14] [cursor=pointer]:
+          - /url: /categories
+          - img [ref=e15]
+          - text: Kategoriler
+        - link "Siparişler" [ref=e17] [cursor=pointer]:
+          - /url: /orders
+          - img [ref=e18]
+          - text: Siparişler
+        - link "Müşteriler" [active] [ref=e20] [cursor=pointer]:
+          - /url: /customers
+          - img [ref=e21]
+          - text: Müşteriler
+        - link "Kuponlar" [ref=e23] [cursor=pointer]:
+          - /url: /coupons
+          - img [ref=e24]
+          - text: Kuponlar
+        - link "Bannerlar" [ref=e27] [cursor=pointer]:
+          - /url: /banners
+          - img [ref=e28]
+          - text: Bannerlar
+        - link "Duyurular" [ref=e30] [cursor=pointer]:
+          - /url: /duyurular
+          - img [ref=e31]
+          - text: Duyurular
+        - link "Yorumlar" [ref=e33] [cursor=pointer]:
+          - /url: /yorumlar
+          - img [ref=e34]
+          - text: Yorumlar
+        - link "Site İçerikleri" [ref=e36] [cursor=pointer]:
+          - /url: /icerikler
+          - img [ref=e37]
+          - text: Site İçerikleri
+      - button "Çıkış Yap" [ref=e40] [cursor=pointer]:
+        - img [ref=e41]
+        - text: Çıkış Yap
+    - main [ref=e43]:
+      - generic [ref=e135]:
+        - generic [ref=e136]:
+          - heading "Müşteri Yönetimi" [level=1] [ref=e137]
+          - link "Yeni Müşteri" [ref=e138] [cursor=pointer]:
+            - /url: /customers/new
+            - img [ref=e139]
+            - text: Yeni Müşteri
+        - generic [ref=e141]:
+          - generic [ref=e142]:
+            - generic [ref=e143]:
+              - img [ref=e144]
+              - textbox "Müşteri ara (email, isim, soyisim)..." [ref=e146]
+            - combobox [ref=e147]:
+              - option "Tüm Roller" [selected]
+              - option "Müşteri"
+              - option "Admin"
+              - option "Yönetici"
+          - table [ref=e149]:
+            - rowgroup [ref=e150]:
+              - row "Müşteri Email Telefon Rol Sipariş Sayısı Kayıt Tarihi İşlemler" [ref=e151]:
+                - columnheader "Müşteri" [ref=e152]
+                - columnheader "Email" [ref=e153]
+                - columnheader "Telefon" [ref=e154]
+                - columnheader "Rol" [ref=e155]
+                - columnheader "Sipariş Sayısı" [ref=e156]
+                - columnheader "Kayıt Tarihi" [ref=e157]
+                - columnheader "İşlemler" [ref=e158]
+            - rowgroup
+          - generic [ref=e159]:
+            - paragraph [ref=e160]: Henüz müşteri bulunmamaktadır.
+            - link "İlk Müşteriyi Ekle" [ref=e161] [cursor=pointer]:
+              - /url: /customers/new
+              - img [ref=e162]
+              - text: İlk Müşteriyi Ekle
+  - alert [ref=e134]

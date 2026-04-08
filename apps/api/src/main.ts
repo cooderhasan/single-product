@@ -4,6 +4,8 @@ import { ConfigService } from '@nestjs/config';
 import helmet from 'helmet';
 import compression from 'compression';
 import cookieParser from 'cookie-parser';
+import { join } from 'path';
+import * as express from 'express';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
@@ -12,13 +14,39 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
 
   // Güvenlik
-  app.use(helmet());
+  app.use(helmet({
+    crossOriginResourcePolicy: { policy: "cross-origin" },
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'", "'unsafe-inline'"],
+        styleSrc: ["'self'", "'unsafe-inline'"],
+        imgSrc: ["'self'", "data:", "blob:", "http://localhost:3041", "http://localhost:3040", "http://localhost:3042", "https://res.cloudinary.com"],
+        connectSrc: ["'self'", "http://localhost:3041", "http://localhost:3040", "http://localhost:3042"],
+      },
+    }
+  }));
   app.use(compression());
   app.use(cookieParser());
 
-  // CORS
+  // CORS - Birden fazla origin'e izin ver
+  const allowedOrigins = [
+    configService.get('FRONTEND_URL') || 'http://localhost:3040',
+    configService.get('ADMIN_URL') || 'http://localhost:3042',
+    'http://localhost:3040',
+    'http://localhost:3042',
+  ];
+  
   app.enableCors({
-    origin: configService.get('FRONTEND_URL') || 'http://localhost:3040',
+    origin: (origin, callback) => {
+      // Allow requests with no origin (like mobile apps or curl requests)
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
     credentials: true,
   });
 
@@ -28,6 +56,11 @@ async function bootstrap() {
     transform: true,
     forbidNonWhitelisted: true,
   }));
+
+  // API rate limit vs...
+  
+  // Static Files - Görselleri serve et
+  app.use('/uploads', express.static(join(__dirname, '..', 'uploads')));
 
   // API Prefix
   app.setGlobalPrefix('api/v1');

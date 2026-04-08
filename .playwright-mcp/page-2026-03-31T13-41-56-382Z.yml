@@ -1,0 +1,58 @@
+- generic [active] [ref=e1]:
+  - main [ref=e2]:
+    - generic [ref=e3]:
+      - complementary [ref=e4]:
+        - generic [ref=e5]:
+          - link "360 Admin" [ref=e6] [cursor=pointer]:
+            - /url: /admin/dashboard
+            - generic [ref=e8]: "360"
+            - generic [ref=e9]: Admin
+          - button [ref=e10] [cursor=pointer]:
+            - img [ref=e11]
+        - navigation [ref=e14]:
+          - link "Dashboard" [ref=e15] [cursor=pointer]:
+            - /url: /admin/dashboard
+            - img [ref=e16]
+            - generic [ref=e21]: Dashboard
+          - link "Ürünler" [ref=e22] [cursor=pointer]:
+            - /url: /admin/urunler
+            - img [ref=e23]
+            - generic [ref=e27]: Ürünler
+          - link "Siparişler" [ref=e28] [cursor=pointer]:
+            - /url: /admin/siparisler
+            - img [ref=e29]
+            - generic [ref=e33]: Siparişler
+          - link "Kategoriler" [ref=e34] [cursor=pointer]:
+            - /url: /admin/kategoriler
+            - img [ref=e35]
+            - generic [ref=e38]: Kategoriler
+          - link "Müşteriler" [ref=e39] [cursor=pointer]:
+            - /url: /admin/musteriler
+            - img [ref=e40]
+            - generic [ref=e45]: Müşteriler
+          - link "Kuponlar" [ref=e46] [cursor=pointer]:
+            - /url: /admin/kuponlar
+            - img [ref=e47]
+            - generic [ref=e50]: Kuponlar
+          - link "Bannerlar" [ref=e51] [cursor=pointer]:
+            - /url: /admin/bannerlar
+            - img [ref=e52]
+            - generic [ref=e56]: Bannerlar
+        - button "Çıkış Yap" [ref=e58] [cursor=pointer]:
+          - img [ref=e59]
+          - generic [ref=e62]: Çıkış Yap
+      - generic [ref=e63]:
+        - generic [ref=e65]:
+          - button [ref=e66] [cursor=pointer]:
+            - img [ref=e67]
+          - generic [ref=e68]:
+            - generic [ref=e69]:
+              - img [ref=e70]
+              - textbox "Ara..." [ref=e73]
+            - button [ref=e74] [cursor=pointer]:
+              - img [ref=e75]
+            - generic [ref=e79]:
+              - generic [ref=e81]: A
+              - generic [ref=e82]: Admin
+        - main [ref=e83]
+  - alert [ref=e87]

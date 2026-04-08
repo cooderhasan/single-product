@@ -28,6 +28,18 @@ export default function ProductClient({ product }: ProductClientProps) {
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const { addItem, isLoading } = useCartStore();
+  
+  // Görsel URL'sini al (page.tsx'ten zaten tam URL geliyor)
+  const getImageUrl = (url: string | undefined) => {
+    if (!url) return '';
+    // URL zaten tam URL ise olduğu gibi kullan
+    if (url.startsWith('http')) return url;
+    // Protocol-relative ise https ekle
+    if (url.startsWith('//')) return `https:${url}`;
+    // Relative path ise API base URL ekle
+    const apiBase = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3041';
+    return `${apiBase}${url}`;
+  };
 
   const discount = product.comparePrice 
     ? Math.round(((product.comparePrice - product.price) / product.comparePrice) * 100)
@@ -71,11 +83,25 @@ export default function ProductClient({ product }: ProductClientProps) {
           {/* Images */}
           <div className="space-y-4">
             <div className="aspect-square bg-white rounded-xl shadow-sm overflow-hidden">
-              <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
-                <div className="text-center text-gray-500">
-                  <div className="w-24 h-24 bg-gray-300 rounded-lg mx-auto mb-4"></div>
-                  <p>{product.images[selectedImage]?.alt || product.name}</p>
-                </div>
+              {product.images[selectedImage]?.url ? (
+                <img
+                  src={getImageUrl(product.images[selectedImage].url)}
+                  alt={product.images[selectedImage].alt || product.name}
+                  className="w-full h-full object-contain"
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none';
+                    const placeholder = e.currentTarget.nextElementSibling as HTMLElement;
+                    if (placeholder) placeholder.style.display = 'flex';
+                  }}
+                />
+              ) : null}
+              <div 
+                className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center" 
+                style={{ display: product.images[selectedImage]?.url ? 'none' : 'flex' }}
+              >
+                <svg className="w-24 h-24 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
               </div>
             </div>
             <div className="grid grid-cols-4 gap-2">
@@ -86,11 +112,28 @@ export default function ProductClient({ product }: ProductClientProps) {
                   className={`aspect-square bg-white rounded-lg shadow-sm overflow-hidden border-2 transition-colors ${
                     selectedImage === index ? 'border-primary-500' : 'border-transparent'
                   }`}
-                >
-                  <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
-                    <div className="w-8 h-8 bg-gray-300 rounded"></div>
-                  </div>
-                </button>
+                 >
+                   {image.url ? (
+                     <img
+                       src={getImageUrl(image.url)}
+                       alt={image.alt || product.name}
+                       className="w-full h-full object-contain"
+                       onError={(e) => {
+                         e.currentTarget.style.display = 'none';
+                         const placeholder = e.currentTarget.nextElementSibling as HTMLElement;
+                         if (placeholder) placeholder.style.display = 'flex';
+                       }}
+                     />
+                   ) : null}
+                   <div 
+                     className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center"
+                     style={{ display: image.url ? 'none' : 'flex' }}
+                   >
+                     <svg className="w-6 h-6 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                     </svg>
+                   </div>
+                 </button>
               ))}
             </div>
           </div>

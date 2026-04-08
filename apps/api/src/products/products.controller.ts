@@ -29,13 +29,15 @@ export class ProductsController {
   @Get()
   @ApiOperation({ summary: 'Ürün listesi' })
   async findAll(
-    @Query('skip', new ParseIntPipe({ optional: true })) skip?: number,
-    @Query('take', new ParseIntPipe({ optional: true })) take?: number,
+    @Query('skip') skip?: string,
+    @Query('take') take?: string,
     @Query() filters?: ProductFiltersDto,
   ) {
+    const skipNum = skip ? parseInt(skip, 10) : undefined;
+    const takeNum = take ? parseInt(take, 10) : undefined;
     return this.productsService.findAll({
-      skip,
-      take,
+      skip: skipNum,
+      take: takeNum,
       filters: {
         categoryId: filters?.categoryId,
         minPrice: filters?.minPrice ? Number(filters.minPrice) : undefined,
@@ -56,11 +58,13 @@ export class ProductsController {
     return this.productsService.getFeatured();
   }
 
-  @Public()
-  @Get(':slug')
-  @ApiOperation({ summary: 'Ürün detayı (slug)' })
-  async findBySlug(@Param('slug') slug: string) {
-    return this.productsService.findBySlug(slug);
+  // Admin routes - Önce tanımlanmalı (route sıralaması önemli)
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
+  @ApiBearerAuth()
+  @Get('admin/:id')
+  @ApiOperation({ summary: 'Ürün detayı ID ile (Admin)' })
+  async findById(@Param('id') id: string) {
+    return this.productsService.findById(id);
   }
 
   @Public()
@@ -70,7 +74,13 @@ export class ProductsController {
     return this.productsService.getRelated(id, categoryId);
   }
 
-  // Admin routes
+  @Public()
+  @Get(':slug')
+  @ApiOperation({ summary: 'Ürün detayı (slug)' })
+  async findBySlug(@Param('slug') slug: string) {
+    return this.productsService.findBySlug(slug);
+  }
+
   @Post()
   @Roles(UserRole.ADMIN, UserRole.MANAGER)
   @ApiBearerAuth()

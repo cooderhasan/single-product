@@ -23,15 +23,40 @@ import { UpdateOrderStatusDto } from './dto/update-order-status.dto';
 export class OrdersController {
   constructor(private ordersService: OrdersService) {}
 
+  // Admin routes - Önce tanımlanmalı (route sıralaması önemli)
+  @Get('dashboard/stats')
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Dashboard istatistikleri' })
+  async getDashboardStats() {
+    return this.ordersService.getDashboardStats();
+  }
+
+  @Get()
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Tüm siparişler (Admin)' })
+  async findAll(
+    @Query('skip') skip?: string,
+    @Query('take') take?: string,
+    @Query('status') status?: OrderStatus,
+  ) {
+    const skipNum = skip ? parseInt(skip, 10) : undefined;
+    const takeNum = take ? parseInt(take, 10) : undefined;
+    return this.ordersService.findAll({ skip: skipNum, take: takeNum, status });
+  }
+
   @Get('my-orders')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Kullanıcının siparişleri' })
   async getMyOrders(
     @CurrentUser('sub') userId: string,
-    @Query('skip', new ParseIntPipe({ optional: true })) skip?: number,
-    @Query('take', new ParseIntPipe({ optional: true })) take?: number,
+    @Query('skip') skip?: string,
+    @Query('take') take?: string,
   ) {
-    return this.ordersService.findAll({ skip, take, userId });
+    const skipNum = skip ? parseInt(skip, 10) : undefined;
+    const takeNum = take ? parseInt(take, 10) : undefined;
+    return this.ordersService.findAll({ skip: skipNum, take: takeNum, userId });
   }
 
   @Get(':id')
@@ -57,27 +82,6 @@ export class OrdersController {
       ...dto,
       userId,
     });
-  }
-
-  // Admin routes
-  @Get()
-  @Roles(UserRole.ADMIN, UserRole.MANAGER)
-  @ApiBearerAuth()
-  @ApiOperation({ summary: 'Tüm siparişler (Admin)' })
-  async findAll(
-    @Query('skip', new ParseIntPipe({ optional: true })) skip?: number,
-    @Query('take', new ParseIntPipe({ optional: true })) take?: number,
-    @Query('status') status?: OrderStatus,
-  ) {
-    return this.ordersService.findAll({ skip, take, status });
-  }
-
-  @Get('dashboard/stats')
-  @Roles(UserRole.ADMIN, UserRole.MANAGER)
-  @ApiBearerAuth()
-  @ApiOperation({ summary: 'Dashboard istatistikleri' })
-  async getDashboardStats() {
-    return this.ordersService.getDashboardStats();
   }
 
   @Put(':id/status')

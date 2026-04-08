@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { ArrowRight } from 'lucide-react';
 
 interface Banner {
   id: string;
@@ -32,7 +33,30 @@ export function HeroBanner({ banners }: HeroBannerProps) {
     return () => clearInterval(timer);
   }, [banners.length]);
 
-  if (banners.length === 0) return null;
+  // Banner yoksa varsayılan içerik göster
+  if (banners.length === 0) {
+    return (
+      <section className="relative h-[500px] md:h-[600px] lg:h-[700px] overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-800 to-primary-900" />
+        <div className="relative container mx-auto px-4 h-full flex items-center">
+          <div className="max-w-2xl text-white">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 leading-tight">
+              MOTORUNA DEĞER VERENLERİN TERCİHİ
+            </h1>
+            <p className="text-lg md:text-xl text-gray-200 mb-8">
+              Tamir, bakım ve tüm işlemlerinizi artık özgürce yapın. Klasik Hantal Sehpalardan Kurtulun..
+            </p>
+            <Link
+              href="/urun/universal-motosiklet-kaldirma-sehpasi-360-derece-doner-kilitli"
+              className="inline-flex items-center px-8 py-4 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-lg transition-all hover:scale-105"
+            >
+              SATIN AL
+            </Link>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   const goToPrevious = () => {
     setCurrentIndex((prev) => (prev - 1 + banners.length) % banners.length);

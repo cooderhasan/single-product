@@ -41,27 +41,43 @@ export const useCartStore = create<CartState>()(
         }
 
         try {
-          set({ isLoading: true });
+          set({ isLoading: true, error: null });
           const { data } = await cartApi.get(sessionId);
           set({
-            items: data.items,
-            total: data.total,
-            count: data.count,
+            items: data.items || [],
+            total: data.total || 0,
+            count: data.count || 0,
             isLoading: false,
           });
-        } catch (error) {
-          set({ isLoading: false, error: 'Sepet yüklenemedi' });
+        } catch (error: any) {
+          const errorMessage = error.response?.data?.message || 'Sepet yüklenemedi';
+          set({ isLoading: false, error: errorMessage });
+          // Sepet boşsa bile varsayılan değerleri ayarla
+          set({
+            items: [],
+            total: 0,
+            count: 0,
+          });
         }
       },
 
       addItem: async (productId, quantity, variantId) => {
-        const { sessionId } = get();
+        let { sessionId } = get();
+        
+        // Session ID yoksa oluştur
+        if (!sessionId && typeof window !== 'undefined') {
+          sessionId = generateSessionId();
+          set({ sessionId });
+        }
+        
         try {
-          set({ isLoading: true });
+          set({ isLoading: true, error: null });
           await cartApi.add({ productId, quantity, variantId }, sessionId);
           await get().fetchCart();
-        } catch (error) {
-          set({ isLoading: false, error: 'Ürün eklenemedi' });
+        } catch (error: any) {
+          const errorMessage = error.response?.data?.message || 'Ürün eklenemedi';
+          set({ isLoading: false, error: errorMessage });
+          throw new Error(errorMessage);
         }
       },
 

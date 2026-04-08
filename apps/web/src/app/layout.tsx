@@ -47,9 +47,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="tr">
-      <body className={inter.className}>
+      <body className={`${inter.className} bg-white text-gray-900 antialiased`}>
         <Header />
-        <main className="min-h-screen">{children}</main>
+        <main className="min-h-screen bg-white">{children}</main>
         <Footer />
         <Toaster position="top-right" />
         <Analytics />

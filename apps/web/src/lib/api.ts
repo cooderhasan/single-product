@@ -94,3 +94,30 @@ export const bannersApi = {
   getAll: (position?: string) => api.get('/banners', { params: { position } }),
   getByPosition: (position: string) => api.get(`/banners/position/${position}`),
 };
+
+export const siteContentApi = {
+  getAll: () => api.get('/site-content'),
+  getByKey: (key: string) => api.get(`/site-content/${key}`),
+  create: (data: any) => api.post('/site-content', data),
+  update: (id: string, data: any) => api.put(`/site-content/${id}`, data),
+  updateByKey: (key: string, data: any) => api.put(`/site-content/by-key/${key}`, data),
+  delete: (id: string) => api.delete(`/site-content/${id}`),
+};
+
+export const testimonialsApi = {
+  getAll: () => api.get('/testimonials'),
+  getAllAdmin: () => api.get('/testimonials/admin/all'),
+  getById: (id: string) => api.get(`/testimonials/${id}`),
+  create: (data: any) => api.post('/testimonials', data),
+  update: (id: string, data: any) => api.put(`/testimonials/${id}`, data),
+  delete: (id: string) => api.delete(`/testimonials/${id}`),
+};
+
+export const announcementsApi = {
+  getAll: () => api.get('/announcements'),
+  getAllAdmin: () => api.get('/announcements/admin/all'),
+  getByPosition: (position: string) => api.get(`/announcements/position/${position}`),
+  create: (data: any) => api.post('/announcements', data),
+  update: (id: string, data: any) => api.put(`/announcements/${id}`, data),
+  delete: (id: string) => api.delete(`/announcements/${id}`),
+};

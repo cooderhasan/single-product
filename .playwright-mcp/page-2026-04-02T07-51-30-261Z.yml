@@ -1,0 +1,443 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e4]:
+      - generic [ref=e5]:
+        - link "0555 123 45 67" [ref=e6] [cursor=pointer]:
+          - /url: tel:+905551234567
+          - img [ref=e8]
+          - generic [ref=e10]: 0555 123 45 67
+        - generic [ref=e11]:
+          - img [ref=e12]
+          - generic [ref=e17]: Ücretsiz Kargo - 1000 TL Üzeri
+      - generic [ref=e18]:
+        - generic [ref=e19]:
+          - img [ref=e20]
+          - generic [ref=e22]: 2 Yıl Garanti
+        - generic [ref=e25]: Hızlı Teslimat
+    - generic [ref=e28]:
+      - link "360 Sehpa Profesyonel Ekipman" [ref=e29] [cursor=pointer]:
+        - /url: /
+        - generic [ref=e32]: "360"
+        - generic [ref=e34]:
+          - text: Sehpa
+          - generic [ref=e35]: Profesyonel Ekipman
+      - generic [ref=e36]:
+        - button "Ara" [ref=e37] [cursor=pointer]:
+          - img [ref=e38]
+        - link "Favoriler" [ref=e41] [cursor=pointer]:
+          - /url: /favoriler
+          - img [ref=e42]
+        - link "Hesabım" [ref=e44] [cursor=pointer]:
+          - /url: /giris
+          - img [ref=e45]
+        - link "Sepet" [ref=e48] [cursor=pointer]:
+          - /url: /sepet
+          - img [ref=e50]
+          - generic [ref=e54]: Sepet
+        - button "Menü" [ref=e55] [cursor=pointer]:
+          - img [ref=e56]
+  - main [ref=e57]:
+    - generic [ref=e58]:
+      - navigation [ref=e61]:
+        - link "Ana Sayfa" [ref=e62] [cursor=pointer]:
+          - /url: /
+        - img [ref=e63]
+        - generic [ref=e65]: 360 Sehpa / Padog
+      - generic [ref=e68]:
+        - generic [ref=e69]:
+          - generic [ref=e70]:
+            - generic [ref=e72]:
+              - img [ref=e73]
+              - paragraph [ref=e77]: Ürün Görseli 1
+            - generic [ref=e78]:
+              - generic [ref=e79]: "%10 İNDİRİM"
+              - generic [ref=e80]:
+                - img [ref=e81]
+                - text: Stokta
+            - button [ref=e83] [cursor=pointer]:
+              - img [ref=e84]
+            - button [ref=e86] [cursor=pointer]:
+              - img [ref=e87]
+          - generic [ref=e89]:
+            - button [ref=e90] [cursor=pointer]:
+              - img [ref=e92]
+            - button [ref=e96] [cursor=pointer]:
+              - img [ref=e98]
+            - button [ref=e102] [cursor=pointer]:
+              - img [ref=e104]
+            - button [ref=e108] [cursor=pointer]:
+              - img [ref=e110]
+            - button [ref=e114] [cursor=pointer]:
+              - img [ref=e116]
+            - button [ref=e120] [cursor=pointer]:
+              - img [ref=e122]
+        - generic [ref=e126]:
+          - generic [ref=e127]:
+            - heading "Universal Motosiklet Kaldırma Sehpası 360° Döner - Kilitli" [level=1] [ref=e128]:
+              - text: Universal Motosiklet Kaldırma Sehpası
+              - generic [ref=e129]: 360° Döner - Kilitli
+            - generic [ref=e130]:
+              - generic [ref=e131]:
+                - img [ref=e132]
+                - img [ref=e134]
+                - img [ref=e136]
+                - img [ref=e138]
+                - img [ref=e140]
+              - generic [ref=e142]: 127 Değerlendirme
+              - generic [ref=e143]: ● Stokta Var
+          - generic [ref=e144]:
+            - generic [ref=e145]:
+              - generic [ref=e146]: 3.722 TL
+              - generic [ref=e147]: 4.500 TL
+            - paragraph [ref=e148]: KDV Dahil - Ücretsiz Kargo
+          - generic [ref=e149]:
+            - text: Kaldırma Takoz Ebatı
+            - generic [ref=e150]:
+              - button "10 MM" [ref=e151] [cursor=pointer]
+              - button "8 MM" [ref=e152] [cursor=pointer]
+              - button "6 MM" [ref=e153] [cursor=pointer]
+          - generic [ref=e154]:
+            - generic [ref=e155]:
+              - button "-" [ref=e156] [cursor=pointer]
+              - generic [ref=e157]: "1"
+              - button "+" [ref=e158] [cursor=pointer]
+            - button "SEPETE EKLE" [ref=e159] [cursor=pointer]:
+              - img [ref=e160]
+              - text: SEPETE EKLE
+            - button [ref=e164] [cursor=pointer]:
+              - img [ref=e165]
+          - generic [ref=e167]:
+            - generic [ref=e168]:
+              - img [ref=e169]
+              - paragraph [ref=e174]: Ücretsiz Kargo
+              - paragraph [ref=e175]: Tüm Türkiye'ye
+            - generic [ref=e176]:
+              - img [ref=e177]
+              - paragraph [ref=e179]: 2 Yıl Garanti
+              - paragraph [ref=e180]: Tam garanti
+            - generic [ref=e181]:
+              - img [ref=e182]
+              - paragraph [ref=e185]: 14 Gün İade
+              - paragraph [ref=e186]: Koşulsuz iade
+            - generic [ref=e187]:
+              - img [ref=e188]
+              - paragraph [ref=e191]: Aynı Gün Kargo
+              - paragraph [ref=e192]: 15:00'a kadar
+          - generic [ref=e193]:
+            - img [ref=e194]
+            - generic [ref=e199]:
+              - paragraph [ref=e200]: Aynı Gün Kargo
+              - paragraph [ref=e201]: 15:00'dan önceki siparişlerde
+      - generic [ref=e203]:
+        - generic [ref=e204]:
+          - text: Avantajlar
+          - heading "Almanız İçin 6 Neden" [level=2] [ref=e205]
+        - generic [ref=e206]:
+          - generic [ref=e207]:
+            - generic [ref=e208]: 🧰
+            - heading "Bakım İşlerini Tek Kişilik Şova Dönüştürür" [level=3] [ref=e209]
+            - paragraph [ref=e210]: Tek başınıza tüm bakım işlemlerini rahatlıkla yapabilirsiniz.
+          - generic [ref=e211]:
+            - generic [ref=e212]: 🛞
+            - heading "Motoru Dimdik ve Güvenle Sabitler" [level=3] [ref=e213]
+            - paragraph [ref=e214]: Kilitli mekanizma sayesinde motor her açıdan sabit kalır.
+          - generic [ref=e215]:
+            - generic [ref=e216]: 🔄
+            - heading "360° Döner Yapısı" [level=3] [ref=e217]
+            - paragraph [ref=e218]: Her yöne dönebilen yapı sayesinde tüm parçalara kolay erişim.
+          - generic [ref=e219]:
+            - generic [ref=e220]: 🔐
+            - heading "Kilitli Mekanizma" [level=3] [ref=e221]
+            - paragraph [ref=e222]: Güvenli kilit sistemi ile sabit ve stabil çalışma ortamı.
+          - generic [ref=e223]:
+            - generic [ref=e224]: 🏍️
+            - heading "Universal Uyum" [level=3] [ref=e225]
+            - paragraph [ref=e226]: Neredeyse tüm motosiklet modelleriyle uyumlu tasarım.
+          - generic [ref=e227]:
+            - generic [ref=e228]: 💪
+            - heading "Yıllarca Eşlik Eder" [level=3] [ref=e229]
+            - paragraph [ref=e230]: Kaliteli çelik gövde ile uzun ömürlü kullanım garantisi.
+      - generic [ref=e232]:
+        - generic [ref=e233]:
+          - text: Karşılaştırma
+          - heading "Neden 360° Döner Sehpa?" [level=2] [ref=e234]
+        - table [ref=e236]:
+          - rowgroup [ref=e237]:
+            - row "Özellik ✅ 360° Sehpa ⚪ Standart" [ref=e238]:
+              - columnheader "Özellik" [ref=e239]
+              - columnheader "✅ 360° Sehpa" [ref=e240]
+              - columnheader "⚪ Standart" [ref=e241]
+          - rowgroup [ref=e242]:
+            - row "Döner Mekanizma 360° Dönebilir Sabit Durur" [ref=e243]:
+              - cell "Döner Mekanizma" [ref=e244]
+              - cell "360° Dönebilir" [ref=e245]:
+                - generic [ref=e246]:
+                  - img [ref=e247]
+                  - text: 360° Dönebilir
+              - cell "Sabit Durur" [ref=e249]:
+                - generic [ref=e250]:
+                  - img [ref=e251]
+                  - text: Sabit Durur
+            - row "Kilit Sistemi Var (Güvenli) Yok" [ref=e254]:
+              - cell "Kilit Sistemi" [ref=e255]
+              - cell "Var (Güvenli)" [ref=e256]:
+                - generic [ref=e257]:
+                  - img [ref=e258]
+                  - text: Var (Güvenli)
+              - cell "Yok" [ref=e260]:
+                - generic [ref=e261]:
+                  - img [ref=e262]
+                  - text: Yok
+            - row "Uyum Universal Sınırlı" [ref=e265]:
+              - cell "Uyum" [ref=e266]
+              - cell "Universal" [ref=e267]:
+                - generic [ref=e268]:
+                  - img [ref=e269]
+                  - text: Universal
+              - cell "Sınırlı" [ref=e271]:
+                - generic [ref=e272]:
+                  - img [ref=e273]
+                  - text: Sınırlı
+            - row "Malzeme Kalın Çelik İnce Metal" [ref=e276]:
+              - cell "Malzeme" [ref=e277]
+              - cell "Kalın Çelik" [ref=e278]:
+                - generic [ref=e279]:
+                  - img [ref=e280]
+                  - text: Kalın Çelik
+              - cell "İnce Metal" [ref=e282]:
+                - generic [ref=e283]:
+                  - img [ref=e284]
+                  - text: İnce Metal
+            - row "Kullanım Alanı Bakım & Park Sadece Park" [ref=e287]:
+              - cell "Kullanım Alanı" [ref=e288]
+              - cell "Bakım & Park" [ref=e289]:
+                - generic [ref=e290]:
+                  - img [ref=e291]
+                  - text: Bakım & Park
+              - cell "Sadece Park" [ref=e293]:
+                - generic [ref=e294]:
+                  - img [ref=e295]
+                  - text: Sadece Park
+            - row "Kullanım Tek Kişi 2 Kişi Gerekir" [ref=e298]:
+              - cell "Kullanım" [ref=e299]
+              - cell "Tek Kişi" [ref=e300]:
+                - generic [ref=e301]:
+                  - img [ref=e302]
+                  - text: Tek Kişi
+              - cell "2 Kişi Gerekir" [ref=e304]:
+                - generic [ref=e305]:
+                  - img [ref=e306]
+                  - text: 2 Kişi Gerekir
+            - row "Taşınabilirlik Kompakt Hantal" [ref=e309]:
+              - cell "Taşınabilirlik" [ref=e310]
+              - cell "Kompakt" [ref=e311]:
+                - generic [ref=e312]:
+                  - img [ref=e313]
+                  - text: Kompakt
+              - cell "Hantal" [ref=e315]:
+                - generic [ref=e316]:
+                  - img [ref=e317]
+                  - text: Hantal
+            - row "Montaj Hazır Kullanım Montaj Gerekir" [ref=e320]:
+              - cell "Montaj" [ref=e321]
+              - cell "Hazır Kullanım" [ref=e322]:
+                - generic [ref=e323]:
+                  - img [ref=e324]
+                  - text: Hazır Kullanım
+              - cell "Montaj Gerekir" [ref=e326]:
+                - generic [ref=e327]:
+                  - img [ref=e328]
+                  - text: Montaj Gerekir
+            - row "Yüzey Koruma Toz Boyalı Boyasız" [ref=e331]:
+              - cell "Yüzey Koruma" [ref=e332]
+              - cell "Toz Boyalı" [ref=e333]:
+                - generic [ref=e334]:
+                  - img [ref=e335]
+                  - text: Toz Boyalı
+              - cell "Boyasız" [ref=e337]:
+                - generic [ref=e338]:
+                  - img [ref=e339]
+                  - text: Boyasız
+            - row "Dayanıklılık Uzun Ömürlü Kısa Ömürlü" [ref=e342]:
+              - cell "Dayanıklılık" [ref=e343]
+              - cell "Uzun Ömürlü" [ref=e344]:
+                - generic [ref=e345]:
+                  - img [ref=e346]
+                  - text: Uzun Ömürlü
+              - cell "Kısa Ömürlü" [ref=e348]:
+                - generic [ref=e349]:
+                  - img [ref=e350]
+                  - text: Kısa Ömürlü
+      - generic [ref=e354]:
+        - generic [ref=e355]:
+          - text: Yorumlar
+          - heading "Kullanıcılar Ne Diyor" [level=2] [ref=e356]
+        - generic [ref=e357]:
+          - generic [ref=e358]:
+            - generic [ref=e359]:
+              - img [ref=e360]
+              - img [ref=e362]
+              - img [ref=e364]
+              - img [ref=e366]
+              - img [ref=e368]
+            - heading "\"Servis rahatlığını garajıma getirdi.\"" [level=3] [ref=e370]
+            - paragraph [ref=e371]: Uzun zamandır zincir yağlama ve temizlik işini zor bela yapıyordum. Bu sehpayı alınca fark ettim, meğer her şey kolay olabiliyormuş! 360 derece döndürmek tam bir konfor.
+            - generic [ref=e372]:
+              - generic [ref=e374]: E
+              - generic [ref=e375]:
+                - paragraph [ref=e376]: Ekrem K.
+                - paragraph [ref=e377]: İstanbul
+          - generic [ref=e378]:
+            - generic [ref=e379]:
+              - img [ref=e380]
+              - img [ref=e382]
+              - img [ref=e384]
+              - img [ref=e386]
+              - img [ref=e388]
+            - heading "\"Dar garajda bile mucize gibi.\"" [level=3] [ref=e390]
+            - paragraph [ref=e391]: Benim garaj neredeyse bir oda kadar küçük. Bu sehpayı görünce şüphe etmiştim ama hakikaten dönüyor! Motoru çevirmek inanılmaz kolaylaştı.
+            - generic [ref=e392]:
+              - generic [ref=e394]: E
+              - generic [ref=e395]:
+                - paragraph [ref=e396]: Emre D.
+                - paragraph [ref=e397]: Konya
+          - generic [ref=e398]:
+            - generic [ref=e399]:
+              - img [ref=e400]
+              - img [ref=e402]
+              - img [ref=e404]
+              - img [ref=e406]
+              - img [ref=e408]
+            - heading "\"Her kuruşunu hak ediyor.\"" [level=3] [ref=e410]
+            - paragraph [ref=e411]: Daha önce ucuz bir sehpa almıştım, ikinci kullanımda yamuldu. 360 Sehpa ise tank gibi sağlam. Kayma yok, sallanma yok, güven tam.
+            - generic [ref=e412]:
+              - generic [ref=e414]: A
+              - generic [ref=e415]:
+                - paragraph [ref=e416]: Ayhan S.
+                - paragraph [ref=e417]: Bursa
+        - generic [ref=e418]:
+          - generic [ref=e419]:
+            - img [ref=e420]
+            - generic [ref=e423]: 127+ Olumlu Değerlendirme
+          - generic [ref=e424]:
+            - img [ref=e425]
+            - generic [ref=e427]: "%98 Memnuniyet"
+      - generic [ref=e430]:
+        - generic [ref=e431]:
+          - button "Ürün Açıklaması" [ref=e432] [cursor=pointer]: Ürün Açıklaması
+          - button "Teknik Özellikler" [ref=e434] [cursor=pointer]
+        - generic [ref=e436]:
+          - paragraph [ref=e437]:
+            - strong [ref=e438]: "360 Derece Tam Döner Mekanizma:"
+            - text: Motosikletini kaldırmanın ötesinde, her yöne 360 derece döndürebilirsin! Zincir yağlama, fren balata değişimi, motor bileşenlerine erişim veya lastik tamiri gibi işlerde motosikleti istediğin açıya getir.
+          - paragraph [ref=e439]: Standart sehpalarda sınırlı hareket varken, bu senin zamanını ve enerjini %50'ye varan oranda tasarruf ettirir. Bakım süren kısalır, keyfin artar!
+          - list [ref=e440]:
+            - listitem [ref=e441]:
+              - img [ref=e442]
+              - text: 360° Döner Mekanizma
+            - listitem [ref=e444]:
+              - img [ref=e445]
+              - text: Kilitli Tekerlekler
+            - listitem [ref=e447]:
+              - img [ref=e448]
+              - text: Dayanıklı Çelik Gövde
+            - listitem [ref=e450]:
+              - img [ref=e451]
+              - text: Universal Uyum
+      - generic [ref=e455]:
+        - generic [ref=e456]:
+          - text: SSS
+          - heading "Sık Sorulan Sorular" [level=2] [ref=e457]
+        - generic [ref=e458]:
+          - button "Kargom Ne Zaman Ulaşır?" [ref=e460] [cursor=pointer]:
+            - generic [ref=e461]: Kargom Ne Zaman Ulaşır?
+            - img [ref=e462]
+          - button "Ürünü Beğenmezsem İade Alıyor musunuz?" [ref=e465] [cursor=pointer]:
+            - generic [ref=e466]: Ürünü Beğenmezsem İade Alıyor musunuz?
+            - img [ref=e467]
+          - button "Toptan Satışınız var mı?" [ref=e470] [cursor=pointer]:
+            - generic [ref=e471]: Toptan Satışınız var mı?
+            - img [ref=e472]
+          - button "Ürünüm Nereden Gelecek?" [ref=e475] [cursor=pointer]:
+            - generic [ref=e476]: Ürünüm Nereden Gelecek?
+            - img [ref=e477]
+      - generic [ref=e480]:
+        - heading "Hemen Sipariş Verin" [level=2] [ref=e481]
+        - paragraph [ref=e482]: Profesyonel garaj konforu artık her sürücünün ulaşabileceği kadar yakın!
+        - button "Şimdi Satın Al" [ref=e483] [cursor=pointer]
+  - contentinfo [ref=e484]:
+    - generic [ref=e487]:
+      - generic [ref=e488]:
+        - heading "Kampanyalardan Haberdar Olun" [level=3] [ref=e489]
+        - paragraph [ref=e490]: Yeni ürünler ve özel fırsatlar için bültenimize abone olun.
+      - generic [ref=e491]:
+        - textbox "Email adresiniz" [ref=e492]
+        - button "Abone Ol" [ref=e493] [cursor=pointer]
+    - generic [ref=e495]:
+      - generic [ref=e496]:
+        - generic [ref=e497]:
+          - generic [ref=e499]: "360"
+          - generic [ref=e500]: Sehpa
+        - paragraph [ref=e501]: "Türkiye'nin #1 motosiklet kaldırma sehpası üreticisi. Profesyonel ekipmanlar, 2 yıl garanti."
+        - generic [ref=e502]:
+          - link "Facebook" [ref=e503] [cursor=pointer]:
+            - /url: "#"
+            - img [ref=e504]
+          - link "Instagram" [ref=e506] [cursor=pointer]:
+            - /url: "#"
+            - img [ref=e507]
+          - link "Youtube" [ref=e509] [cursor=pointer]:
+            - /url: "#"
+            - img [ref=e510]
+      - generic [ref=e512]:
+        - heading "Hızlı Linkler" [level=4] [ref=e513]
+        - list [ref=e514]:
+          - listitem [ref=e515]:
+            - link "Tüm Ürünler" [ref=e516] [cursor=pointer]:
+              - /url: /urunler
+          - listitem [ref=e517]:
+            - link "Hakkımızda" [ref=e518] [cursor=pointer]:
+              - /url: /hakkimizda
+          - listitem [ref=e519]:
+            - link "Blog" [ref=e520] [cursor=pointer]:
+              - /url: /blog
+          - listitem [ref=e521]:
+            - link "İletişim" [ref=e522] [cursor=pointer]:
+              - /url: /iletisim
+      - generic [ref=e523]:
+        - heading "Kategoriler" [level=4] [ref=e524]
+        - list [ref=e525]:
+          - listitem [ref=e526]:
+            - link "Hidrolik Sehpalar" [ref=e527] [cursor=pointer]:
+              - /url: /kategori/hidrolik-sehpalar
+          - listitem [ref=e528]:
+            - link "Manuel Sehpalar" [ref=e529] [cursor=pointer]:
+              - /url: /kategori/manuel-sehpalar
+          - listitem [ref=e530]:
+            - link "Aksesuarlar" [ref=e531] [cursor=pointer]:
+              - /url: /kategori/aksesuarlar
+      - generic [ref=e532]:
+        - heading "İletişim" [level=4] [ref=e533]
+        - list [ref=e534]:
+          - listitem [ref=e535]:
+            - img [ref=e536]
+            - generic [ref=e539]:
+              - text: Sanayi Mahallesi, 123. Sokak No:45
+              - text: İstanbul, Türkiye
+          - listitem [ref=e540]:
+            - img [ref=e541]
+            - link "0555 123 45 67" [ref=e543] [cursor=pointer]:
+              - /url: tel:+905551234567
+          - listitem [ref=e544]:
+            - img [ref=e545]
+            - link "info@360sehpa.com" [ref=e548] [cursor=pointer]:
+              - /url: mailto:info@360sehpa.com
+    - generic [ref=e551]:
+      - paragraph [ref=e552]: 2026 360 Sehpa. Tüm hakları saklıdır.
+      - generic [ref=e553]:
+        - link "Gizlilik Politikası" [ref=e554] [cursor=pointer]:
+          - /url: /gizlilik-politikasi
+        - link "Mesafeli Satış Sözleşmesi" [ref=e555] [cursor=pointer]:
+          - /url: /mesafeli-satis-sozlesmesi
+        - link "İade Koşulları" [ref=e556] [cursor=pointer]:
+          - /url: /iade-kosullari

@@ -1,0 +1,36 @@
+- generic [active] [ref=e1]:
+  - main [ref=e3]:
+    - generic [ref=e4]:
+      - heading "Sipariş Yönetimi" [level=1] [ref=e7]
+      - generic [ref=e8]:
+        - generic [ref=e9]:
+          - generic [ref=e10]:
+            - img [ref=e11]
+            - textbox "Sipariş no veya email ara..." [ref=e13]
+          - combobox [ref=e14]:
+            - option "Tüm Durumlar" [selected]
+            - option "Bekliyor"
+            - option "Onaylandı"
+            - option "İşleniyor"
+            - option "Kargoda"
+            - option "Teslim Edildi"
+            - option "İptal Edildi"
+            - option "İade Edildi"
+        - table [ref=e16]:
+          - rowgroup [ref=e17]:
+            - row "Sipariş No Müşteri Tutar Ödeme Durum Tarih İşlemler" [ref=e18]:
+              - columnheader "Sipariş No" [ref=e19]
+              - columnheader "Müşteri" [ref=e20]
+              - columnheader "Tutar" [ref=e21]
+              - columnheader "Ödeme" [ref=e22]
+              - columnheader "Durum" [ref=e23]
+              - columnheader "Tarih" [ref=e24]
+              - columnheader "İşlemler" [ref=e25]
+          - rowgroup
+        - paragraph [ref=e27]: Henüz sipariş bulunmamaktadır.
+  - generic:
+    - status [ref=e33]: Siparişler yüklenirken hata oluştu
+    - status [ref=e39]: Siparişler yüklenirken hata oluştu
+    - status [ref=e45]: Siparişler yüklenirken hata oluştu
+    - status [ref=e51]: Siparişler yüklenirken hata oluştu
+  - alert [ref=e6]

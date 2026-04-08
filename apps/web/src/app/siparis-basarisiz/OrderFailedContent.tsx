@@ -13,8 +13,8 @@ export default function OrderFailedContent() {
       <div className="container mx-auto px-4 max-w-2xl">
         <div className="bg-white rounded-xl shadow-sm p-12 text-center">
           {/* Error Icon */}
-          <div className="w-24 h-24 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
-            <XCircle className="w-12 h-12 text-red-600" />
+          <div className="w-24 h-24 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <XCircle className="w-12 h-12 text-slate-600" />
           </div>
 
           <h1 className="text-3xl font-bold text-gray-900 mb-4">

@@ -13,6 +13,10 @@ import { CartModule } from './cart/cart.module';
 import { CouponsModule } from './coupons/coupons.module';
 import { BlogModule } from './blog/blog.module';
 import { BannersModule } from './banners/banners.module';
+import { SiteContentModule } from './site-content/site-content.module';
+import { TestimonialsModule } from './testimonials/testimonials.module';
+import { AnnouncementsModule } from './announcements/announcements.module';
+import { UploadModule } from './upload/upload.module';
 
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { RolesGuard } from './auth/guards/roles.guard';
@@ -37,6 +41,10 @@ import { RolesGuard } from './auth/guards/roles.guard';
     CouponsModule,
     BlogModule,
     BannersModule,
+    SiteContentModule,
+    TestimonialsModule,
+    AnnouncementsModule,
+    UploadModule,
   ],
   providers: [
     {

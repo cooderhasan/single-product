@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import toast from 'react-hot-toast';
 import {
   TrendingUp,
   ShoppingCart,
@@ -11,63 +12,174 @@ import {
   ArrowDownRight,
   DollarSign,
 } from 'lucide-react';
+import { api } from '@/lib/api';
+import { Order, Product, User } from '@/types';
 
-const stats = [
-  {
-    title: 'Toplam Ciro',
-    value: '₺128,450',
-    change: '+12.5%',
-    trend: 'up',
-    icon: DollarSign,
-    color: 'bg-blue-500',
-  },
-  {
-    title: 'Siparişler',
-    value: '156',
-    change: '+8.2%',
-    trend: 'up',
-    icon: ShoppingCart,
-    color: 'bg-green-500',
-  },
-  {
-    title: 'Müşteriler',
-    value: '1,234',
-    change: '+15.3%',
-    trend: 'up',
-    icon: Users,
-    color: 'bg-purple-500',
-  },
-  {
-    title: 'Ürünler',
-    value: '89',
-    change: '-2.1%',
-    trend: 'down',
-    icon: Package,
-    color: 'bg-orange-500',
-  },
-];
+interface DashboardStats {
+  totalOrders: number;
+  totalRevenue: number;
+  todayOrders: number;
+  todayRevenue: number;
+  pendingOrders: number;
+}
 
-const recentOrders = [
-  { id: '1', orderNumber: 'SP-240315-001', customer: 'Ahmet Yılmaz', total: 8999, status: 'Tamamlandı', date: '2024-03-15' },
-  { id: '2', orderNumber: 'SP-240315-002', customer: 'Mehmet Kaya', total: 12499, status: 'Kargoda', date: '2024-03-15' },
-  { id: '3', orderNumber: 'SP-240314-003', customer: 'Ayşe Demir', total: 5499, status: 'Hazırlanıyor', date: '2024-03-14' },
-  { id: '4', orderNumber: 'SP-240314-004', customer: 'Fatma Şahin', total: 18999, status: 'Tamamlandı', date: '2024-03-14' },
-  { id: '5', orderNumber: 'SP-240313-005', customer: 'Ali Yıldız', total: 7499, status: 'Bekliyor', date: '2024-03-13' },
-];
-
-const topProducts = [
-  { name: 'Hidrolik Motosiklet Sehpası Pro', sales: 45, revenue: 404955 },
-  { name: 'Hidrolik Sehpa Super Pro', sales: 32, revenue: 399968 },
-  { name: 'Manuel Motosiklet Sehpası Ekonomik', sales: 28, revenue: 153972 },
-];
+interface StatsCard {
+  title: string;
+  value: string;
+  change: string;
+  trend: 'up' | 'down';
+  icon: typeof DollarSign;
+  color: string;
+}
 
 export default function DashboardPage() {
   const [isLoading, setIsLoading] = useState(true);
+  const [stats, setStats] = useState<StatsCard[]>([]);
+  const [recentOrders, setRecentOrders] = useState<Order[]>([]);
+  const [topProducts, setTopProducts] = useState<{ name: string; sales: number; revenue: number }[]>([]);
 
   useEffect(() => {
-    // Simüle edilmiş veri yükleme
-    setTimeout(() => setIsLoading(false), 500);
+    fetchDashboardData();
   }, []);
+
+  const fetchDashboardData = async () => {
+    setIsLoading(true);
+    try {
+      // Fetch dashboard stats, product count, customer count, recent orders, and top products in parallel
+      const [
+        statsRes,
+        productsRes,
+        usersRes,
+        ordersRes,
+      ] = await Promise.allSettled([
+        api.get('/orders/dashboard/stats'),
+        api.get('/products', { params: { take: 1 } }),
+        api.get('/users', { params: { take: 1 } }),
+        api.get('/orders', { params: { take: 5, skip: 0 } }),
+      ]);
+
+      // Process dashboard stats
+      let dashboardStats: DashboardStats | null = null;
+      if (statsRes.status === 'fulfilled') {
+        dashboardStats = statsRes.value.data;
+      } else {
+        toast.error('İstatistikler yüklenirken hata oluştu');
+        console.error('Stats error:', statsRes.reason);
+      }
+
+      // Process product count
+      let productCount = 0;
+      if (productsRes.status === 'fulfilled') {
+        const productsData = productsRes.value.data;
+        productCount = productsData.meta?.total || productsData.data?.length || 0;
+      } else {
+        toast.error('Ürün sayısı yüklenirken hata oluştu');
+        console.error('Products error:', productsRes.reason);
+      }
+
+      // Process customer count
+      let customerCount = 0;
+      if (usersRes.status === 'fulfilled') {
+        const usersData = usersRes.value.data;
+        customerCount = usersData.meta?.total || usersData.data?.length || 0;
+      } else {
+        toast.error('Müşteri sayısı yüklenirken hata oluştu');
+        console.error('Users error:', usersRes.reason);
+      }
+
+      // Process recent orders
+      if (ordersRes.status === 'fulfilled') {
+        const ordersData = ordersRes.value.data;
+        setRecentOrders(ordersData.data || ordersData || []);
+      } else {
+        toast.error('Son siparişler yüklenirken hata oluştu');
+        console.error('Orders error:', ordersRes.reason);
+      }
+
+      // Build stats cards
+      const calculatedStats: StatsCard[] = [
+        {
+          title: 'Toplam Ciro',
+          value: dashboardStats
+            ? `₺${dashboardStats.totalRevenue.toLocaleString('tr-TR')}`
+            : '₺0',
+          change: '+12.5%',
+          trend: 'up',
+          icon: DollarSign,
+          color: 'bg-blue-500',
+        },
+        {
+          title: 'Siparişler',
+          value: dashboardStats
+            ? dashboardStats.totalOrders.toLocaleString('tr-TR')
+            : '0',
+          change: '+8.2%',
+          trend: 'up',
+          icon: ShoppingCart,
+          color: 'bg-green-500',
+        },
+        {
+          title: 'Müşteriler',
+          value: customerCount.toLocaleString('tr-TR'),
+          change: '+15.3%',
+          trend: 'up',
+          icon: Users,
+          color: 'bg-purple-500',
+        },
+        {
+          title: 'Ürünler',
+          value: productCount.toLocaleString('tr-TR'),
+          change: '-2.1%',
+          trend: 'down',
+          icon: Package,
+          color: 'bg-orange-500',
+        },
+      ];
+      setStats(calculatedStats);
+
+      // Fetch top products (mock data for now, can be replaced with real endpoint)
+      setTopProducts([
+        { name: 'Hidrolik Motosiklet Sehpası Pro', sales: 45, revenue: 404955 },
+        { name: 'Hidrolik Sehpa Super Pro', sales: 32, revenue: 399968 },
+        { name: 'Manuel Motosiklet Sehpası Ekonomik', sales: 28, revenue: 153972 },
+      ]);
+    } catch (error) {
+      toast.error('Dashboard verileri yüklenirken hata oluştu');
+      console.error('Dashboard error:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const getStatusBadgeClass = (status: string) => {
+    switch (status) {
+      case 'COMPLETED':
+      case 'Tamamlandı':
+        return 'bg-green-100 text-green-800';
+      case 'SHIPPED':
+      case 'Kargoda':
+        return 'bg-blue-100 text-blue-800';
+      case 'PROCESSING':
+      case 'Hazırlanıyor':
+        return 'bg-yellow-100 text-yellow-800';
+      case 'PENDING':
+      case 'Bekliyor':
+        return 'bg-gray-100 text-gray-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  const getStatusLabel = (status: string) => {
+    const statusMap: Record<string, string> = {
+      PENDING: 'Bekliyor',
+      PROCESSING: 'Hazırlanıyor',
+      SHIPPED: 'Kargoda',
+      COMPLETED: 'Tamamlandı',
+      CANCELLED: 'İptal Edildi',
+    };
+    return statusMap[status] || status;
+  };
 
   if (isLoading) {
     return (
@@ -145,24 +257,31 @@ export default function DashboardPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
-                {recentOrders.map((order) => (
-                  <tr key={order.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 text-sm font-medium text-gray-900">{order.orderNumber}</td>
-                    <td className="px-6 py-4 text-sm text-gray-600">{order.customer}</td>
-                    <td className="px-6 py-4 text-sm text-gray-900">{order.total.toLocaleString('tr-TR')} ₺</td>
-                    <td className="px-6 py-4">
-                      <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
-                        order.status === 'Tamamlandı' ? 'bg-green-100 text-green-800' :
-                        order.status === 'Kargoda' ? 'bg-blue-100 text-blue-800' :
-                        order.status === 'Hazırlanıyor' ? 'bg-yellow-100 text-yellow-800' :
-                        'bg-gray-100 text-gray-800'
-                      }`}>
-                        {order.status}
-                      </span>
+                {recentOrders.length > 0 ? (
+                  recentOrders.map((order) => (
+                    <tr key={order.id} className="hover:bg-gray-50">
+                      <td className="px-6 py-4 text-sm font-medium text-gray-900">{order.orderNumber}</td>
+                      <td className="px-6 py-4 text-sm text-gray-600">
+                        {order.shippingAddress?.fullName || 'N/A'}
+                      </td>
+                      <td className="px-6 py-4 text-sm text-gray-900">{order.total.toLocaleString('tr-TR')} ₺</td>
+                      <td className="px-6 py-4">
+                        <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${getStatusBadgeClass(order.status)}`}>
+                          {getStatusLabel(order.status)}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 text-sm text-gray-500">
+                        {new Date(order.createdAt).toLocaleDateString('tr-TR')}
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={5} className="px-6 py-8 text-center text-gray-500">
+                      Henüz sipariş bulunmuyor
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-500">{order.date}</td>
                   </tr>
-                ))}
+                )}
               </tbody>
             </table>
           </div>

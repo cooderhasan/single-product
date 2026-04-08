@@ -1,0 +1,22 @@
+- generic [active] [ref=e1]:
+  - main [ref=e2]:
+    - main [ref=e5]:
+      - generic [ref=e7]:
+        - generic [ref=e8]:
+          - generic [ref=e10]: A
+          - heading "360 Sehpa" [level=1] [ref=e11]
+          - paragraph [ref=e12]: Admin Panel
+        - generic [ref=e13]:
+          - heading "Yönetici Girişi" [level=2] [ref=e14]
+          - generic [ref=e15]:
+            - generic [ref=e16]:
+              - generic [ref=e17]: Email Adresi
+              - textbox "admin@example.com" [ref=e18]
+            - generic [ref=e19]:
+              - generic [ref=e20]: Şifre
+              - textbox "••••••••" [ref=e21]
+            - button "Giriş Yap" [ref=e22] [cursor=pointer]
+          - link "← Siteye Dön" [ref=e24] [cursor=pointer]:
+            - /url: /
+        - paragraph [ref=e25]: © 2024 360 Sehpa. Tüm hakları saklıdır.
+  - alert [ref=e26]

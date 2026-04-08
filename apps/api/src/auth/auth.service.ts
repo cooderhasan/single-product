@@ -61,6 +61,11 @@ export class AuthService {
       throw new UnauthorizedException('Geçersiz email veya şifre');
     }
 
+    // Check for admin login
+    if (user.role !== UserRole.ADMIN) {
+      throw new UnauthorizedException('Bu panele erişim yetkiniz yok');
+    }
+
     return this.generateTokens(user);
   }
 

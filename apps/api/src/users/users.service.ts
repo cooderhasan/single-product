@@ -118,4 +118,20 @@ export class UsersService {
       where: { id: addressId },
     });
   }
+
+  async deleteUser(userId: string) {
+    // Check if user exists
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      throw new NotFoundException('Kullanıcı bulunamadı');
+    }
+
+    // Delete user (cascade will handle addresses, orders, etc.)
+    return prisma.user.delete({
+      where: { id: userId },
+    });
+  }
 }

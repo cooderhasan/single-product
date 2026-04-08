@@ -16,6 +16,8 @@ import {
   ChevronRight,
   Bell,
   Search,
+  Layout,
+  Megaphone,
 } from 'lucide-react';
 
 const menuItems = [
@@ -26,6 +28,9 @@ const menuItems = [
   { href: '/admin/musteriler', label: 'Müşteriler', icon: Users },
   { href: '/admin/kuponlar', label: 'Kuponlar', icon: Tag },
   { href: '/admin/bannerlar', label: 'Bannerlar', icon: ImageIcon },
+  { href: '/admin/icerikler', label: 'Site İçerikleri', icon: Layout },
+  { href: '/admin/yorumlar', label: 'Müşteri Yorumları', icon: Users },
+  { href: '/admin/duyurular', label: 'Duyurular', icon: Megaphone },
 ];
 
 export default function AdminLayout({
@@ -36,9 +41,13 @@ export default function AdminLayout({
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const pathname = usePathname();
 
+  // Admin giriş sayfası (sadece /admin) için sidebar ve header'ı gizle
+  const isLoginPage = pathname === '/admin';
+
   return (
     <div className="min-h-screen bg-gray-100">
-      {/* Sidebar */}
+      {/* Sidebar - Giriş sayfasında gizle */}
+      {!isLoginPage && (
       <aside
         className={`fixed top-0 left-0 z-40 h-screen transition-transform ${
           isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
@@ -89,10 +98,12 @@ export default function AdminLayout({
           </button>
         </div>
       </aside>
+      )}
 
       {/* Main Content */}
-      <div className={`${isSidebarOpen ? 'lg:ml-64' : ''} transition-margin`}>
-        {/* Header */}
+      <div className={`${!isLoginPage && isSidebarOpen ? 'lg:ml-64' : ''} transition-margin`}>
+        {/* Header - Giriş sayfasında gizle */}
+        {!isLoginPage && (
         <header className="bg-white shadow-sm sticky top-0 z-30">
           <div className="flex items-center justify-between h-16 px-6">
             <button
@@ -129,13 +140,14 @@ export default function AdminLayout({
             </div>
           </div>
         </header>
+        )}
 
         {/* Page Content */}
-        <main className="p-6">{children}</main>
+        <main className={isLoginPage ? '' : 'p-6'}>{children}</main>
       </div>
 
       {/* Mobile Overlay */}
-      {isSidebarOpen && (
+      {!isLoginPage && isSidebarOpen && (
         <div
           className="fixed inset-0 bg-black bg-opacity-50 z-30 lg:hidden"
           onClick={() => setIsSidebarOpen(false)}

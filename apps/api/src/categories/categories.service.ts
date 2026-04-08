@@ -6,11 +6,10 @@ import { prisma } from '@ecommerce/database';
 export class CategoriesService {
   async findAll() {
     return prisma.category.findMany({
-      where: { isActive: true },
       orderBy: { sortOrder: 'asc' },
       include: {
+        parent: true,
         children: {
-          where: { isActive: true },
           orderBy: { sortOrder: 'asc' },
         },
         _count: {
@@ -28,6 +27,25 @@ export class CategoriesService {
         children: {
           where: { isActive: true },
           orderBy: { sortOrder: 'asc' },
+        },
+      },
+    });
+
+    if (!category) {
+      throw new NotFoundException('Kategori bulunamadı');
+    }
+
+    return category;
+  }
+
+  async findById(id: string) {
+    const category = await prisma.category.findUnique({
+      where: { id },
+      include: {
+        parent: true,
+        children: true,
+        _count: {
+          select: { products: true },
         },
       },
     });

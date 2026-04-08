@@ -1,0 +1,55 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e3]:
+      - generic [ref=e4]:
+        - heading "360 Sehpa" [level=1] [ref=e5]
+        - paragraph [ref=e6]: Admin Panel
+      - navigation [ref=e7]:
+        - link "Dashboard" [ref=e8] [cursor=pointer]:
+          - /url: /dashboard
+          - img [ref=e9]
+          - text: Dashboard
+        - link "Ürünler" [ref=e11] [cursor=pointer]:
+          - /url: /products
+          - img [ref=e12]
+          - text: Ürünler
+        - link "Kategoriler" [ref=e14] [cursor=pointer]:
+          - /url: /categories
+          - img [ref=e15]
+          - text: Kategoriler
+        - link "Siparişler" [ref=e17] [cursor=pointer]:
+          - /url: /orders
+          - img [ref=e18]
+          - text: Siparişler
+        - link "Müşteriler" [ref=e20] [cursor=pointer]:
+          - /url: /customers
+          - img [ref=e21]
+          - text: Müşteriler
+        - link "Kuponlar" [ref=e23] [cursor=pointer]:
+          - /url: /coupons
+          - img [ref=e24]
+          - text: Kuponlar
+        - link "Bannerlar" [ref=e27] [cursor=pointer]:
+          - /url: /banners
+          - img [ref=e28]
+          - text: Bannerlar
+        - link "Duyurular" [ref=e30] [cursor=pointer]:
+          - /url: /duyurular
+          - img [ref=e31]
+          - text: Duyurular
+        - link "Yorumlar" [ref=e33] [cursor=pointer]:
+          - /url: /yorumlar
+          - img [ref=e34]
+          - text: Yorumlar
+        - link "Site İçerikleri" [ref=e36] [cursor=pointer]:
+          - /url: /icerikler
+          - img [ref=e37]
+          - text: Site İçerikleri
+      - button "Çıkış Yap" [ref=e40] [cursor=pointer]:
+        - img [ref=e41]
+        - text: Çıkış Yap
+    - main [ref=e43]:
+      - generic [ref=e45]:
+        - heading "404" [level=1] [ref=e46]
+        - heading "This page could not be found." [level=2] [ref=e48]
+  - alert [ref=e49]
