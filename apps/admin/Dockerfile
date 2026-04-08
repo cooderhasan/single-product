@@ -1,25 +1,18 @@
-# Admin Panel Dockerfile
-FROM node:20-alpine AS base
-
-# Install dependencies only when needed
-FROM base AS deps
+# Admin Panel Dockerfile (Monorepo Compatible)
+FROM node:20-alpine AS builder
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
-COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
-RUN npm ci
+COPY package.json package-lock.json* ./
+COPY apps/admin/package.json ./apps/admin/
 
-# Rebuild the source code only when needed
-FROM base AS builder
-WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
+RUN npm install
 COPY . .
 
-# Build the application
-RUN npm run build
+RUN npx turbo run build --filter=@ecommerce/admin
 
-# Production image, copy all the files and run next
-FROM base AS runner
+# Production image
+FROM node:20-alpine AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
@@ -28,19 +21,15 @@ ENV PORT=3002
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-COPY --from=builder /app/public ./public
-
-# Set the correct permission for prerender cache
+COPY --from=builder /app/apps/admin/public ./public
 RUN mkdir .next
 RUN chown nextjs:nodejs .next
 
-# Automatically leverage output traces to reduce image size
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/apps/admin/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/apps/admin/.next/static ./apps/admin/.next/static
 
 USER nextjs
-
 EXPOSE 3002
-
 ENV HOSTNAME="0.0.0.0"
-CMD ["node", "server.js"]
+
+CMD ["node", "apps/admin/server.js"]

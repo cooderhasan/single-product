@@ -1,25 +1,20 @@
-# Web Frontend Dockerfile
-FROM node:20-alpine AS base
-
-# Install dependencies only when needed
-FROM base AS deps
+# Web Frontend Dockerfile (Monorepo Compatible)
+FROM node:20-alpine AS builder
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
-COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
-RUN npm ci
+COPY package.json package-lock.json* ./
+COPY apps/web/package.json ./apps/web/
+# Note: Web might not need database package, but including it if Turbo needs it
+# COPY packages/database/package.json ./packages/database/ 
 
-# Rebuild the source code only when needed
-FROM base AS builder
-WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
+RUN npm install
 COPY . .
 
-# Build the application
-RUN npm run build
+RUN npx turbo run build --filter=@ecommerce/web
 
-# Production image, copy all the files and run next
-FROM base AS runner
+# Production image
+FROM node:20-alpine AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
@@ -28,19 +23,17 @@ ENV PORT=3000
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-COPY --from=builder /app/public ./public
-
-# Set the correct permission for prerender cache
+COPY --from=builder /app/apps/web/public ./public
 RUN mkdir .next
 RUN chown nextjs:nodejs .next
 
-# Automatically leverage output traces to reduce image size
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+# Next.js standalone output is located here when built in monorepo
+COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/static ./apps/web/.next/static
 
 USER nextjs
-
 EXPOSE 3000
-
 ENV HOSTNAME="0.0.0.0"
-CMD ["node", "server.js"]
+
+# In standalone mode, we run the server.js inside the app folder structure
+CMD ["node", "apps/web/server.js"]
