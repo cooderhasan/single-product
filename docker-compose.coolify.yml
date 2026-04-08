@@ -7,7 +7,7 @@ services:
     restart: unless-stopped
     environment:
       POSTGRES_USER: ${DB_USER:-postgres}
-      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-U1uOcMz9bKY10Gujg47xin65SE33UCoEpARDGABBVjiYlUL6LVAOls7w3ygqqaov}
       POSTGRES_DB: ${DB_NAME:-ecommerce}
     volumes:
       - postgres_data:/var/lib/postgresql/data
@@ -40,7 +40,7 @@ services:
       - "3001"
     environment:
       - NODE_ENV=production
-      - DATABASE_URL=${DATABASE_URL:-postgresql://postgres:postgres@postgres:5432/ecommerce?schema=public}
+      - DATABASE_URL=${DATABASE_URL:-postgresql://postgres:U1uOcMz9bKY10Gujg47xin65SE33UCoEpARDGABBVjiYlUL6LVAOls7w3ygqqaov@postgres:5432/ecommerce?schema=public}
       - REDIS_URL=${REDIS_URL:-redis://redis:6379}
       - JWT_SECRET=${JWT_SECRET}
       - PAYTR_MERCHANT_ID=${PAYTR_MERCHANT_ID}

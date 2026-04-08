@@ -31,7 +31,7 @@ Her servisin "Environment Variables" sekmesine gidin. Coolify bunları okumak zo
 ```env
 # API İçin
 NODE_ENV=production
-DATABASE_URL=postgresql://postgres:postgres@postgres:5432/ecommerce?schema=public
+DATABASE_URL=postgresql://postgres:U1uOcMz9bKY10Gujg47xin65SE33UCoEpARDGABBVjiYlUL6LVAOls7w3ygqqaov@postgres:5432/ecommerce?schema=public
 REDIS_URL=redis://redis:6379
 JWT_SECRET=super_secret_uretilen_key
 PAYTR_MERCHANT_ID=sizin_paytr_id
