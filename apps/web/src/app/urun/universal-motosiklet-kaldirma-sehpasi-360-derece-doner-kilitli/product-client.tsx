@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ShoppingCart, 
   Truck, 
@@ -19,7 +19,12 @@ import {
   Share2,
   Zap,
   Award,
-  Clock
+  Clock,
+  ShieldCheck,
+  CreditCard,
+  Lock,
+  MessageCircle,
+  MapPin
 } from 'lucide-react';
 import { useCartStore } from '@/store/cart';
 import Link from 'next/link';
@@ -47,6 +52,12 @@ export default function ProductPage() {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [activeTab, setActiveTab] = useState<'desc' | 'specs'>('desc');
   const { addItem } = useCartStore();
+
+  // CRO State
+  const [timeLeft, setTimeLeft] = useState('');
+  const [showNotification, setShowNotification] = useState(false);
+  const [notificationData, setNotificationData] = useState({ name: '', city: '', time: '' });
+  const [showStickyCart, setShowStickyCart] = useState(false);
 
   // Dynamic content state
   const [productId, setProductId] = useState<string>('');
@@ -129,6 +140,68 @@ export default function ProductPage() {
     };
 
     fetchContent();
+  }, []);
+
+  // CRO Effects
+  useEffect(() => {
+    // Scroll listener for Sticky Cart on Mobile
+    const handleScroll = () => {
+      if (window.scrollY > 600 && window.innerWidth < 768) {
+        setShowStickyCart(true);
+      } else {
+        setShowStickyCart(false);
+      }
+    };
+    window.addEventListener('scroll', handleScroll);
+    
+    // Countdown logic
+    const calculateTimeLeft = () => {
+      const now = new Date();
+      const targetTime = new Date();
+      targetTime.setHours(15, 0, 0, 0);
+
+      if (now > targetTime) {
+        targetTime.setDate(targetTime.getDate() + 1);
+      }
+
+      const diff = targetTime.getTime() - now.getTime();
+      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((diff / 1000 / 60) % 60);
+      const seconds = Math.floor((diff / 1000) % 60);
+
+      setTimeLeft(
+        `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
+      );
+    };
+
+    calculateTimeLeft();
+    const interval = setInterval(calculateTimeLeft, 1000);
+
+    // Live Notification Logic
+    const cities = ["İstanbul", "Ankara", "İzmir", "Bursa", "Antalya", "Adana"];
+    const names = ["Ahmet B.", "Mehmet K.", "Can D.", "Burak Y.", "Ali C.", "Mert A.", "Emre T.", "Kemal S."];
+    
+    const triggerNotification = () => {
+      const randomCity = cities[Math.floor(Math.random() * cities.length)];
+      const randomName = names[Math.floor(Math.random() * names.length)];
+      const randomTime = Math.floor(Math.random() * 15) + 1;
+
+      setNotificationData({ name: randomName, city: randomCity, time: `${randomTime} dk` });
+      setShowNotification(true);
+
+      setTimeout(() => setShowNotification(false), 5000);
+    };
+
+    const firstTimeout = setTimeout(() => {
+      triggerNotification();
+      setInterval(triggerNotification, 40000);
+    }, 10000);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      clearInterval(interval);
+      clearTimeout(firstTimeout);
+    };
   }, []);
 
   const handleAddToCart = async () => {
@@ -257,6 +330,17 @@ export default function ProductPage() {
                 </div>
               </div>
 
+              {/* Countdown Timer */}
+              <div className="bg-red-50 border border-red-100 rounded-xl p-3 flex items-center gap-3">
+                <div className="bg-red-100 p-2 rounded-lg text-red-600 animate-pulse">
+                  <Clock className="w-5 h-5" />
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-red-800 tracking-wide">BUGÜN KARGOYA VERİLMESİ İÇİN</p>
+                  <p className="text-xs text-red-600 font-medium tracking-wider">KALAN SÜRE: <span className="font-bold text-red-700 text-sm">{timeLeft}</span></p>
+                </div>
+              </div>
+
               {/* Price Card */}
               <div className="bg-gradient-to-r from-primary-50 to-primary-100 border border-primary-100 rounded-2xl p-6">
                 <div className="flex items-baseline gap-3 mb-2">
@@ -303,6 +387,31 @@ export default function ProductPage() {
                 <button className="w-14 h-14 border-2 border-gray-200 rounded-xl flex items-center justify-center hover:border-primary-600 hover:text-primary-600 transition-colors">
                   <Heart className="w-6 h-6" />
                 </button>
+              </div>
+
+              {/* Trust Badges */}
+              <div className="pt-2">
+                <div className="flex flex-wrap items-center justify-center gap-4 py-3 px-4 bg-gray-50 rounded-xl border border-gray-100">
+                  <div className="flex items-center gap-1.5 text-gray-600">
+                    <ShieldCheck className="w-4 h-4 text-green-600" />
+                    <span className="text-xs font-medium">256-bit SSL</span>
+                  </div>
+                  <div className="w-1 h-1 bg-gray-300 rounded-full"></div>
+                  <div className="flex items-center gap-1.5 text-gray-600">
+                    <CreditCard className="w-4 h-4 text-blue-600" />
+                    <span className="text-xs font-medium">PayTR Altyapısı</span>
+                  </div>
+                  <div className="w-1 h-1 bg-gray-300 rounded-full"></div>
+                  <div className="flex items-center gap-1.5 text-gray-600">
+                    <Lock className="w-4 h-4 text-gray-500" />
+                    <span className="text-xs font-medium">Güvenli Ödeme</span>
+                  </div>
+                </div>
+                <div className="flex items-center justify-center gap-2 mt-3">
+                  <img src="https://iyzico.com/assets/images/logo/iyzico-logo.svg" alt="iyzico" className="h-5 opacity-60 grayscale hover:grayscale-0 transition-all" />
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Mastercard_2019_logo.svg/1200px-Mastercard_2019_logo.svg.png" alt="Mastercard" className="h-5 opacity-60 grayscale hover:grayscale-0 transition-all" />
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/16/Former_Visa_%28company%29_logo.svg/1200px-Former_Visa_%28company%29_logo.svg.png" alt="Visa" className="h-5 opacity-60 grayscale hover:grayscale-0 transition-all" />
+                </div>
               </div>
 
               {/* Features Grid */}
@@ -589,6 +698,70 @@ export default function ProductPage() {
           </button>
         </div>
       </section>
+
+      {/* Floating Elements */}
+      <AnimatePresence>
+        {/* Purchase Notification */}
+        {showNotification && (
+          <motion.div
+            initial={{ opacity: 0, y: 50, x: -20 }}
+            animate={{ opacity: 1, y: 0, x: 0 }}
+            exit={{ opacity: 0, y: 20, scale: 0.9 }}
+            className="fixed bottom-24 left-4 md:bottom-6 md:left-6 z-50 bg-white shadow-2xl rounded-xl border border-gray-100 p-3 flex items-center gap-4 max-w-sm"
+          >
+            <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center shrink-0">
+              <Check className="w-6 h-6 text-green-600" />
+            </div>
+            <div>
+              <p className="text-sm text-gray-800">
+                <span className="font-bold">{notificationData.name}</span> - {notificationData.city}
+              </p>
+              <p className="text-xs text-gray-500 mt-0.5">
+                {notificationData.time} önce satın aldı.
+              </p>
+            </div>
+          </motion.div>
+        )}
+
+        {/* Mobile Sticky CTA */}
+        {showStickyCart && (
+          <motion.div
+            initial={{ y: 100 }}
+            animate={{ y: 0 }}
+            exit={{ y: 100 }}
+            className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200 p-4 shadow-[0_-10px_20px_-10px_rgba(0,0,0,0.1)]"
+          >
+            <div className="flex items-center justify-between gap-4">
+              <div>
+                <p className="text-xs text-gray-500 font-medium">Toplam Tutar</p>
+                <p className="text-lg font-bold text-primary-600">{currentPrice.toLocaleString('tr-TR')} TL</p>
+              </div>
+              <button
+                onClick={handleAddToCart}
+                className="flex-1 bg-primary-600 text-white font-bold px-4 py-3 rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-primary-600/30 active:scale-95 transition-transform"
+              >
+                <ShoppingCart className="w-5 h-5" />
+                SEPETE EKLE
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* WhatsApp Floating Button */}
+      <a
+        href="https://wa.me/905551234567?text=Merhaba,%20Universal%20360°%20Döner%20Motosiklet%20Sehpası%20hakkında%20bilgi%20almak%20istiyorum."
+        target="_blank"
+        rel="noopener noreferrer"
+        className="fixed bottom-24 right-4 md:bottom-6 md:right-6 z-40 bg-[#25D366] text-white w-14 h-14 rounded-full flex items-center justify-center shadow-lg hover:scale-110 hover:shadow-xl transition-all"
+        aria-label="WhatsApp Destek"
+      >
+        <MessageCircle className="w-7 h-7" />
+        <span className="absolute -top-1 -right-1 flex h-3 w-3">
+          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+          <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500 border border-white"></span>
+        </span>
+      </a>
     </div>
   );
 }
