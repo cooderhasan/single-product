@@ -32,8 +32,8 @@ services:
 
   api:
     build:
-      context: .
-      dockerfile: apps/api/Dockerfile
+      context: ./apps/api
+      dockerfile: Dockerfile
     container_name: coolify-ecommerce-api
     restart: unless-stopped
     expose:
@@ -55,8 +55,8 @@ services:
 
   web:
     build:
-      context: .
-      dockerfile: apps/web/Dockerfile
+      context: ./apps/web
+      dockerfile: Dockerfile
     container_name: coolify-ecommerce-web
     restart: unless-stopped
     expose:
@@ -71,8 +71,8 @@ services:
 
   admin:
     build:
-      context: .
-      dockerfile: apps/admin/Dockerfile
+      context: ./apps/admin
+      dockerfile: Dockerfile
     container_name: coolify-ecommerce-admin
     restart: unless-stopped
     expose:
