@@ -160,7 +160,7 @@ export class ProductsService {
         ...productData,
         category: { connect: { id: categoryId } },
         images: images ? {
-          create: images.map((url, index) => ({
+          create: images.map((url: string, index: number) => ({
             url,
             sortOrder: index,
             isMain: index === 0,
@@ -189,7 +189,7 @@ export class ProductsService {
       data: {
         ...productData,
         images: images ? {
-          create: images.map((url, index) => ({
+          create: images.map((url: string, index: number) => ({
             url,
             sortOrder: index,
             isMain: index === 0,

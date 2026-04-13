@@ -11,6 +11,9 @@ RUN npm install
 # Generate database client
 RUN npx turbo run db:generate --filter=@ecommerce/api
 
+# Build database package first (CRITICAL for types)
+RUN npx turbo run build --filter=@ecommerce/database
+
 # Build specific package using direct Nest build for better error capture
 RUN cd apps/api && npx nest build || (echo "NEST BUILD FAILED" && exit 1)
 

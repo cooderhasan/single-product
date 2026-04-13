@@ -134,7 +134,7 @@ export class OrdersService {
       let variantName = '';
 
       if (item.variantId) {
-        const variant = product.variants.find(v => v.id === item.variantId);
+        const variant = product.variants.find((v: any) => v.id === item.variantId);
         if (!variant) {
           throw new BadRequestException(`Varyant bulunamadı: ${item.variantId}`);
         }

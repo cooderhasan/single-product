@@ -38,14 +38,14 @@ export class CartService {
     });
 
     // Toplam tutarı hesapla
-    const total = cartItems.reduce((sum, item) => {
+    const total = cartItems.reduce((sum: number, item: any) => {
       return sum + Number(item.product.price) * item.quantity;
     }, 0);
 
     return {
       items: cartItems,
       total,
-      count: cartItems.reduce((sum, item) => sum + item.quantity, 0),
+      count: cartItems.reduce((sum: number, item: any) => sum + item.quantity, 0),
     };
   }
 

@@ -46,7 +46,7 @@ export class PaymentsController {
     }
 
     // Sepet verisi oluştur
-    const userBasket = order.items.map((item) => ({
+    const userBasket = order.items.map((item: any) => ({
       name: item.productName,
       price: Math.round(Number(item.price) * 100), // Kuruş cinsinden
       quantity: item.quantity,
