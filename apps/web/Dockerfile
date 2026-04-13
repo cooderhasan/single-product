@@ -8,7 +8,7 @@ COPY . .
 
 RUN npm install
 
-RUN npx turbo run db:generate --filter=@ecommerce/web
+RUN cd packages/database && npx prisma generate
 RUN npx turbo run build --filter=@ecommerce/web
 
 # Production image
