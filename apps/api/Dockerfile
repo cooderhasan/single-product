@@ -30,5 +30,5 @@ RUN mkdir -p /app/uploads && chown -R nestjs:nodejs /app/uploads
 USER nestjs
 EXPOSE 3001
 
-# Execute directly from the absolute build path
-CMD ["node", "apps/api/dist/main"]
+# Use npm workspaces for reliable startup across the monorepo structure
+CMD ["npm", "run", "start:prod", "--workspace=@ecommerce/api"]
