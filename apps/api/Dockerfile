@@ -20,7 +20,7 @@ RUN cd apps/api && npx nest build || (echo "NEST BUILD FAILED" && exit 1)
 # Production image
 FROM node:20-alpine AS runner
 # Install shared libraries required by Prisma
-RUN apk add --no-cache openssl libc6-compat
+RUN apk add --no-cache openssl1.1-compat libc6-compat
 WORKDIR /app
 
 ENV NODE_ENV=production
