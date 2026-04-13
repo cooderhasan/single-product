@@ -17,8 +17,8 @@ RUN npx turbo run build --filter=@ecommerce/database
 RUN cd apps/api && npx nest build || (echo "NEST BUILD FAILED" && exit 1)
 
 # Production image
-FROM node:20-bookworm AS runner
-# Full image already includes openssl, ca-certificates, and curl
+FROM node:20-bookworm-slim AS runner
+# Slim image already includes libssl, we avoid apt-get to prevent network errors
 WORKDIR /app
 
 ENV NODE_ENV=production
