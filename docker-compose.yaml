@@ -61,7 +61,9 @@ services:
       - "traefik.http.routers.api.rule=Host(`api.360sehpa.com`)"
       - "traefik.http.routers.api.entrypoints=websecure"
       - "traefik.http.routers.api.tls=true"
-      - "traefik.http.services.api.loadbalancer.server.port=3001"
+      - "traefik.http.routers.api.tls.certresolver=letsencrypt"
+      - "traefik.http.services.api-svc.loadbalancer.server.port=3001"
+      - "traefik.docker.network=coolify"
       - "coolify.managed=true"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3001/api/v1/products"]
@@ -91,7 +93,9 @@ services:
       - "traefik.http.routers.web.rule=Host(`360sehpa.com`)"
       - "traefik.http.routers.web.entrypoints=websecure"
       - "traefik.http.routers.web.tls=true"
-      - "traefik.http.services.web.loadbalancer.server.port=3000"
+      - "traefik.http.routers.web.tls.certresolver=letsencrypt"
+      - "traefik.http.services.web-svc.loadbalancer.server.port=3000"
+      - "traefik.docker.network=coolify"
       - "coolify.managed=true"
     networks:
       - coolify
@@ -115,7 +119,9 @@ services:
       - "traefik.http.routers.admin.rule=Host(`admin.360sehpa.com`)"
       - "traefik.http.routers.admin.entrypoints=websecure"
       - "traefik.http.routers.admin.tls=true"
-      - "traefik.http.services.admin.loadbalancer.server.port=3002"
+      - "traefik.http.routers.admin.tls.certresolver=letsencrypt"
+      - "traefik.http.services.admin-svc.loadbalancer.server.port=3002"
+      - "traefik.docker.network=coolify"
       - "coolify.managed=true"
     networks:
       - coolify
