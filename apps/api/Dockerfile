@@ -20,7 +20,7 @@ RUN cd apps/api && npx nest build || (echo "NEST BUILD FAILED" && exit 1)
 # Production image
 FROM node:20-bookworm-slim AS runner
 # Install shared libraries required by Prisma
-RUN apt-get update && apt-get install -y openssl ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y openssl ca-certificates curl && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 
 ENV NODE_ENV=production
