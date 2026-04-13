@@ -13,6 +13,8 @@ RUN npx turbo run build --filter=@ecommerce/admin
 
 # Production image
 FROM node:20-alpine AS runner
+# Install shared libraries required by Prisma
+RUN apk add --no-cache openssl libc6-compat
 WORKDIR /app
 
 ENV NODE_ENV=production
