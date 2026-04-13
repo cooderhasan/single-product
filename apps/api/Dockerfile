@@ -27,9 +27,10 @@ ENV PORT=3001
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nestjs
 
-# Copy built application from monorepo path
+# Copy built application and required monorepo packages
 COPY --from=builder --chown=nestjs:nodejs /app/apps/api/dist ./dist
 COPY --from=builder --chown=nestjs:nodejs /app/node_modules ./node_modules
+COPY --from=builder --chown=nestjs:nodejs /app/packages/database ./packages/database
 COPY --from=builder --chown=nestjs:nodejs /app/apps/api/package.json ./
 
 USER nestjs
