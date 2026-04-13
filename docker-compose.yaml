@@ -66,10 +66,10 @@ services:
       - "traefik.docker.network=coolify"
       - "coolify.managed=true"
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3001/api/v1/products"]
+      test: ["CMD", "curl", "-f", "http://localhost:3001/api/docs"]
       interval: 30s
       timeout: 10s
-      retries: 3
+      retries: 5
     networks:
       - coolify
 
