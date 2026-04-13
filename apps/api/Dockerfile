@@ -1,19 +1,12 @@
 # API Dockerfile (Monorepo Compatible)
 FROM node:20-alpine AS builder
-RUN apk add --no-cache libc6-compat
+RUN apk add --no-cache libc6-compat openssl
 WORKDIR /app
 
-# First copy root config
-COPY package.json package-lock.json* ./
-
-# Copy all packages/apps package.jsons for dependency resolution
-COPY apps/api/package.json ./apps/api/
-COPY packages/database/package.json ./packages/database/
+# First copy everything to ensure all monorepo dependencies are resolved
+COPY . .
 
 RUN npm install
-
-# Copy source code
-COPY . .
 
 # Generate database client first
 RUN npx turbo run db:generate --filter=@ecommerce/api

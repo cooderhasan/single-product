@@ -2,7 +2,31 @@
 
 Bu proje, açık kaynaklı sunucu yönetim aracı **Coolify** üzerinde sorunsuz, sıfır-kesintili (zero-downtime) SSL'li bir şekilde çalıştırılmak üzere yapılandırılmıştır.
 
-Local sunucudaki Nginx yapıları ve port çakışmaları temizlenmiş, bunun yerine Coolify'ın yerleşik Ters Vekil (Traefik) sistemine %100 uyumlu `docker-compose.coolify.yml` dosyası sunulmuştur.
+Local sunucudaki Nginx yapıları ve port çakışmaları temizlenmiş, bunun yerine Coolify'ın yerleşik Ters Vekil (Traefik) sistemine %100 uyumlu `docker-compose.coolify.yml` dosyası sunulmuştur. Eğer uygulamayı Coolify'ın yüklü olduğu sunucudan farklı bir sunucuya kuracaksanız (Remote Server), aşağıdaki adımları takip edin.
+
+## Uzak Sunucu (Remote Server) Ekleme Adımları
+
+Eğer Coolify farklı bir sunucuda, site ise yeni aldığınız farklı bir sunucuda olacaksa şu adımları izleyin:
+
+### 1. SSH Anahtarı Tanımlama
+1. Coolify panelinde sağ menüden **Keys & Tokens** kısmına gidin.
+2. **+ Add** butonuna basın ve bir isim verin (Örn: `yeni-sunucu-key`).
+3. Coolify size bir **Public Key** verecektir. Bu anahtarı kopyalayın.
+
+### 2. Yeni Sunucuyu Yetkilendirme
+Yeni sunucunuza (Ubuntu 22) SSH ile girin ve aşağıdaki komutu çalıştırarak Coolify anahtarını sunucuya ekleyin:
+```bash
+mkdir -p ~/.ssh && echo "BURAYA_COOLIFYDEN_KOPYALANAN_ANAHTAR" >> ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys
+```
+
+### 3. Sunucuyu Coolify'a Kaydetme
+1. Coolify panelinde **Servers** sekmesine gidin.
+2. **+ Add** butonuna basın.
+3. IP adresi kısmına yeni sunucunuzun IP'sini girin.
+4. User kısmına `root` yazın.
+5. SSH Key kısmından az önce oluşturduğunuz `yeni-sunucu-key` anahtarını seçin.
+6. **Save Server** dedikten sonra **Validate Server** butonuna basın.
+7. Sunucu durumu **"Ready"** olduğunda işlem tamamdır.
 
 ## Adım Adım Kurulum
 

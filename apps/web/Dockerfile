@@ -1,15 +1,12 @@
 # Web Frontend Dockerfile (Monorepo Compatible)
 FROM node:20-alpine AS builder
-RUN apk add --no-cache libc6-compat
+RUN apk add --no-cache libc6-compat openssl
 WORKDIR /app
 
-COPY package.json package-lock.json* ./
-COPY apps/web/package.json ./apps/web/
-# Note: Web might not need database package, but including it if Turbo needs it
-# COPY packages/database/package.json ./packages/database/ 
+# First copy everything to ensure all monorepo dependencies are resolved
+COPY . .
 
 RUN npm install
-COPY . .
 
 RUN npx turbo run db:generate --filter=@ecommerce/web
 RUN npx turbo run build --filter=@ecommerce/web

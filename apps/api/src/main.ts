@@ -13,16 +13,20 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService);
 
+  const isProduction = configService.get('NODE_ENV') === 'production';
+  const frontendUrl = configService.get('FRONTEND_URL') || 'http://localhost:3040';
+  const adminUrl = configService.get('ADMIN_URL') || 'http://localhost:3042';
+
   // Güvenlik
   app.use(helmet({
     crossOriginResourcePolicy: { policy: "cross-origin" },
     contentSecurityPolicy: {
       directives: {
         defaultSrc: ["'self'"],
-        scriptSrc: ["'self'", "'unsafe-inline'"],
-        styleSrc: ["'self'", "'unsafe-inline'"],
-        imgSrc: ["'self'", "data:", "blob:", "http://localhost:3041", "http://localhost:3040", "http://localhost:3042", "https://res.cloudinary.com"],
-        connectSrc: ["'self'", "http://localhost:3041", "http://localhost:3040", "http://localhost:3042"],
+        scriptSrc: ["'self'", "'unsafe-inline'", "https://www.googletagmanager.com"],
+        styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+        imgSrc: ["'self'", "data:", "blob:", "https://res.cloudinary.com", frontendUrl, adminUrl],
+        connectSrc: ["'self'", frontendUrl, adminUrl, "https://api.paytr.com"],
       },
     }
   }));
@@ -31,17 +35,16 @@ async function bootstrap() {
 
   // CORS - Birden fazla origin'e izin ver
   const allowedOrigins = [
-    configService.get('FRONTEND_URL') || 'http://localhost:3040',
-    configService.get('ADMIN_URL') || 'http://localhost:3042',
-    'http://localhost:3040',
-    'http://localhost:3042',
+    frontendUrl,
+    adminUrl,
+    'https://www.paytr.com',
+    'https://paytr.com'
   ];
   
   app.enableCors({
     origin: (origin, callback) => {
-      // Allow requests with no origin (like mobile apps or curl requests)
-      if (!origin) return callback(null, true);
-      if (allowedOrigins.includes(origin)) {
+      if (!origin || !isProduction) return callback(null, true);
+      if (allowedOrigins.some(o => origin.startsWith(o))) {
         callback(null, true);
       } else {
         callback(new Error('Not allowed by CORS'));
