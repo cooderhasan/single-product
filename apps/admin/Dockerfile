@@ -12,9 +12,8 @@ RUN cd packages/database && npx prisma generate
 RUN npx turbo run build --filter=@ecommerce/admin
 
 # Production image
-FROM node:20-bookworm-slim AS runner
-# Install shared libraries required by Prisma (with retry)
-RUN apt-get update && (apt-get install -y openssl ca-certificates || (sleep 5 && apt-get install -y openssl ca-certificates)) && rm -rf /var/lib/apt/lists/*
+FROM node:20-bookworm AS runner
+# Full image already includes openssl, ca-certificates, and curl
 WORKDIR /app
 
 ENV NODE_ENV=production

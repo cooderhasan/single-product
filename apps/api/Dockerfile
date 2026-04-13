@@ -17,9 +17,8 @@ RUN npx turbo run build --filter=@ecommerce/database
 RUN cd apps/api && npx nest build || (echo "NEST BUILD FAILED" && exit 1)
 
 # Production image
-FROM node:20-bookworm-slim AS runner
-# Install shared libraries required by Prisma (with retry)
-RUN apt-get update && (apt-get install -y openssl ca-certificates curl || (sleep 5 && apt-get install -y openssl ca-certificates curl)) && rm -rf /var/lib/apt/lists/*
+FROM node:20-bookworm AS runner
+# Full image already includes openssl, ca-certificates, and curl
 WORKDIR /app
 
 ENV NODE_ENV=production
