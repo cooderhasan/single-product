@@ -1,6 +1,5 @@
-# API Dockerfile (Monorepo Compatible)
-FROM node:20-bookworm-slim AS builder
-RUN apt-get update && apt-get install -y openssl python3 make g++ git && rm -rf /var/lib/apt/lists/*
+FROM node:20-bookworm AS builder
+# Full image already includes build tools (python3, make, g++, etc.)
 WORKDIR /app
 
 # First copy everything to ensure all monorepo dependencies are resolved
@@ -19,8 +18,8 @@ RUN cd apps/api && npx nest build || (echo "NEST BUILD FAILED" && exit 1)
 
 # Production image
 FROM node:20-bookworm-slim AS runner
-# Install shared libraries required by Prisma
-RUN apt-get update && apt-get install -y openssl ca-certificates curl && rm -rf /var/lib/apt/lists/*
+# Install shared libraries required by Prisma (with retry)
+RUN apt-get update && (apt-get install -y openssl ca-certificates curl || (sleep 5 && apt-get install -y openssl ca-certificates curl)) && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 
 ENV NODE_ENV=production
