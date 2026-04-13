@@ -1,12 +1,12 @@
 # Web Frontend Dockerfile (Monorepo Compatible)
 FROM node:20-bookworm-slim AS builder
-RUN apt-get update && apt-get install -y openssl python3 build-essential
+RUN apt-get update && apt-get install -y openssl python3 make g++ git && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 
 # First copy everything to ensure all monorepo dependencies are resolved
 COPY . .
 
-RUN npm install
+RUN npm install --legacy-peer-deps
 
 RUN cd packages/database && npx prisma generate
 RUN npx turbo run build --filter=@ecommerce/web
