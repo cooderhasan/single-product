@@ -12,7 +12,7 @@ RUN npm install
 RUN npx turbo run db:generate --filter=@ecommerce/api
 
 # Build specific package
-RUN npx turbo run build --filter=@ecommerce/api
+RUN npx turbo run build --filter=@ecommerce/api --verbose
 
 # Production image
 FROM node:20-alpine AS runner
