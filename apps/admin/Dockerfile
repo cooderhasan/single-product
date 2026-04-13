@@ -1,13 +1,12 @@
 # Admin Panel Dockerfile (Monorepo Compatible)
 FROM node:20-alpine AS builder
-RUN apk add --no-cache libc6-compat
+RUN apk add --no-cache libc6-compat openssl
 WORKDIR /app
 
-COPY package.json package-lock.json* ./
-COPY apps/admin/package.json ./apps/admin/
+# First copy everything to ensure all monorepo dependencies are resolved
+COPY . .
 
 RUN npm install
-COPY . .
 
 RUN npx turbo run db:generate --filter=@ecommerce/admin
 RUN npx turbo run build --filter=@ecommerce/admin
@@ -22,7 +21,8 @@ ENV PORT=3002
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-COPY --from=builder /app/apps/admin/public ./public
+# Note: public folder is optional in Next.js, only copy if it exists or skip for admin
+# COPY --from=builder /app/apps/admin/public ./public
 RUN mkdir .next
 RUN chown nextjs:nodejs .next
 
