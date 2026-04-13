@@ -1,8 +1,8 @@
 # API Dockerfile (Ultimate Bullseye Compatibility)
 FROM node:20-bullseye AS runner
 
-# Install OpenSSL 1.1 explicitly as required by Prisma on this environment
-RUN apt-get update && apt-get install -y openssl libssl1.1 ca-certificates && rm -rf /var/lib/apt/lists/*
+# Install OpenSSL 1.1 and curl explicitly
+RUN apt-get update && apt-get install -y openssl libssl1.1 ca-certificates curl && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 

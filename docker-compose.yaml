@@ -55,11 +55,6 @@ services:
       - "traefik.http.services.api-svc.loadbalancer.server.port=3001"
       - "traefik.docker.network=coolify"
       - "coolify.managed=true"
-    healthcheck:
-      test: ["CMD", "curl", "-s", "http://localhost:3001/api/docs"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
     networks:
       - coolify
 
