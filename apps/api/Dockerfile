@@ -1,6 +1,6 @@
 # API Dockerfile (Monorepo Compatible)
-FROM node:20-alpine AS builder
-RUN apk add --no-cache libc6-compat openssl
+FROM node:20-bookworm-slim AS builder
+RUN apt-get update && apt-get install -y openssl python3 build-essential
 WORKDIR /app
 
 # First copy everything to ensure all monorepo dependencies are resolved
@@ -18,16 +18,16 @@ RUN npx turbo run build --filter=@ecommerce/database
 RUN cd apps/api && npx nest build || (echo "NEST BUILD FAILED" && exit 1)
 
 # Production image
-FROM node:20-alpine AS runner
+FROM node:20-bookworm-slim AS runner
 # Install shared libraries required by Prisma
-RUN apk add --no-cache openssl1.1-compat libc6-compat
+RUN apt-get update && apt-get install -y openssl ca-certificates && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 
 ENV NODE_ENV=production
 ENV PORT=3001
 
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nestjs
+RUN groupadd --system --gid 1001 nodejs
+RUN useradd --system --uid 1001 --gid nodejs nestjs
 
 # Copy built application and required monorepo packages
 COPY --from=builder --chown=nestjs:nodejs /app/apps/api/dist ./dist

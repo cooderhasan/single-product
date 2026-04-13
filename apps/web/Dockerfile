@@ -1,6 +1,6 @@
 # Web Frontend Dockerfile (Monorepo Compatible)
-FROM node:20-alpine AS builder
-RUN apk add --no-cache libc6-compat openssl
+FROM node:20-bookworm-slim AS builder
+RUN apt-get update && apt-get install -y openssl python3 build-essential
 WORKDIR /app
 
 # First copy everything to ensure all monorepo dependencies are resolved
@@ -12,16 +12,16 @@ RUN cd packages/database && npx prisma generate
 RUN npx turbo run build --filter=@ecommerce/web
 
 # Production image
-FROM node:20-alpine AS runner
+FROM node:20-bookworm-slim AS runner
 # Install shared libraries required by Prisma
-RUN apk add --no-cache openssl1.1-compat libc6-compat
+RUN apt-get update && apt-get install -y openssl ca-certificates && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 
 ENV NODE_ENV=production
 ENV PORT=3000
 
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
+RUN groupadd --system --gid 1001 nodejs
+RUN useradd --system --uid 1001 --gid nodejs nextjs
 
 # COPY --from=builder /app/apps/web/public ./public
 RUN mkdir .next
