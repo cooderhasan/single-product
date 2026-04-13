@@ -12,8 +12,9 @@ RUN cd packages/database && npx prisma generate
 RUN npx turbo run build --filter=@ecommerce/web
 
 # Production image
-FROM node:20-bookworm-slim AS runner
-# Slim image already includes libssl, we avoid apt-get to prevent network errors
+FROM node:20-bullseye AS runner
+# Bullseye includes libssl1.1 natively
+RUN apt-get update && apt-get install -y openssl libssl1.1 ca-certificates && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 
 ENV NODE_ENV=production
