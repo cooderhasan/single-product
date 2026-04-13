@@ -8,11 +8,11 @@ COPY . .
 
 RUN npm install
 
-# Generate database client first
+# Generate database client
 RUN npx turbo run db:generate --filter=@ecommerce/api
 
-# Build specific package
-RUN npx turbo run build --filter=@ecommerce/api --verbose
+# Build specific package using direct Nest build for better error capture
+RUN cd apps/api && npx nest build || (echo "NEST BUILD FAILED" && exit 1)
 
 # Production image
 FROM node:20-alpine AS runner
