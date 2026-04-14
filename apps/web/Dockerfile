@@ -44,7 +44,7 @@ ENV PORT=3040
 RUN groupadd --system --gid 1001 nodejs
 RUN useradd --system --uid 1001 --gid nodejs nextjs
 
-# Copy the standalone output which includes node_modules
+# Copy the standalone output which includes physically traced node_modules
 COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/static ./apps/web/.next/static
 COPY --from=builder --chown=nextjs:nodejs /app/apps/web/public ./apps/web/public
@@ -55,8 +55,9 @@ EXPOSE 3040
 
 ENV HOSTNAME="0.0.0.0"
 
-# Smart startup: finds server.js regardless of nesting and ensures correct module resolution
-CMD ["sh", "-c", "if [ -f apps/web/server.js ]; then node apps/web/server.js; elif [ -f server.js ]; then node server.js; else SERVER_FILE=$(find . -name server.js | head -n 1); if [ -n \"$SERVER_FILE\" ]; then node \"$SERVER_FILE\"; else echo 'Error: server.js not found'; ls -R; exit 1; fi; fi"]
+# Now that tracing root is set, we can reliably run from the monorepo root
+CMD ["node", "apps/web/server.js"]
+
 
 
 
