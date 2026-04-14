@@ -48,12 +48,14 @@ export class UsersController {
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Tüm kullanıcılar (Admin)' })
   async findAll(
-    @Query('skip', new ParseIntPipe({ optional: true })) skip?: number,
-    @Query('take', new ParseIntPipe({ optional: true })) take?: number,
+    @Query('skip') skip?: string,
+    @Query('take') take?: string,
     @Query('role') role?: UserRole,
     @Query('search') search?: string,
   ) {
-    return this.usersService.findAll({ skip, take, role, search });
+    const skipNum = skip ? parseInt(skip, 10) : undefined;
+    const takeNum = take ? parseInt(take, 10) : undefined;
+    return this.usersService.findAll({ skip: skipNum, take: takeNum, role, search });
   }
 
   @Put(':id')
