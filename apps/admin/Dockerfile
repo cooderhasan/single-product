@@ -32,8 +32,8 @@ RUN npx turbo run build --filter=@ecommerce/admin
 
 # Production image
 FROM node:20-bullseye AS runner
-# Bullseye includes libssl1.1 natively, adding curl for healthchecks
-RUN apt-get update && apt-get install -y openssl libssl1.1 ca-certificates curl && rm -rf /var/lib/apt/lists/*
+# Bullseye natively supports Node 20, adding curl for healthchecks
+RUN apt-get update && apt-get install -y openssl ca-certificates curl && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 
 ENV NODE_ENV=production

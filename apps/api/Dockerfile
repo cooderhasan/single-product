@@ -10,8 +10,8 @@ ARG PAYTR_MERCHANT_SALT
 ARG FRONTEND_URL
 ARG ADMIN_URL
 
-# Install OpenSSL 1.1 and curl explicitly
-RUN apt-get update && apt-get install -y openssl libssl1.1 ca-certificates curl && rm -rf /var/lib/apt/lists/*
+# Install OpenSSL and curl explicitly
+RUN apt-get update && apt-get install -y openssl ca-certificates curl && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
