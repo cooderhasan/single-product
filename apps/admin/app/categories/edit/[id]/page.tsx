@@ -108,13 +108,18 @@ export default function EditCategoryPage() {
     setLoading(true)
 
     try {
+      const payload = {
+        ...formData,
+        parentId: formData.parentId || null
+      }
+
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/categories/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${localStorage.getItem('admin_token')}`,
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(payload),
       })
 
       if (response.ok) {

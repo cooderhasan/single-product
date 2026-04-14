@@ -1,5 +1,6 @@
 import { IsString, IsOptional, IsNumber, IsBoolean, IsUUID } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { Transform } from 'class-transformer';
 
 export class CreateCategoryDto {
   @ApiProperty()
@@ -27,6 +28,7 @@ export class CreateCategoryDto {
 
   @ApiPropertyOptional()
   @IsOptional()
+  @Transform(({ value }) => (value === '' ? null : value))
   @IsUUID()
   parentId?: string;
 
