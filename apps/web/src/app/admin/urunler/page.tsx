@@ -161,7 +161,7 @@ export default function ProductsPage() {
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden relative">
-                        {product.images?.[0]?.url ? (
+                        {(typeof product.images?.[0] === 'string' ? product.images[0] : product.images?.[0]?.url) ? (
                           <>
                             <img 
                               src={getImageUrl(product.images[0].url)} 
@@ -204,7 +204,7 @@ export default function ProductsPage() {
                   <td className="px-6 py-4">
                     <div className="flex items-center justify-end gap-2">
                       <button 
-                        onClick={() => router.push(`/urun/${product.id}`)}
+                        onClick={() => router.push(`/urun/${product.slug || product.id}`)}
                         className="p-2 text-gray-400 hover:text-primary-600 transition-colors"
                       >
                         <Eye className="w-4 h-4" />

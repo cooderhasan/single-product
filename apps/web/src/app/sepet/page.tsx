@@ -62,7 +62,7 @@ export default function CartPage() {
               >
                 {/* Product Image */}
                 <Link href={`/urun/${item.product.slug}`} className="w-24 h-24 sm:w-28 sm:h-28 flex-shrink-0 relative border border-gray-100 rounded-lg overflow-hidden bg-gray-50 hidden sm:block">
-                  {item.product.images?.[0]?.url ? (
+                  {(typeof item.product.images?.[0] === 'string' ? item.product.images[0] : item.product.images?.[0]?.url) ? (
                     <Image
                       src={item.product.images[0].url}
                       alt={item.product.name}
@@ -78,7 +78,7 @@ export default function CartPage() {
 
                 <div className="flex sm:hidden gap-4 mb-4">
                   <Link href={`/urun/${item.product.slug}`} className="w-20 h-20 flex-shrink-0 relative border border-gray-100 rounded-lg overflow-hidden bg-gray-50">
-                    {item.product.images?.[0]?.url ? (
+                    {(typeof item.product.images?.[0] === 'string' ? item.product.images[0] : item.product.images?.[0]?.url) ? (
                       <Image
                         src={item.product.images[0].url}
                         alt={item.product.name}

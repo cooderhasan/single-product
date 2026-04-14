@@ -39,6 +39,8 @@ services:
         - ADMIN_URL=${SERVICE_URL_ADMIN:-https://admin.360sehpa.com}
     container_name: coolify-ecommerce-api
     restart: unless-stopped
+    volumes:
+      - api_uploads:/app/uploads
     expose:
       - "3041"
     environment:
@@ -136,3 +138,4 @@ networks:
 volumes:
   postgres_data:
   redis_data:
+  api_uploads:

@@ -43,12 +43,12 @@ export default async function ProductPage({ params }: { params: { slug: string }
   
   const images = product.images && product.images.length > 0 
     ? product.images.map((img: any) => {
-        const url = img.url || '';
-        const fullUrl = url ? (url.startsWith('http') ? url : `${apiBase}${url}`) : '';
+        const url = typeof img === 'string' ? img : (img?.url || '');
+        const fullUrl = typeof url === 'string' && url ? (url.startsWith('http') ? url : `${apiBase}${url}`) : '';
         console.log(`Image URL: "${url}" -> Full: "${fullUrl}"`);
         return { 
           url: fullUrl,
-          alt: img.alt || product.name 
+          alt: typeof img === 'string' ? product.name : (img?.alt || product.name)
         };
       })
     : [{ url: '', alt: product.name }];

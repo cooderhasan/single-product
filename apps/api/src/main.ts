@@ -73,7 +73,7 @@ async function bootstrap() {
   // API rate limit vs...
   
   // Static Files - Görselleri serve et
-  app.use('/uploads', express.static(join(__dirname, '..', 'uploads')));
+  app.use('/uploads', express.static(join(process.cwd(), 'uploads')));
 
   // API Prefix
   app.setGlobalPrefix('api/v1');

@@ -131,7 +131,7 @@ export default function ProductsPage() {
                     <div className="flex items-center">
                       {product.images?.[0] ? (
                         <img
-                          src={product.images[0]}
+                          src={typeof product.images[0] === 'string' && product.images[0].startsWith('http') ? product.images[0] : (process.env.NEXT_PUBLIC_API_URL || '') + product.images[0]}
                           alt={product.name}
                           className="h-10 w-10 rounded-lg object-cover"
                         />
@@ -172,13 +172,7 @@ export default function ProductsPage() {
                   </td>
                   <td className="px-6 py-4 text-right">
                     <div className="flex items-center justify-end space-x-2">
-                      <Link
-                        href={`/products/${product.id}`}
-                        className="p-2 text-gray-400 hover:text-blue-600 transition-colors"
-                        title="Görüntüle"
-                      >
-                        <EyeIcon className="h-5 w-5" />
-                      </Link>
+                      
                       <Link
                         href={`/products/edit/${product.id}`}
                         className="p-2 text-gray-400 hover:text-blue-600 transition-colors"

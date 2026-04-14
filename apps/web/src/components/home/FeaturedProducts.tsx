@@ -42,8 +42,19 @@ export function FeaturedProducts({ products }: FeaturedProductsProps) {
 
 function ProductCard({ product }: { product: Product }) {
   const apiBase = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3041';
-  const mainImageUrl = product.images?.find((img) => img.isMain)?.url || product.images?.[0]?.url;
-  const mainImage = mainImageUrl ? (mainImageUrl.startsWith('http') ? mainImageUrl : `${apiBase}${mainImageUrl}`) : null;
+  let mainImageUrl = '';
+  if (product.images && product.images.length > 0) {
+    const firstImg = product.images[0];
+    const mainImg = product.images.find(img => typeof img === 'object' && img?.isMain);
+    if (mainImg && typeof mainImg === 'object' && 'url' in mainImg) {
+      mainImageUrl = mainImg.url;
+    } else if (typeof firstImg === 'string') {
+      mainImageUrl = firstImg;
+    } else if (typeof firstImg === 'object' && 'url' in firstImg) {
+      mainImageUrl = firstImg.url;
+    }
+  }
+  const mainImage = typeof mainImageUrl === 'string' && mainImageUrl ? (mainImageUrl.startsWith('http') ? mainImageUrl : `${apiBase}${mainImageUrl}`) : null;
 
   return (
     <Link href={`/urun/${product.slug}`} className="group">
