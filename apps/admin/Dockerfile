@@ -16,7 +16,7 @@ ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
 
 RUN npm install --legacy-peer-deps
 
-RUN cd packages/database && DATABASE_URL=${DATABASE_URL} npx prisma generate
+RUN cd packages/database && DATABASE_URL=${DATABASE_URL} ./node_modules/.bin/prisma generate
 RUN npx turbo run build --filter=@ecommerce/admin
 
 # Production image
