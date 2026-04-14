@@ -71,6 +71,62 @@ export default function SiteContentPage() {
     }
   }
 
+  const loadSampleContent = async () => {
+    if (!confirm('Varsayılan örnek içerikler yüklenecek. Devam etmek istiyor musunuz?')) return
+
+    setLoading(true)
+    const samples = [
+      {
+        key: 'product_showcase',
+        title: 'Motosiklet bakımını bir sanat haline getir; her açıdan eriş, her hareketi kontrol et, her an güven içinde ol.',
+        description: '360 Derece Tam Döner Mekanizma: Motosikletini kaldırmanın ötesinde, her yöne 360 derece döndürebilirsin! Zincir yağlama, fren balata değişimi, motor bileşenlerine erişim veya lastik tamiri gibi işlerde motosikleti istediğin açıya getir – eğilmek, zorlanmak yok! Standart sehpalarda sınırlı hareket varken, bu senin zamanını ve enerjini %50\'ye varan oranda tasarruf ettirir. Bakım süren kısalır, keyfin artar!',
+        image: '/images/sehpa-motor.jpg',
+        buttonText: 'SATIN AL',
+        buttonLink: '/urun/universal-motosiklet-kaldirma-sehpasi-360-derece-doner-kilitli',
+        data: {
+          features: [
+            '360° Döner Mekanizma',
+            'Kilitli Tekerlekler',
+            'Dayanıklı Çelik Gövde',
+            'Universal Uyum',
+          ]
+        }
+      },
+      {
+        key: 'features_section',
+        title: 'Neden 360 Sehpa?',
+        subtitle: 'Profesyonel motosiklet bakımının adresi',
+        data: {
+          features: [
+            { icon: 'truck', title: 'Ücretsiz Kargo', description: '1000 TL üzeri siparişlerde ücretsiz kargo' },
+            { icon: 'shield', title: '2 Yıl Garanti', description: 'Tüm ürünlerimizde 2 yıl garanti' },
+            { icon: 'clock', title: 'Hızlı Teslimat', description: 'Stoktan aynı gün kargo' },
+            { icon: 'headphones', title: '7/24 Destek', description: 'WhatsApp üzerinden anında destek' }
+          ]
+        }
+      }
+    ]
+
+    try {
+      for (const sample of samples) {
+        await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/site-content`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('admin_token')}`,
+          },
+          body: JSON.stringify(sample),
+        })
+      }
+      toast.success('Örnek içerikler başarıyla yüklendi')
+      fetchContents()
+    } catch (error) {
+      toast.error('Örnek içerikler yüklenirken hata oluştu')
+    } finally {
+      setLoading(false)
+    }
+  }
+
   const handleToggleActive = async (id: string, currentStatus: boolean) => {
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/site-content/${id}`, {
@@ -103,8 +159,24 @@ export default function SiteContentPage() {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
         <h1 className="text-3xl font-bold text-gray-900">Site İçerikleri</h1>
+        <div className="flex flex-wrap gap-3">
+          <button
+            onClick={loadSampleContent}
+            className="inline-flex items-center px-4 py-2 bg-amber-50 text-amber-700 border border-amber-200 rounded-lg hover:bg-amber-100 transition-colors"
+          >
+            <SparklesIcon className="h-5 w-5 mr-2" />
+            Örnek İçerikleri Yükle
+          </button>
+          <Link
+            href="/icerikler/new"
+            className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors shadow-sm"
+          >
+            <PlusIcon className="h-5 w-5 mr-2" />
+            Yeni İçerik Ekle
+          </Link>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
