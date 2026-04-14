@@ -6,6 +6,8 @@ import toast from 'react-hot-toast'
 import {
   PencilIcon,
   EyeIcon,
+  PlusIcon,
+  SparklesIcon,
 } from '@heroicons/react/24/outline'
 
 interface SiteContent {
