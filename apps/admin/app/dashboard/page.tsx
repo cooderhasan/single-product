@@ -71,21 +71,25 @@ export default function Dashboard() {
         })
       ]);
 
-      const products = productsRes.ok ? await productsRes.json() : [];
-      const orders = ordersRes.ok ? await ordersRes.json() : [];
-      const usersData = usersRes.ok ? await usersRes.json() : { users: [] };
+      // API returns { products: [], total: 0 } or { orders: [], total: 0 }
+      const productsData = productsRes.ok ? await productsRes.json() : { products: [], total: 0 };
+      const ordersData = ordersRes.ok ? await ordersRes.json() : { orders: [], total: 0 };
+      const usersData = usersRes.ok ? await usersRes.json() : { users: [], total: 0 };
 
       if (!productsRes.ok) toast.error('Ürünler yüklenemedi');
       if (!ordersRes.ok) toast.error('Siparişler yüklenemedi');
       if (!usersRes.ok) toast.error('Müşteriler yüklenemedi');
 
+      const products = Array.isArray(productsData.products) ? productsData.products : (Array.isArray(productsData) ? productsData : []);
+      const orders = Array.isArray(ordersData.orders) ? ordersData.orders : (Array.isArray(ordersData) ? ordersData : []);
+      const users = Array.isArray(usersData.users) ? usersData.users : [];
 
-      const totalRevenue = orders.reduce((sum: number, order: any) => sum + order.total, 0)
+      const totalRevenue = orders.reduce((sum: number, order: any) => sum + (Number(order.total) || 0), 0)
 
       setStats({
-        totalOrders: orders.length,
-        totalProducts: products.length,
-        totalUsers: usersData.users.length,
+        totalOrders: orders.length || ordersData.total || 0,
+        totalProducts: products.length || productsData.total || 0,
+        totalUsers: users.length || usersData.total || 0,
         totalRevenue
       })
 
@@ -98,6 +102,7 @@ export default function Dashboard() {
       setLoading(false)
     }
   }
+
 
   if (loading) {
     return (
