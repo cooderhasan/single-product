@@ -21,6 +21,7 @@ interface ProductImage {
 
 interface Product {
   id: string;
+  slug?: string;
   name: string;
   sku: string;
   price: number;
@@ -164,7 +165,7 @@ export default function ProductsPage() {
                         {(typeof product.images?.[0] === 'string' ? product.images[0] : product.images?.[0]?.url) ? (
                           <>
                             <img 
-                              src={getImageUrl(product.images[0].url)} 
+                              src={getImageUrl(typeof product.images?.[0] === 'string' ? product.images[0] : product.images?.[0]?.url)} 
                               alt={product.name} 
                               className="w-full h-full object-cover"
                               onError={(e) => {
