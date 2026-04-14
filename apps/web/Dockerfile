@@ -45,13 +45,18 @@ RUN groupadd --system --gid 1001 nodejs
 RUN useradd --system --uid 1001 --gid nodejs nextjs
 
 # Next.js standalone output is located here when built in monorepo
+# It includes the node_modules and the app itself
 COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/static ./apps/web/.next/static
 COPY --from=builder --chown=nextjs:nodejs /app/apps/web/public ./apps/web/public
 
 USER nextjs
+
 EXPOSE 3040
+
 ENV HOSTNAME="0.0.0.0"
 
-# In standalone mode, we run the server.js inside the app folder structure
-CMD ["node", "apps/web/server.js"]
+# In monorepos, server.js can be at the root or nested. 
+# We use a shell command to find and run the correct entry point.
+CMD ["sh", "-c", "if [ -f apps/web/server.js ]; then node apps/web/server.js; elif [ -f server.js ]; then node server.js; else echo 'Error: server.js not found'; ls -R; exit 1; fi"]
+

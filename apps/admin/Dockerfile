@@ -48,7 +48,12 @@ COPY --from=builder --chown=nextjs:nodejs /app/apps/admin/.next/static ./apps/ad
 # COPY --from=builder --chown=nextjs:nodejs /app/apps/admin/public ./apps/admin/public
 
 USER nextjs
+
 EXPOSE 3042
+
 ENV HOSTNAME="0.0.0.0"
 
-CMD ["node", "apps/admin/server.js"]
+# In monorepos, server.js can be at the root or nested. 
+# We use a shell command to find and run the correct entry point.
+CMD ["sh", "-c", "if [ -f apps/admin/server.js ]; then node apps/admin/server.js; elif [ -f server.js ]; then node server.js; else echo 'Error: server.js not found'; ls -R; exit 1; fi"]
+
