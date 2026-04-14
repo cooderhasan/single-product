@@ -36,7 +36,7 @@ RUN npx turbo run build --filter=@ecommerce/database
 RUN npx turbo run build --filter=@ecommerce/api
 
 ENV NODE_ENV=production
-ENV PORT=3001
+ENV PORT=3041
 
 # Set ownership to non-root user for security
 RUN groupadd --system --gid 1001 nodejs && \
@@ -47,7 +47,7 @@ RUN groupadd --system --gid 1001 nodejs && \
 RUN mkdir -p /app/uploads && chown -R nestjs:nodejs /app/uploads
 
 USER nestjs
-EXPOSE 3001
+EXPOSE 3041
 
 # Use npm workspaces for reliable startup across the monorepo structure
 CMD ["npm", "run", "start:prod", "--workspace=@ecommerce/api"]

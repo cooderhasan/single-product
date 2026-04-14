@@ -1,3 +1,11 @@
+
+
+Last login: Mon Apr 13 16:58:58 2026 from 213.142.151.108
+root@92-60-70-132:~# docker system prune -af
+Deleted Containers:
+db6fe4de8c8f102efa87807c71ddbff759821e615f60f5af2de9ba8a8d2bc5c4
+3630f43ff7f9aa2c73821e47cf33314a6877b8d48f615abc428fd2eaf51062ad
+a2418e807b7033c30904dea48bde57236932b0cb1c5e957f645260eaff42977e
 # Coolify Dağıtım (Deploy) Rehberi
 
 Bu proje, açık kaynaklı sunucu yönetim aracı **Coolify** üzerinde sorunsuz, sıfır-kesintili (zero-downtime) SSL'li bir şekilde çalıştırılmak üzere yapılandırılmıştır.

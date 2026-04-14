@@ -28,7 +28,7 @@ RUN apt-get update && apt-get install -y openssl libssl1.1 ca-certificates curl 
 WORKDIR /app
 
 ENV NODE_ENV=production
-ENV PORT=3000
+ENV PORT=3040
 
 RUN groupadd --system --gid 1001 nodejs
 RUN useradd --system --uid 1001 --gid nodejs nextjs
@@ -42,7 +42,7 @@ COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/static ./apps/web/.next/static
 
 USER nextjs
-EXPOSE 3000
+EXPOSE 3040
 ENV HOSTNAME="0.0.0.0"
 
 # In standalone mode, we run the server.js inside the app folder structure

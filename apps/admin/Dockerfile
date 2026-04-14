@@ -26,7 +26,7 @@ RUN apt-get update && apt-get install -y openssl libssl1.1 ca-certificates curl 
 WORKDIR /app
 
 ENV NODE_ENV=production
-ENV PORT=3002
+ENV PORT=3042
 
 RUN groupadd --system --gid 1001 nodejs
 RUN useradd --system --uid 1001 --gid nodejs nextjs
@@ -40,7 +40,7 @@ COPY --from=builder --chown=nextjs:nodejs /app/apps/admin/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/apps/admin/.next/static ./apps/admin/.next/static
 
 USER nextjs
-EXPOSE 3002
+EXPOSE 3042
 ENV HOSTNAME="0.0.0.0"
 
 CMD ["node", "apps/admin/server.js"]
