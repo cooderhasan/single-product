@@ -36,7 +36,7 @@ services:
         - PAYTR_MERCHANT_KEY=${PAYTR_MERCHANT_KEY:-sizin_key}
         - PAYTR_MERCHANT_SALT=${PAYTR_MERCHANT_SALT:-sizin_salt}
         - FRONTEND_URL=${NEXT_PUBLIC_SITE_URL:-https://360sehpa.com}
-        - ADMIN_URL=${NEXT_PUBLIC_API_URL:-https://admin.360sehpa.com}
+        - ADMIN_URL=${SERVICE_URL_ADMIN:-https://admin.360sehpa.com}
     container_name: coolify-ecommerce-api
     restart: unless-stopped
     expose:
@@ -51,7 +51,7 @@ services:
       - PAYTR_MERCHANT_SALT=${PAYTR_MERCHANT_SALT:-sizin_salt}
       - PORT=3041
       - FRONTEND_URL=${NEXT_PUBLIC_SITE_URL:-https://360sehpa.com}
-      - ADMIN_URL=${NEXT_PUBLIC_API_URL:-https://admin.360sehpa.com}
+      - ADMIN_URL=${SERVICE_URL_ADMIN:-https://admin.360sehpa.com}
     depends_on:
       postgres:
         condition: service_started

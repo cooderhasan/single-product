@@ -43,15 +43,25 @@ async function bootstrap() {
   
   app.enableCors({
     origin: (origin, callback) => {
+      // Geliştirme ortamında veya origin yoksa (CSR olmayan istekler) izin ver
       if (!origin || !isProduction) return callback(null, true);
-      if (allowedOrigins.some(o => origin.startsWith(o))) {
+
+      // Tam eşleşme listesi
+      const isAllowedExplicitly = allowedOrigins.some(o => origin.startsWith(o));
+      
+      // Pattern bazlı eşleşme (kendi alan adımızın tüm subdomainlerine güven)
+      const isSubdomainOfSite = origin.endsWith('.360sehpa.com') || origin === 'https://360sehpa.com';
+
+      if (isAllowedExplicitly || isSubdomainOfSite) {
         callback(null, true);
       } else {
+        console.warn(`CORS rejected for origin: ${origin}`);
         callback(new Error('Not allowed by CORS'));
       }
     },
     credentials: true,
   });
+
 
   // Validation
   app.useGlobalPipes(new ValidationPipe({
