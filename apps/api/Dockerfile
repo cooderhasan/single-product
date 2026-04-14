@@ -48,5 +48,5 @@ RUN mkdir -p /app/uploads && chown -R nestjs:nodejs /app/uploads
 USER nestjs
 EXPOSE 3041
 
-# Use npm workspaces for reliable startup across the monorepo structure
-CMD ["node", "apps/api/dist/main"]
+# Automatically push database schema before starting the API
+CMD ["sh", "-c", "./node_modules/.bin/prisma db push --schema=packages/database/prisma/schema.prisma --accept-data-loss && node apps/api/dist/main"]
