@@ -31,7 +31,7 @@ ENV ADMIN_URL=${ADMIN_URL}
 
 # Install dependencies and build everything in one go
 RUN npm install --legacy-peer-deps
-RUN cd packages/database && DATABASE_URL=${DATABASE_URL} ./node_modules/.bin/prisma generate
+RUN cd packages/database && DATABASE_URL=${DATABASE_URL} ../../node_modules/.bin/prisma generate
 RUN npx turbo run build --filter=@ecommerce/database
 RUN npx turbo run build --filter=@ecommerce/api
 
