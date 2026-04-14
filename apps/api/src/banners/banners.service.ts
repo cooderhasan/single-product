@@ -8,7 +8,7 @@ export class BannersService {
     const where: Prisma.BannerWhereInput = { isActive: true };
     
     if (position) {
-      where.position = position;
+      where.position = position.toString().toUpperCase() as BannerPosition;
     }
 
     return prisma.banner.findMany({
@@ -31,10 +31,11 @@ export class BannersService {
 
   async getByPosition(position: BannerPosition) {
     const now = new Date();
-    
+    const normalizedPosition = position.toString().toUpperCase() as BannerPosition;
+
     return prisma.banner.findMany({
       where: {
-        position,
+        position: normalizedPosition,
         isActive: true,
         OR: [
           { startDate: null },

@@ -604,6 +604,7 @@ enum BannerPosition {
   HOME_BOTTOM
   CATEGORY_PAGE
   PRODUCT_PAGE
+  TOP_BAR
 }
 
 // ==================== SETTINGS ====================
