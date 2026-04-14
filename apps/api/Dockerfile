@@ -50,4 +50,4 @@ USER nestjs
 EXPOSE 3041
 
 # Use npm workspaces for reliable startup across the monorepo structure
-CMD ["npm", "run", "start:prod", "--workspace=@ecommerce/api"]
+CMD ["node", "apps/api/dist/main"]

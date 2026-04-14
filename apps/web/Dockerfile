@@ -33,13 +33,10 @@ ENV PORT=3040
 RUN groupadd --system --gid 1001 nodejs
 RUN useradd --system --uid 1001 --gid nodejs nextjs
 
-# COPY --from=builder /app/apps/web/public ./public
-RUN mkdir .next
-RUN chown nextjs:nodejs .next
-
 # Next.js standalone output is located here when built in monorepo
 COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/static ./apps/web/.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/apps/web/public ./apps/web/public
 
 USER nextjs
 EXPOSE 3040
