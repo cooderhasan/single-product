@@ -42,7 +42,7 @@ ENV PORT=3042
 RUN groupadd --system --gid 1001 nodejs
 RUN useradd --system --uid 1001 --gid nodejs nextjs
 
-# Next.js standalone output is located here when built in monorepo
+# Copy the standalone output which includes node_modules
 COPY --from=builder --chown=nextjs:nodejs /app/apps/admin/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/apps/admin/.next/static ./apps/admin/.next/static
 # COPY --from=builder --chown=nextjs:nodejs /app/apps/admin/public ./apps/admin/public
@@ -53,7 +53,7 @@ EXPOSE 3042
 
 ENV HOSTNAME="0.0.0.0"
 
-# In monorepos, server.js can be at the root or nested. 
-# We use a shell command to find and run the correct entry point.
-CMD ["sh", "-c", "if [ -f apps/admin/server.js ]; then node apps/admin/server.js; elif [ -f server.js ]; then node server.js; else echo 'Error: server.js not found'; ls -R; exit 1; fi"]
+# In monorepos, we need to check if we should run from the root or the app folder
+CMD ["sh", "-c", "if [ -d apps/admin ]; then node apps/admin/server.js; else node server.js; fi"]
+
 
