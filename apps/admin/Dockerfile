@@ -1,14 +1,22 @@
 # Admin Panel Dockerfile (Monorepo Compatible)
 FROM node:20-bookworm AS builder
+
+ARG DATABASE_URL
+ARG NEXT_PUBLIC_API_URL
+
 # Full image already includes build tools (python3, make, g++, etc.)
 WORKDIR /app
 
 # First copy everything to ensure all monorepo dependencies are resolved
 COPY . .
 
+# Set environment variables for build
+ENV DATABASE_URL=${DATABASE_URL}
+ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+
 RUN npm install --legacy-peer-deps
 
-RUN cd packages/database && npx prisma generate
+RUN cd packages/database && DATABASE_URL=${DATABASE_URL} npx prisma generate
 RUN npx turbo run build --filter=@ecommerce/admin
 
 # Production image
