@@ -53,7 +53,8 @@ EXPOSE 3042
 
 ENV HOSTNAME="0.0.0.0"
 
-# In monorepos, we need to check if we should run from the root or the app folder
-CMD ["sh", "-c", "if [ -d apps/admin ]; then node apps/admin/server.js; else node server.js; fi"]
+# Explicitly use the nested server.js to ensure node_modules are resolved from the parent root
+CMD ["node", "apps/admin/server.js"]
+
 
 

@@ -55,8 +55,8 @@ EXPOSE 3040
 
 ENV HOSTNAME="0.0.0.0"
 
-# In monorepos, we need to check if we should run from the root or the app folder
-# Also ensures the environment is set correctly for standalone mode
-CMD ["sh", "-c", "if [ -d apps/web ]; then node apps/web/server.js; else node server.js; fi"]
+# Explicitly use the nested server.js to ensure node_modules are resolved from the parent root
+CMD ["node", "apps/web/server.js"]
+
 
 
