@@ -53,8 +53,9 @@ EXPOSE 3042
 
 ENV HOSTNAME="0.0.0.0"
 
-# Explicitly use the nested server.js to ensure node_modules are resolved from the parent root
-CMD ["node", "apps/admin/server.js"]
+# Smart startup: finds server.js regardless of nesting and ensures correct module resolution
+CMD ["sh", "-c", "if [ -f apps/admin/server.js ]; then node apps/admin/server.js; elif [ -f server.js ]; then node server.js; else SERVER_FILE=$(find . -name server.js | head -n 1); if [ -n \"$SERVER_FILE\" ]; then node \"$SERVER_FILE\"; else echo 'Error: server.js not found'; ls -R; exit 1; fi; fi"]
+
 
 
 
