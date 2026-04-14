@@ -15,22 +15,21 @@ RUN apt-get update && apt-get install -y openssl libssl1.1 ca-certificates curl 
 
 WORKDIR /app
 
-# Copy everything first
+# Copy root package files
+COPY package.json package-lock.json ./
+
+# Copy workspace package files to maintain monorepo structure
+COPY apps/api/package.json ./apps/api/
+COPY apps/web/package.json ./apps/web/
+COPY apps/admin/package.json ./apps/admin/
+COPY packages/database/package.json ./packages/database/
+
+# Install dependencies - this layer will be cached unless a package.json changes
+RUN npm install --legacy-peer-deps
+
+# Now copy the rest of the source
 COPY . .
 
-# Set environment variables for build
-ENV NODE_ENV=production
-ENV DATABASE_URL=${DATABASE_URL}
-ENV REDIS_URL=${REDIS_URL}
-ENV JWT_SECRET=${JWT_SECRET}
-ENV PAYTR_MERCHANT_ID=${PAYTR_MERCHANT_ID}
-ENV PAYTR_MERCHANT_KEY=${PAYTR_MERCHANT_KEY}
-ENV PAYTR_MERCHANT_SALT=${PAYTR_MERCHANT_SALT}
-ENV FRONTEND_URL=${FRONTEND_URL}
-ENV ADMIN_URL=${ADMIN_URL}
-
-# Install dependencies and build everything in one go
-RUN npm install --legacy-peer-deps
 RUN npm run db:generate
 RUN npx turbo run build --filter=@ecommerce/database
 RUN npx turbo run build --filter=@ecommerce/api

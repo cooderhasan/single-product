@@ -7,14 +7,25 @@ ARG NEXT_PUBLIC_API_URL
 # Full image already includes build tools (python3, make, g++, etc.)
 WORKDIR /app
 
-# First copy everything to ensure all monorepo dependencies are resolved
+# Copy root package files
+COPY package.json package-lock.json ./
+
+# Copy workspace package files to maintain monorepo structure
+COPY apps/api/package.json ./apps/api/
+COPY apps/web/package.json ./apps/web/
+COPY apps/admin/package.json ./apps/admin/
+COPY packages/database/package.json ./packages/database/
+
+# Install dependencies - cached layer
+RUN npm install --legacy-peer-deps
+
+# Now copy the rest of the source
 COPY . .
 
 # Set environment variables for build
 ENV DATABASE_URL=${DATABASE_URL}
 ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
 
-RUN npm install --legacy-peer-deps
 
 RUN npm run db:generate
 RUN npx turbo run build --filter=@ecommerce/admin
