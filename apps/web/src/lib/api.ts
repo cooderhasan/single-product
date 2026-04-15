@@ -114,10 +114,17 @@ export const testimonialsApi = {
 };
 
 export const announcementsApi = {
-  getAll: () => api.get('/announcements'),
+  getAll: (params?: any) => api.get('/announcements', { params }),
   getAllAdmin: () => api.get('/announcements/admin/all'),
   getByPosition: (position: string) => api.get(`/announcements/position/${position}`),
   create: (data: any) => api.post('/announcements', data),
   update: (id: string, data: any) => api.put(`/announcements/${id}`, data),
   delete: (id: string) => api.delete(`/announcements/${id}`),
+};
+
+export const contactApi = {
+  send: (data: any) => api.post('/contact', data),
+  getAll: () => api.get('/contact'),
+  updateStatus: (id: string, status: string) => api.put(`/contact/${id}/status`, { status }),
+  delete: (id: string) => api.delete(`/contact/${id}`),
 };

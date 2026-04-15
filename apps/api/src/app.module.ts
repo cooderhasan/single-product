@@ -17,6 +17,7 @@ import { SiteContentModule } from './site-content/site-content.module';
 import { TestimonialsModule } from './testimonials/testimonials.module';
 import { AnnouncementsModule } from './announcements/announcements.module';
 import { UploadModule } from './upload/upload.module';
+import { ContactModule } from './contact/contact.module';
 
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { RolesGuard } from './auth/guards/roles.guard';
@@ -46,6 +47,7 @@ import { RolesGuard } from './auth/guards/roles.guard';
     TestimonialsModule,
     AnnouncementsModule,
     UploadModule,
+    ContactModule,
   ],
   providers: [
     {

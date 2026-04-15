@@ -14,10 +14,6 @@ export function Header() {
   const [isMounted, setIsMounted] = useState(false);
   const pathname = usePathname();
 
-  // Admin sayfalarında header'ı gizle
-  if (pathname?.startsWith('/admin')) {
-    return null;
-  }
   const { count } = useCartStore();
   const { user, isAuthenticated, logout } = useAuthStore();
 

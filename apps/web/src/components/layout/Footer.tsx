@@ -8,11 +8,6 @@ export function Footer() {
   const pathname = usePathname();
   const currentYear = new Date().getFullYear();
 
-  // Admin sayfalarında footer'ı gizle
-  if (pathname?.startsWith('/admin')) {
-    return null;
-  }
-
   return (
     <footer className="bg-gray-900 text-gray-300">
       {/* Newsletter */}

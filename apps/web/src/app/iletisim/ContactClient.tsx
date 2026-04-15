@@ -1,7 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { Phone, Mail, MapPin, Clock } from 'lucide-react';
+import { Phone, Mail, MapPin, Clock, Send, Loader2 } from 'lucide-react';
+import { contactApi } from '@/lib/api';
+import toast from 'react-hot-toast';
 
 export default function ContactClient() {
   const [formData, setFormData] = useState({
@@ -11,9 +13,27 @@ export default function ContactClient() {
     message: '',
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    alert('Mesajınız gönderildi! (Demo)');
+    setIsSubmitting(true);
+
+    try {
+      await contactApi.send(formData);
+      toast.success('Mesajınız başarıyla gönderildi! Uzman ekibimiz en kısa sürede sizinle iletişime geçecektir.');
+      setFormData({
+        name: '',
+        email: '',
+        phone: '',
+        message: '',
+      });
+    } catch (error: any) {
+      console.error('Contact error:', error);
+      toast.error(error.response?.data?.message || 'Mesaj gönderilirken bir hata oluştu. Lütfen tekrar deneyin.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -137,9 +157,15 @@ export default function ContactClient() {
 
               <button
                 type="submit"
-                className="w-full py-3 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-lg transition-colors"
+                disabled={isSubmitting}
+                className="w-full py-3 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-lg transition-colors flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
               >
-                Gönder
+                {isSubmitting ? (
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                ) : (
+                  <Send className="w-5 h-5" />
+                )}
+                {isSubmitting ? 'Gönderiliyor...' : 'Gönder'}
               </button>
             </form>
           </div>

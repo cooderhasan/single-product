@@ -14,16 +14,19 @@ import {
   Lock,
   User,
   Phone,
-  Home
+  Home,
+  Mail
 } from 'lucide-react';
 import { useCartStore } from '@/store/cart';
 import { useAuthStore } from '@/store/auth';
+import { ordersApi } from '@/lib/api';
 import toast from 'react-hot-toast';
 
 type PaymentMethod = 'CREDIT_CARD' | 'BANK_TRANSFER';
 
 interface GuestAddress {
   fullName: string;
+  email: string;
   phone: string;
   city: string;
   district: string;
@@ -41,6 +44,7 @@ export default function CheckoutPage() {
   
   const [guestAddress, setGuestAddress] = useState<GuestAddress>({
     fullName: '',
+    email: '',
     phone: '',
     city: '',
     district: '',
@@ -63,7 +67,7 @@ export default function CheckoutPage() {
   }, [fetchCart]);
 
   const handleCreateOrder = async () => {
-    if (!guestAddress.fullName || !guestAddress.phone || !guestAddress.city || !guestAddress.district || !guestAddress.address) {
+    if (!guestAddress.fullName || !guestAddress.email || !guestAddress.phone || !guestAddress.city || !guestAddress.district || !guestAddress.address) {
       toast.error('Lütfen tüm alanları doldurun');
       return;
     }
@@ -71,17 +75,44 @@ export default function CheckoutPage() {
     setIsLoading(true);
 
     try {
-      const orderNumber = 'SP-' + Date.now();
+      const orderData = {
+        guestEmail: guestAddress.email,
+        guestPhone: guestAddress.phone,
+        items: items.map(item => ({
+          productId: item.productId,
+          variantId: item.variantId,
+          quantity: item.quantity
+        })),
+        shippingAddress: {
+          fullName: guestAddress.fullName,
+          phone: guestAddress.phone,
+          city: guestAddress.city,
+          district: guestAddress.district,
+          address: guestAddress.address
+        },
+        billingAddress: {
+          fullName: guestAddress.fullName,
+          phone: guestAddress.phone,
+          city: guestAddress.city,
+          district: guestAddress.district,
+          address: guestAddress.address
+        },
+        paymentMethod: paymentMethod === 'CREDIT_CARD' ? 'PAYTR' : 'BANK_TRANSFER'
+      };
+
+      const { data: order } = await ordersApi.create(orderData);
       
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Sepeti temizle
+      await useCartStore.getState().clearCart();
 
       if (paymentMethod === 'CREDIT_CARD') {
-        router.push(`/odeme/paytr?order=${orderNumber}`);
+        router.push(`/odeme/paytr?order=${order.orderNumber}`);
       } else {
-        router.push(`/odeme/havale?order=${orderNumber}`);
+        router.push(`/odeme/havale?order=${order.orderNumber}`);
       }
-    } catch {
-      toast.error('Sipariş oluşturulurken bir hata oluştu');
+    } catch (error: any) {
+      console.error('Order creation error:', error);
+      toast.error(error.response?.data?.message || 'Sipariş oluşturulurken bir hata oluştu');
       setIsLoading(false);
     }
   };
@@ -156,19 +187,35 @@ export default function CheckoutPage() {
                 </div>
 
                 <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Ad Soyad *
+                    </label>
+                    <div className="relative">
+                      <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                      <input
+                        type="text"
+                        value={guestAddress.fullName}
+                        onChange={(e) => setGuestAddress({ ...guestAddress, fullName: e.target.value })}
+                        className="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500"
+                        placeholder="Ad Soyad"
+                      />
+                    </div>
+                  </div>
+
                   <div className="grid md:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Ad Soyad *
+                        E-posta *
                       </label>
                       <div className="relative">
-                        <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                         <input
-                          type="text"
-                          value={guestAddress.fullName}
-                          onChange={(e) => setGuestAddress({ ...guestAddress, fullName: e.target.value })}
+                          type="email"
+                          value={guestAddress.email}
+                          onChange={(e) => setGuestAddress({ ...guestAddress, email: e.target.value })}
                           className="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500"
-                          placeholder="Ad Soyad"
+                          placeholder="e-posta@örnek.com"
                         />
                       </div>
                     </div>

@@ -125,10 +125,6 @@ export default function LoginPage() {
             </button>
           </form>
 
-          <div className="mt-6 p-4 bg-white/5 rounded-lg">
-            <p className="text-xs text-gray-400 text-center">
-              Admin: <span className="text-gray-300">admin@360sehpa.com</span> / <span className="text-gray-300">Admin123!</span>
-            </p>
           </div>
         </div>
 
