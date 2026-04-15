@@ -374,7 +374,8 @@ export default function EditProductPage() {
               <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4">
                 {formData.images.map((img, index) => {
                   // Görsel URL'sini düzelt: relative path ise API base URL ekle
-                  const imgSrc = typeof img === 'string' && img.startsWith('http') ? img : `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3041'}${img}`;
+                  if (!img || typeof img !== 'string') return null;
+                  const imgSrc = img.startsWith('http') ? img : `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3041'}${img.startsWith('/') ? img : `/${img}`}`;
                   return (
                     <div key={index} className="relative group">
                       <div className="aspect-square rounded-lg overflow-hidden border border-gray-200">
@@ -382,6 +383,7 @@ export default function EditProductPage() {
                           src={imgSrc}
                           alt={`Ürün görseli ${index + 1}`}
                           className="w-full h-full object-cover"
+                          onError={(e) => { (e.target as HTMLImageElement).src = '/images/placeholder.png'; }}
                         />
                       </div>
                     <button
