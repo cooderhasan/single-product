@@ -31,7 +31,7 @@ export function generateSlug(text: string): string {
 }
 
 export function getImageUrl(url: string | null | undefined): string {
-  if (!url) return '/images/placeholder.png';
+  if (!url || typeof url !== 'string') return '/images/placeholder.png';
   if (url.startsWith('http')) return url;
   return url;
 }

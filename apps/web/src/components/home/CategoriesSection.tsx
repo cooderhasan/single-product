@@ -34,7 +34,7 @@ export function CategoriesSection({ categories }: CategoriesSectionProps) {
 
 function CategoryCard({ category }: { category: Category }) {
   const apiBase = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3041';
-  const imageUrl = category.image ? (category.image.startsWith('http') ? category.image : `${apiBase}${category.image}`) : null;
+  const imageUrl = category.image ? (typeof category.image === 'string' && category.image.startsWith('http') ? category.image : `${apiBase}${category.image}`) : null;
 
   return (
     <Link

@@ -374,7 +374,7 @@ export default function EditProductPage() {
               <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4">
                 {formData.images.map((img, index) => {
                   // Görsel URL'sini düzelt: relative path ise API base URL ekle
-                  const imgSrc = img.startsWith('http') ? img : `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3041'}${img}`;
+                  const imgSrc = typeof img === 'string' && img.startsWith('http') ? img : `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3041'}${img}`;
                   return (
                     <div key={index} className="relative group">
                       <div className="aspect-square rounded-lg overflow-hidden border border-gray-200">

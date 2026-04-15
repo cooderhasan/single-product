@@ -31,7 +31,7 @@ export default function ProductClient({ product }: ProductClientProps) {
   
   // Görsel URL'sini al (page.tsx'ten zaten tam URL geliyor)
   const getImageUrl = (url: string | undefined) => {
-    if (!url) return '';
+    if (!url || typeof url !== 'string') return '';
     // URL zaten tam URL ise olduğu gibi kullan
     if (url.startsWith('http')) return url;
     // Protocol-relative ise https ekle

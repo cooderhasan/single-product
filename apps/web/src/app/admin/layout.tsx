@@ -72,7 +72,7 @@ export default function AdminLayout({
         {/* Navigation */}
         <nav className="px-4 py-4 space-y-1">
           {menuItems.map((item) => {
-            const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`);
+            const isActive = pathname === item.href || (typeof pathname === 'string' && pathname.startsWith(`${item.href}/`));
             return (
               <Link
                 key={item.href}

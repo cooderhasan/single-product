@@ -43,7 +43,7 @@ export default function ProductsPage() {
   const apiBase = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3041';
   
   const getImageUrl = (url: string | undefined) => {
-    if (!url) return '';
+    if (!url || typeof url !== 'string') return '';
     if (url.startsWith('http')) return url;
     return `${apiBase}${url}`;
   };

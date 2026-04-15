@@ -87,7 +87,7 @@ export default function ProductPage() {
           if (productData.images && productData.images.length > 0) {
             const urls = productData.images.map((img: any) => {
               const url = typeof img === 'string' ? img : (img?.url || '');
-              return url.startsWith('http') ? url : `${API_BASE}${url}`;
+              return typeof url === 'string' && url.startsWith('http') ? url : `${API_BASE}${url}`;
             });
             setProductImages(urls);
           }

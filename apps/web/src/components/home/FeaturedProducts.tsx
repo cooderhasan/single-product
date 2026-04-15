@@ -54,7 +54,7 @@ function ProductCard({ product }: { product: Product }) {
       mainImageUrl = firstImg.url;
     }
   }
-  const mainImage = typeof mainImageUrl === 'string' && mainImageUrl ? (mainImageUrl.startsWith('http') ? mainImageUrl : `${apiBase}${mainImageUrl}`) : null;
+  const mainImage = typeof mainImageUrl === 'string' && mainImageUrl ? (typeof mainImageUrl === 'string' && mainImageUrl.startsWith('http') ? mainImageUrl : `${apiBase}${mainImageUrl}`) : null;
 
   return (
     <Link href={`/urun/${product.slug}`} className="group">

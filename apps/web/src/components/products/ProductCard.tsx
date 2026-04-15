@@ -33,7 +33,7 @@ export function ProductCard({ product }: ProductCardProps) {
       imageUrl = firstImg.url;
     }
   }
-  const mainImage = typeof imageUrl === 'string' && imageUrl ? (imageUrl.startsWith('http') ? imageUrl : `${apiBase}${imageUrl}`) : null;
+  const mainImage = typeof imageUrl === 'string' && imageUrl ? (typeof imageUrl === 'string' && imageUrl.startsWith('http') ? imageUrl : `${apiBase}${imageUrl}`) : null;
   const discount = product.comparePrice 
     ? Math.round(((product.comparePrice - product.price) / product.comparePrice) * 100)
     : 0;
