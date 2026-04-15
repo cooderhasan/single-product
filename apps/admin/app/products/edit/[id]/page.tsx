@@ -70,7 +70,14 @@ export default function EditProductPage() {
           isActive: product.isActive,
           isFeatured: product.isFeatured,
         })
-        setImages(product.images || [])
+        // Process images to ensure they are strings
+        const processedImages = Array.isArray(product.images)
+          ? product.images.map((img: any) => {
+              if (typeof img === 'string') return img;
+              return img?.url || '';
+            }).filter(Boolean)
+          : [];
+        setImages(processedImages)
       } else {
         toast.error('Ürün bulunamadı')
         router.push('/products')

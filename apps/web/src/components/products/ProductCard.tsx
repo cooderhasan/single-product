@@ -1,4 +1,4 @@
-﻿import Link from 'next/link';
+import Link from 'next/link';
 import React from 'react';
 import { Star } from 'lucide-react';
 import { useCartStore } from '@/store/cart';
@@ -21,19 +21,20 @@ interface ProductCardProps {
 export function ProductCard({ product }: ProductCardProps) {
   const apiBase = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3041';
   
-  let imageUrl = '';
-  if (product.images && product.images.length > 0) {
-    const firstImg = product.images[0];
-    const mainImg = product.images.find(img => typeof img === 'object' && img?.isMain);
-    if (mainImg && typeof mainImg === 'object' && 'url' in mainImg) {
-      imageUrl = mainImg.url;
-    } else if (typeof firstImg === 'string') {
-      imageUrl = firstImg;
-    } else if (typeof firstImg === 'object' && 'url' in firstImg) {
-      imageUrl = firstImg.url;
-    }
-  }
-  const mainImage = typeof imageUrl === 'string' && imageUrl ? (typeof imageUrl === 'string' && imageUrl.startsWith('http') ? imageUrl : `${apiBase}${imageUrl}`) : null;
+  const firstImg = product.images?.[0];
+  const mainImg = product.images?.find((img: any) => typeof img === 'object' && img?.isMain);
+  const imageUrl = mainImg || firstImg;
+
+  const getFullUrl = (u: any) => {
+    if (!u) return '';
+    const str = typeof u === 'string' ? u : u?.url;
+    if (!str) return '';
+    if (str.startsWith('http')) return str;
+    if (str.startsWith('/')) return `${apiBase}${str}`;
+    return `${apiBase}/uploads/${str}`;
+  };
+
+  const mainImage = imageUrl ? getFullUrl(imageUrl) : null;
   const discount = product.comparePrice 
     ? Math.round(((product.comparePrice - product.price) / product.comparePrice) * 100)
     : 0;

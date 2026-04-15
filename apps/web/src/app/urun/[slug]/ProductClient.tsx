@@ -30,15 +30,13 @@ export default function ProductClient({ product }: ProductClientProps) {
   const { addItem, isLoading } = useCartStore();
   
   // Görsel URL'sini al (page.tsx'ten zaten tam URL geliyor)
-  const getImageUrl = (url: string | undefined) => {
-    if (!url || typeof url !== 'string') return '';
-    // URL zaten tam URL ise olduğu gibi kullan
-    if (url.startsWith('http')) return url;
-    // Protocol-relative ise https ekle
-    if (url.startsWith('//')) return `https:${url}`;
-    // Relative path ise API base URL ekle
-    const apiBase = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3041';
-    return `${apiBase}${url}`;
+  const getImageUrl = (u: any) => {
+    if (!u) return '';
+    const str = typeof u === 'string' ? u : u?.url;
+    if (!str) return '';
+    if (str.startsWith('http')) return str;
+    if (str.startsWith('/')) return `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3041'}${str}`;
+    return `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3041'}/uploads/${str}`;
   };
 
   const discount = product.comparePrice 

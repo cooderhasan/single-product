@@ -42,10 +42,13 @@ export default function ProductsPage() {
   
   const apiBase = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3041';
   
-  const getImageUrl = (url: string | undefined) => {
-    if (!url || typeof url !== 'string') return '';
-    if (url.startsWith('http')) return url;
-    return `${apiBase}${url}`;
+  const getImageUrl = (u: any) => {
+    if (!u) return '';
+    const str = typeof u === 'string' ? u : u?.url;
+    if (!str) return '';
+    if (str.startsWith('http')) return str;
+    if (str.startsWith('/')) return `${apiBase}${str}`;
+    return `${apiBase}/uploads/${str}`;
   };
 
   useEffect(() => {

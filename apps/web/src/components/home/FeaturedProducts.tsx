@@ -42,19 +42,20 @@ export function FeaturedProducts({ products }: FeaturedProductsProps) {
 
 function ProductCard({ product }: { product: Product }) {
   const apiBase = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3041';
-  let mainImageUrl = '';
-  if (product.images && product.images.length > 0) {
-    const firstImg = product.images[0];
-    const mainImg = product.images.find(img => typeof img === 'object' && img?.isMain);
-    if (mainImg && typeof mainImg === 'object' && 'url' in mainImg) {
-      mainImageUrl = mainImg.url;
-    } else if (typeof firstImg === 'string') {
-      mainImageUrl = firstImg;
-    } else if (typeof firstImg === 'object' && 'url' in firstImg) {
-      mainImageUrl = firstImg.url;
-    }
-  }
-  const mainImage = typeof mainImageUrl === 'string' && mainImageUrl ? (typeof mainImageUrl === 'string' && mainImageUrl.startsWith('http') ? mainImageUrl : `${apiBase}${mainImageUrl}`) : null;
+  const firstImg = product.images?.[0];
+  const mainImg = product.images?.find((img: any) => typeof img === 'object' && img?.isMain);
+  const imageUrl = mainImg || firstImg;
+
+  const getFullUrl = (u: any) => {
+    if (!u) return '';
+    const str = typeof u === 'string' ? u : u?.url;
+    if (!str) return '';
+    if (str.startsWith('http')) return str;
+    if (str.startsWith('/')) return `${apiBase}${str}`;
+    return `${apiBase}/uploads/${str}`;
+  };
+
+  const mainImage = imageUrl ? getFullUrl(imageUrl) : null;
 
   return (
     <Link href={`/urun/${product.slug}`} className="group">

@@ -110,7 +110,14 @@ export function ImageUpload({ images, onChange, maxImages = 10 }: ImageUploadPro
         <div className="grid grid-cols-4 gap-4">
           {images.map((url, index) => {
             // API URL'sini ekle (local uploads için)
-            const fullUrl = url?.startsWith('/') ? `${process.env.NEXT_PUBLIC_API_URL}${url}` : url
+            const getFullUrl = (u: string) => {
+              if (!u) return '';
+              if (u.startsWith('http')) return u;
+              if (u.startsWith('/')) return `${process.env.NEXT_PUBLIC_API_URL || ''}${u}`;
+              // Eğer sadece dosya adıysa uploads klasöründen geldiğini varsay
+              return `${process.env.NEXT_PUBLIC_API_URL || ''}/uploads/${u}`;
+            };
+            const fullUrl = typeof url === 'string' ? getFullUrl(url) : getFullUrl((url as any)?.url);
             return (
               <div
                 key={index}

@@ -131,7 +131,14 @@ export default function ProductsPage() {
                     <div className="flex items-center">
                       {product.images?.[0] ? (
                         <img
-                          src={typeof product.images[0] === 'string' && product.images[0].startsWith('http') ? product.images[0] : (process.env.NEXT_PUBLIC_API_URL || '') + product.images[0]}
+                          src={(() => {
+                            const u = product.images?.[0];
+                            const str = typeof u === 'string' ? u : (u as any)?.url;
+                            if (!str) return '';
+                            if (str.startsWith('http')) return str;
+                            if (str.startsWith('/')) return `${process.env.NEXT_PUBLIC_API_URL || ''}${str}`;
+                            return `${process.env.NEXT_PUBLIC_API_URL || ''}/uploads/${str}`;
+                          })()}
                           alt={product.name}
                           className="h-10 w-10 rounded-lg object-cover"
                         />

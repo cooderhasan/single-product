@@ -88,7 +88,11 @@ export function ProductShowcase() {
            >
              {content.image ? (
                <img
-                 src={typeof content.image === 'string' && content.image.startsWith('http') ? content.image : `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3041'}${content.image}`}
+                                   src={typeof content.image === 'string' && content.image.startsWith('http') 
+                    ? content.image 
+                    : (content.image.startsWith('/') 
+                        ? `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3041'}${content.image}` 
+                        : `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3041'}/uploads/${content.image}`)}
                  alt={content.title}
                  className="w-full h-full object-cover"
                  onError={(e) => {
