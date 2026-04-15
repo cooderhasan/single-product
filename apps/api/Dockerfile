@@ -19,7 +19,7 @@ COPY apps/admin/package.json ./apps/admin/
 COPY packages/database/package.json ./packages/database/
 
 # Install dependencies - this layer will be cached unless a package.json changes
-RUN npm install --legacy-peer-deps
+RUN npm ci --legacy-peer-deps --loglevel info
 
 # Now copy the rest of the source
 COPY . .
