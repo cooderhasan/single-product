@@ -43,14 +43,31 @@ export default async function ProductPage({ params }: { params: { slug: string }
   
   const images = product.images && product.images.length > 0 
     ? product.images.map((img: any) => {
-        const url = typeof img === 'string' ? img : (img?.url || '');
-        const fullUrl = typeof url === 'string' && url ? (url.startsWith('http') ? url : `${apiBase}${url}`) : '';
+        // API'den gelen image verisi string veya { url: string } formatında olabilir
+        let url = '';
+        if (typeof img === 'string') {
+          url = img;
+        } else if (img && typeof img === 'object') {
+          url = img.url || img.path || img.src || '';
+        }
+        
+        let fullUrl = '';
+        if (url) {
+          if (url.startsWith('http')) {
+            fullUrl = url;
+          } else if (url.startsWith('//')) {
+            fullUrl = `https:${url}`;
+          } else {
+            fullUrl = `${apiBase}${url.startsWith('/') ? url : `/${url}`}`;
+          }
+        }
+        
         console.log(`Image URL: "${url}" -> Full: "${fullUrl}"`);
         return { 
           url: fullUrl,
-          alt: typeof img === 'string' ? product.name : (img?.alt || product.name)
+          alt: typeof img === 'string' ? product.name : (img?.alt || img?.title || product.name)
         };
-      })
+      }).filter((img: any) => img.url) // Boş URL'leri filtrele
     : [{ url: '', alt: product.name }];
   
   console.log('Final images for ProductClient:', JSON.stringify(images));

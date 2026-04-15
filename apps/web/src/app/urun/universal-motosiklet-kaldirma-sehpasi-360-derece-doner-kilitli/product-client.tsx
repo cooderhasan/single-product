@@ -86,9 +86,27 @@ export default function ProductPage() {
           }
           if (productData.images && productData.images.length > 0) {
             const urls = productData.images.map((img: any) => {
-              const url = typeof img === 'string' ? img : (img?.url || '');
-              return typeof url === 'string' && url.startsWith('http') ? url : `${API_BASE}${url}`;
-            });
+              // API'den gelen image verisi string veya { url: string } formatında olabilir
+              let url = '';
+              if (typeof img === 'string') {
+                url = img;
+              } else if (img && typeof img === 'object') {
+                // img object ise, url veya path property'sini kontrol et
+                url = img.url || img.path || img.src || '';
+              }
+              
+              // Boş URL kontrolü
+              if (!url) return '';
+              
+              // Tam URL mi yoksa relative path mi kontrol et
+              if (url.startsWith('http')) return url;
+              if (url.startsWith('//')) return `https:${url}`;
+              
+              // Relative path ise API_BASE ekle
+              return `${API_BASE}${url.startsWith('/') ? url : `/${url}`}`;
+            }).filter(Boolean); // Boş string'leri filtrele
+            
+            console.log('Processed image URLs:', urls);
             setProductImages(urls);
           }
         }
