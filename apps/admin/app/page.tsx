@@ -124,8 +124,6 @@ export default function LoginPage() {
               )}
             </button>
           </form>
-
-          </div>
         </div>
 
         <p className="mt-8 text-center text-gray-400 text-sm">© 2026 360 Sehpa</p>
