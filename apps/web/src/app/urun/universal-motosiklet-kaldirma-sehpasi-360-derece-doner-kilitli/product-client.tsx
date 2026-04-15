@@ -85,9 +85,10 @@ export default function ProductPage() {
             setProductId(productData.id);
           }
           if (productData.images && productData.images.length > 0) {
-            const urls = productData.images.map((img: any) => 
-               img.url.startsWith('http') ? img.url : `${API_BASE}${img.url}`
-            );
+            const urls = productData.images.map((img: any) => {
+              const url = typeof img === 'string' ? img : (img?.url || '');
+              return url.startsWith('http') ? url : `${API_BASE}${url}`;
+            });
             setProductImages(urls);
           }
         }
@@ -430,7 +431,7 @@ export default function ProductPage() {
                 <Truck className="w-6 h-6" />
                 <div>
                   <p className="font-semibold">Aynı Gün Kargo</p>
-                  <p className="text-sm text-green-600">15:00&apos;dan önceki siparişlerde</p>
+                  <p className="text-sm text-green-600">15:00'dan önceki siparişlerde</p>
                 </div>
               </div>
             </div>
