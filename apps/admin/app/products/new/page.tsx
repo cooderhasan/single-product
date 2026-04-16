@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import toast from 'react-hot-toast'
-import { ArrowLeftIcon, PlusIcon, XMarkIcon, CloudArrowUpIcon } from '@heroicons/react/24/outline'
+import { ArrowLeftIcon, PlusIcon, TrashIcon, CloudArrowUpIcon, XMarkIcon } from '@heroicons/react/24/outline'
 
 interface Category {
   id: string
@@ -17,6 +17,7 @@ export default function NewProductPage() {
   const [uploading, setUploading] = useState(false)
   const [categories, setCategories] = useState<Category[]>([])
   const [images, setImages] = useState<string[]>([])
+  const [variants, setVariants] = useState<any[]>([])
   const [formData, setFormData] = useState({
     name: '',
     slug: '',
@@ -116,6 +117,20 @@ export default function NewProductPage() {
     setImages(newImages)
   }
 
+  const addVariant = () => {
+    setVariants([...variants, { name: '', sku: '', price: formData.price || '0', stock: '0' }])
+  }
+
+  const removeVariant = (index: number) => {
+    setVariants(variants.filter((_, i) => i !== index))
+  }
+
+  const handleVariantChange = (index: number, field: string, value: string) => {
+    const newVariants = [...variants]
+    newVariants[index][field] = value
+    setVariants(newVariants)
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
@@ -133,6 +148,7 @@ export default function NewProductPage() {
           comparePrice: formData.comparePrice ? parseFloat(formData.comparePrice) : undefined,
           stock: parseInt(formData.stock),
           images,
+          variants,
         }),
       })
 
@@ -251,6 +267,84 @@ export default function NewProductPage() {
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               placeholder="SKU-001"
             />
+          </div>
+
+          {/* VARYANTLAR BÖLÜMÜ */}
+          <div className="md:col-span-2 border-t pt-6 mt-4">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold text-gray-900">Varyantlar (Ebat, Renk vb.)</h3>
+              <button
+                type="button"
+                onClick={addVariant}
+                className="flex items-center text-sm bg-blue-50 text-blue-600 px-3 py-1 rounded-lg hover:bg-blue-100 transition-colors"
+              >
+                <PlusIcon className="h-4 w-4 mr-1" />
+                Varyant Ekle
+              </button>
+            </div>
+            
+            <div className="space-y-4">
+              {variants.map((variant, index) => (
+                <div key={index} className="grid grid-cols-1 md:grid-cols-5 gap-4 p-4 border rounded-lg bg-gray-50 relative">
+                  <div className="md:col-span-2">
+                    <label className="block text-xs font-medium text-gray-500 mb-1">Varyant Adı (Örn: 10 MM)</label>
+                    <input
+                      type="text"
+                      value={variant.name}
+                      onChange={(e) => handleVariantChange(index, 'name', e.target.value)}
+                      className="w-full px-3 py-1 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
+                      placeholder="Ad"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-500 mb-1">SKU</label>
+                    <input
+                      type="text"
+                      value={variant.sku}
+                      onChange={(e) => handleVariantChange(index, 'sku', e.target.value)}
+                      className="w-full px-3 py-1 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
+                      placeholder="SKU"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-500 mb-1">Fiyat (₺)</label>
+                    <input
+                      type="number"
+                      value={variant.price}
+                      onChange={(e) => handleVariantChange(index, 'price', e.target.value)}
+                      className="w-full px-3 py-1 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
+                      placeholder="Fiyat"
+                    />
+                  </div>
+                  <div className="flex items-end gap-2">
+                    <div className="flex-1">
+                      <label className="block text-xs font-medium text-gray-500 mb-1">Stok</label>
+                      <input
+                        type="number"
+                        value={variant.stock}
+                        onChange={(e) => handleVariantChange(index, 'stock', e.target.value)}
+                        className="w-full px-3 py-1 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
+                        placeholder="Stok"
+                      />
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => removeVariant(index)}
+                      className="p-1.5 text-red-500 hover:bg-red-50 rounded-md transition-colors"
+                      title="Sil"
+                    >
+                      <TrashIcon className="h-5 w-5" />
+                    </button>
+                  </div>
+                </div>
+              ))}
+              
+              {variants.length === 0 && (
+                <p className="text-sm text-gray-500 text-center py-4 bg-gray-50 rounded-lg border-2 border-dashed">
+                  Henüz varyant eklenmemiş. "Varyant Ekle" butonu ile seçenek ekleyebilirsiniz.
+                </p>
+              )}
+            </div>
           </div>
 
           <div className="md:col-span-2">

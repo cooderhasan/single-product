@@ -185,6 +185,23 @@ export default function LoginPage() {
             {isLoading ? 'İşleniyor...' : (activeTab === 'login' ? 'Giriş Yap' : 'Kayıt Ol')}
             {!isLoading && <ChevronRight className="w-4 h-4" />}
           </button>
+
+          <div className="relative my-6">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-200"></div>
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-2 bg-white text-gray-500">veya</span>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => router.push('/odeme')}
+            className="w-full flex justify-center items-center gap-2 py-3 px-4 border border-gray-200 text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none transition-colors"
+          >
+            Üye Olmadan Devam Et
+          </button>
         </form>
       </div>
     </div>

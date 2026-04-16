@@ -73,9 +73,9 @@ export default function EditProductPage() {
         // Process images to ensure they are strings
         const processedImages = Array.isArray(product.images)
           ? product.images.map((img: any) => {
-              if (typeof img === 'string') return img;
-              return img?.url || '';
-            }).filter(Boolean)
+            if (typeof img === 'string') return img;
+            return img?.url || '';
+          }).filter(Boolean)
           : [];
         setImages(processedImages)
       } else {
@@ -119,7 +119,7 @@ export default function EditProductPage() {
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/products/${productId}`, {
         method: 'PUT',
-        headers: { 
+        headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${localStorage.getItem('admin_token')}`,
         },

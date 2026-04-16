@@ -166,20 +166,37 @@ export class ProductsService {
             isMain: index === 0,
           })),
         } : undefined,
+        variants: variants ? {
+          create: variants.map((v) => ({
+            name: v.name,
+            sku: v.sku,
+            price: v.price,
+            stock: Number(v.stock),
+            isActive: v.isActive !== undefined ? v.isActive : true,
+          })),
+        } : undefined,
       },
       include: {
         category: true,
         images: true,
+        variants: true,
       },
     });
   }
 
-  async update(id: string, data: Prisma.ProductUpdateInput & { images?: string[] }) {
-    const { images, ...productData } = data;
+  async update(id: string, data: Prisma.ProductUpdateInput & { images?: string[]; variants?: any[] }) {
+    const { images, variants, ...productData } = data;
 
     // Önce mevcut görselleri temizle
     if (images) {
       await prisma.productImage.deleteMany({
+        where: { productId: id },
+      });
+    }
+
+    // Mevcut varyantları temizle
+    if (variants) {
+      await prisma.productVariant.deleteMany({
         where: { productId: id },
       });
     }
@@ -195,10 +212,20 @@ export class ProductsService {
             isMain: index === 0,
           })),
         } : undefined,
+        variants: variants ? {
+          create: variants.map((v: any) => ({
+            name: v.name,
+            sku: v.sku,
+            price: v.price,
+            stock: Number(v.stock),
+            isActive: v.isActive !== undefined ? v.isActive : true,
+          })),
+        } : undefined,
       },
       include: {
         category: true,
         images: true,
+        variants: true,
       },
     });
   }

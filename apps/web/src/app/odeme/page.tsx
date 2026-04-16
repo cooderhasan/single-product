@@ -21,6 +21,7 @@ import { useCartStore } from '@/store/cart';
 import { useAuthStore } from '@/store/auth';
 import { ordersApi } from '@/lib/api';
 import toast from 'react-hot-toast';
+import { LocationSelector } from '@/components/ui/LocationSelector';
 
 type PaymentMethod = 'CREDIT_CARD' | 'BANK_TRANSFER';
 
@@ -236,31 +237,21 @@ export default function CheckoutPage() {
                     </div>
                   </div>
 
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Şehir *
-                      </label>
-                      <input
-                        type="text"
-                        value={guestAddress.city}
-                        onChange={(e) => setGuestAddress({ ...guestAddress, city: e.target.value })}
-                        className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500"
-                        placeholder="Şehir"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        İlçe *
-                      </label>
-                      <input
-                        type="text"
-                        value={guestAddress.district}
-                        onChange={(e) => setGuestAddress({ ...guestAddress, district: e.target.value })}
-                        className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500"
-                        placeholder="İlçe"
-                      />
-                    </div>
+                  <div className="grid md:grid-cols-2 gap-4 text-left">
+                    <LocationSelector
+                      label="Şehir *"
+                      type="city"
+                      value={guestAddress.city}
+                      onChange={(val) => setGuestAddress({ ...guestAddress, city: val, district: '' })}
+                    />
+                    <LocationSelector
+                      label="İlçe *"
+                      type="district"
+                      selectedCity={guestAddress.city}
+                      value={guestAddress.district}
+                      onChange={(val) => setGuestAddress({ ...guestAddress, district: val })}
+                      placeholder={!guestAddress.city ? "Önce şehir seçin" : "İlçe ara..."}
+                    />
                   </div>
 
                   <div>

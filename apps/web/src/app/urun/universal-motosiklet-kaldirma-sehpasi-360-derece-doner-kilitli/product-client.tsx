@@ -31,23 +31,10 @@ import Link from 'next/link';
 import toast from 'react-hot-toast';
 
 // Görseller veritabanından dinamik olarak çekiliyor
-const variants = [
-  { id: '10mm', name: '10 MM', price: 3722 },
-  { id: '8mm', name: '8 MM', price: 3722 },
-  { id: '6mm', name: '6 MM', price: 3722 },
-];
-
-
-const features = [
-  { icon: Truck, title: 'Ücretsiz Kargo', desc: 'Tüm Türkiye\'ye' },
-  { icon: Shield, title: '2 Yıl Garanti', desc: 'Tam garanti' },
-  { icon: RotateCcw, title: '14 Gün İade', desc: 'Koşulsuz iade' },
-  { icon: Clock, title: 'Aynı Gün Kargo', desc: '15:00\'a kadar' },
-];
-
 export default function ProductPage() {
   const [selectedImage, setSelectedImage] = useState(0);
-  const [selectedVariant, setSelectedVariant] = useState(variants[0]);
+  const [dbVariants, setDbVariants] = useState<any[]>([]);
+  const [selectedVariant, setSelectedVariant] = useState<any>(null);
   const [quantity, setQuantity] = useState(1);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [activeTab, setActiveTab] = useState<'desc' | 'specs'>('desc');
@@ -77,13 +64,25 @@ export default function ProductPage() {
         const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3041';
         const API_URL = `${API_BASE}/api/v1/site-content`;
         
-        // Fetch product data for images
+        // Fetch product data for images and variants
         const productRes = await fetch(`${API_BASE}/api/v1/products/universal-motosiklet-kaldirma-sehpasi-360-derece-doner-kilitli`);
         if (productRes.ok) {
           const productData = await productRes.json();
           if (productData.id) {
             setProductId(productData.id);
           }
+          
+          // Varyantları işle
+          if (productData.variants && productData.variants.length > 0) {
+            setDbVariants(productData.variants);
+            setSelectedVariant(productData.variants[0]);
+          } else {
+            // Varyant yoksa dummy bir yapı oluştur (hata almamak için)
+            const defaultVariant = { id: '', name: 'Standart', price: productData.price || 0 };
+            setDbVariants([defaultVariant]);
+            setSelectedVariant(defaultVariant);
+          }
+
           if (productData.images && productData.images.length > 0) {
             const urls = productData.images.map((img: any) => {
               // API'den gelen image verisi string veya { url: string } formatında olabilir
@@ -106,7 +105,6 @@ export default function ProductPage() {
               return `${API_BASE}${url.startsWith('/') ? url : `/${url}`}`;
             }).filter(Boolean); // Boş string'leri filtrele
             
-            console.log('Processed image URLs:', urls);
             setProductImages(urls);
           }
         }
@@ -229,6 +227,10 @@ export default function ProductPage() {
         toast.error('Ürün bilgisi yüklenemedi, lütfen sayfayı yenileyin');
         return;
       }
+      if (!selectedVariant) {
+        toast.error('Lütfen bir seçenek belirleyin');
+        return;
+      }
       await addItem(productId, quantity, selectedVariant.id);
       toast.success('Ürün sepete eklendi!');
     } catch (error: any) {
@@ -237,7 +239,7 @@ export default function ProductPage() {
     }
   };
 
-  const currentPrice = selectedVariant.price;
+  const currentPrice = selectedVariant ? Number(selectedVariant.price) : 0;
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -373,12 +375,12 @@ export default function ProductPage() {
               <div className="space-y-3">
                 <label className="text-sm font-semibold text-gray-700">Kaldırma Takoz Ebatı</label>
                 <div className="flex gap-3">
-                  {variants.map((variant) => (
+                  {dbVariants.map((variant) => (
                     <button
                       key={variant.id}
                       onClick={() => setSelectedVariant(variant)}
                       className={`flex-1 py-3 px-4 rounded-xl border-2 font-semibold transition-all ${
-                        selectedVariant.id === variant.id
+                        selectedVariant?.id === variant.id
                           ? 'border-primary-600 bg-primary-600 text-white shadow-lg shadow-primary-600/30'
                           : 'border-gray-200 bg-white text-gray-700 hover:border-gray-300'
                       }`}

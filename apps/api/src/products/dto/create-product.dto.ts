@@ -88,4 +88,9 @@ export class CreateProductDto {
   @IsOptional()
   @IsString()
   keywords?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsArray()
+  variants?: any[];
 }
