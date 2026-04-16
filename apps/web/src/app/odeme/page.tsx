@@ -79,7 +79,7 @@ export default function CheckoutPage() {
         guestEmail: guestAddress.email,
         guestPhone: guestAddress.phone,
         items: items.map(item => ({
-          productId: item.productId,
+          productId: item.product.id,
           variantId: item.variantId,
           quantity: item.quantity
         })),
