@@ -1,29 +1,28 @@
-# API Dockerfile (Ultimate Bullseye Compatibility)
-FROM node:20-bullseye AS runner
+# API Dockerfile (Optimized Alpine)
+FROM node:20-alpine AS runner
 
-ARG DATABASE_URL
-ARG REDIS_URL
-ARG JWT_SECRET
-ARG PAYTR_MERCHANT_ID
-ARG PAYTR_MERCHANT_KEY
-ARG PAYTR_MERCHANT_SALT
+# Prisma needs openssl on Alpine
+RUN apk add --no-cache openssl libc6-compat
+
 WORKDIR /app
 
 # Copy root package files
 COPY package.json package-lock.json ./
 
-# Copy workspace package files to maintain monorepo structure
+# Copy workspace package files
 COPY apps/api/package.json ./apps/api/
 COPY apps/web/package.json ./apps/web/
 COPY apps/admin/package.json ./apps/admin/
 COPY packages/database/package.json ./packages/database/
 
-# Install dependencies - this layer will be cached unless a package.json changes
-RUN npm ci --legacy-peer-deps --loglevel info
+# Install dependencies - optimized layer
+RUN npm ci --legacy-peer-deps --loglevel warn && \
+    npm cache clean --force
 
-# Now copy the rest of the source
+# Copy the rest of the source
 COPY . .
 
+# Generate Prisma Client and Build
 RUN npm run db:generate
 RUN npx turbo run build --filter=@ecommerce/database
 RUN npx turbo run build --filter=@ecommerce/api
@@ -31,9 +30,9 @@ RUN npx turbo run build --filter=@ecommerce/api
 ENV NODE_ENV=production
 ENV PORT=3041
 
-# Set ownership to non-root user for security
-RUN groupadd --system --gid 1001 nodejs && \
-    useradd --system --uid 1001 --gid nodejs nestjs && \
+# Security: Don't run as root
+RUN addgroup --system --gid 1001 nodejs && \
+    adduser --system --uid 1001 nestjs && \
     chown -R nestjs:nodejs /app
 
 # Create uploads directory
