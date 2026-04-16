@@ -48,7 +48,7 @@ export function LocationSelector({
 
   return (
     <div className="w-full">
-      <Combobox value={value} onChange={onChange}>
+      <Combobox value={value} onChange={(val: string | null) => val && onChange(val)}>
         {({ open }) => (
           <div className="relative">
             <Combobox.Label className="block text-sm font-medium text-gray-700 mb-1">

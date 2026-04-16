@@ -40,6 +40,13 @@ export default function ProductPage() {
   const [activeTab, setActiveTab] = useState<'desc' | 'specs'>('desc');
   const { addItem } = useCartStore();
 
+  const features = [
+    { icon: Truck, title: "Hızlı Kargo", desc: "Aynı gün çıkış" },
+    { icon: ShieldCheck, title: "2 Yıl Garanti", desc: "Üretici garantisi" },
+    { icon: RotateCcw, title: "Kolay İade", desc: "14 gün içinde" },
+    { icon: Zap, title: "Anında Destek", desc: "WhatsApp hattı" },
+  ];
+
   // CRO State
   const [timeLeft, setTimeLeft] = useState('');
   const [showNotification, setShowNotification] = useState(false);
