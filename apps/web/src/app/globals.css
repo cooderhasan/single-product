@@ -63,10 +63,12 @@ html {
   scroll-behavior: smooth;
 }
 
-/* Focus visible */
-:focus-visible {
-  outline: 2px solid hsl(var(--primary));
-  outline-offset: 2px;
+/* focus reset */
+:focus, :focus-within, :focus-visible {
+  outline: none !important;
+  --tw-ring-offset-width: 0px !important;
+  --tw-ring-width: 0px !important;
+  box-shadow: none !important;
 }
 
 /* Tailwind component utilities */
