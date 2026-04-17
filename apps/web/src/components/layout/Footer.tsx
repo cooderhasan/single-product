@@ -3,10 +3,31 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Phone, Mail, MapPin } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { siteContentApi } from '@/lib/api';
 
 export function Footer() {
   const pathname = usePathname();
   const currentYear = new Date().getFullYear();
+  const [contactInfo, setContactInfo] = useState({
+    phone: '0555 123 45 67',
+    email: 'info@360sehpa.com',
+    address: 'Sanayi Mahallesi, 123. Sokak No:45\nİstanbul, Türkiye'
+  });
+
+  useEffect(() => {
+    const fetchContactInfo = async () => {
+      try {
+        const response = await siteContentApi.getByKey('contact_info');
+        if (response.data && response.data.data?.contactInfo) {
+          setContactInfo(response.data.data.contactInfo);
+        }
+      } catch (error) {
+        console.error('Footer contact info fetch error:', error);
+      }
+    };
+    fetchContactInfo();
+  }, []);
 
   return (
     <footer className="bg-gray-900 text-gray-300">
@@ -134,18 +155,17 @@ export function Footer() {
             <ul className="space-y-3">
               <li className="flex items-start gap-3">
                 <MapPin className="w-5 h-5 text-primary-500 flex-shrink-0 mt-0.5" />
-                <span>Sanayi Mahallesi, 123. Sokak No:45<br />İstanbul, Türkiye</span>
+                <span className="whitespace-pre-line">{contactInfo.address}</span>
               </li>
               <li className="flex items-center gap-3">
-                <Phone className="w-5 h-5 text-primary-500 flex-shrink-0" />
-                <a href="tel:+905551234567" className="hover:text-primary-400 transition-colors">
-                  0555 123 45 67
+                <a href={`tel:${contactInfo.phone.replace(/\s+/g, '')}`} className="hover:text-primary-400 transition-colors">
+                  {contactInfo.phone}
                 </a>
               </li>
               <li className="flex items-center gap-3">
                 <Mail className="w-5 h-5 text-primary-500 flex-shrink-0" />
-                <a href="mailto:info@360sehpa.com" className="hover:text-primary-400 transition-colors">
-                  info@360sehpa.com
+                <a href={`mailto:${contactInfo.email}`} className="hover:text-primary-400 transition-colors">
+                  {contactInfo.email}
                 </a>
               </li>
             </ul>

@@ -2,8 +2,9 @@
 
 import { useState } from 'react';
 import { Phone, Mail, MapPin, Clock, Send, Loader2 } from 'lucide-react';
-import { contactApi } from '@/lib/api';
+import { contactApi, siteContentApi } from '@/lib/api';
 import toast from 'react-hot-toast';
+import { useEffect } from 'react';
 
 export default function ContactClient() {
   const [formData, setFormData] = useState({
@@ -14,6 +15,27 @@ export default function ContactClient() {
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [contactInfo, setContactInfo] = useState({
+    phone: '0555 123 45 67',
+    email: 'info@360sehpa.com',
+    address: 'Sanayi Mahallesi, 123. Sokak No:45\nİstanbul, Türkiye',
+    workingHours: 'Pazartesi - Cuma: 09:00 - 18:00\nCumartesi: 10:00 - 14:00'
+  });
+
+  useEffect(() => {
+    const fetchContactInfo = async () => {
+      try {
+        const response = await siteContentApi.getByKey('contact_info');
+        if (response.data && response.data.data?.contactInfo) {
+          setContactInfo(response.data.data.contactInfo);
+        }
+      } catch (error) {
+        console.error('Contact info fetch error:', error);
+      }
+    };
+
+    fetchContactInfo();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -61,8 +83,8 @@ export default function ContactClient() {
                 </div>
                 <div>
                   <h3 className="font-semibold mb-1">Telefon</h3>
-                  <a href="tel:+905551234567" className="text-primary-600 hover:underline">
-                    0555 123 45 67
+                  <a href={`tel:${contactInfo.phone.replace(/\s+/g, '')}`} className="text-primary-600 hover:underline">
+                    {contactInfo.phone}
                   </a>
                 </div>
               </div>
@@ -73,8 +95,8 @@ export default function ContactClient() {
                 </div>
                 <div>
                   <h3 className="font-semibold mb-1">E-posta</h3>
-                  <a href="mailto:info@360sehpa.com" className="text-primary-600 hover:underline">
-                    info@360sehpa.com
+                  <a href={`mailto:${contactInfo.email}`} className="text-primary-600 hover:underline">
+                    {contactInfo.email}
                   </a>
                 </div>
               </div>
@@ -85,9 +107,8 @@ export default function ContactClient() {
                 </div>
                 <div>
                   <h3 className="font-semibold mb-1">Adres</h3>
-                  <p className="text-gray-600">
-                    Sanayi Mahallesi, 123. Sokak No:45<br />
-                    İstanbul, Türkiye
+                  <p className="text-gray-600 whitespace-pre-line">
+                    {contactInfo.address}
                   </p>
                 </div>
               </div>
@@ -98,9 +119,8 @@ export default function ContactClient() {
                 </div>
                 <div>
                   <h3 className="font-semibold mb-1">Çalışma Saatleri</h3>
-                  <p className="text-gray-600">
-                    Pazartesi - Cuma: 09:00 - 18:00<br />
-                    Cumartesi: 10:00 - 14:00
+                  <p className="text-gray-600 whitespace-pre-line">
+                    {contactInfo.workingHours}
                   </p>
                 </div>
               </div>

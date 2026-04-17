@@ -15,6 +15,12 @@ export default function EditContentPage() {
   const [fetching, setFetching] = useState(true)
   const [features, setFeatures] = useState<string[]>([])
   const [bankAccounts, setBankAccounts] = useState<any[]>([])
+  const [contactInfo, setContactInfo] = useState<any>({
+    phone: '',
+    email: '',
+    address: '',
+    workingHours: ''
+  })
   const [newFeature, setNewFeature] = useState('')
   const [formData, setFormData] = useState({
     title: '',
@@ -54,6 +60,12 @@ export default function EditContentPage() {
           })
           setFeatures(content.data?.features || [])
           setBankAccounts(content.data?.bankAccounts || [])
+          setContactInfo(content.data?.contactInfo || {
+            phone: '',
+            email: '',
+            address: '',
+            workingHours: ''
+          })
         }
       }
     } catch (error) {
@@ -90,7 +102,9 @@ export default function EditContentPage() {
           ...formData,
           data: formData.key === 'bank_accounts' 
             ? { bankAccounts } 
-            : { features },
+            : formData.key === 'contact_info'
+              ? { contactInfo }
+              : { features },
         }),
       })
 
@@ -228,8 +242,8 @@ export default function EditContentPage() {
               </label>
             </div>
 
-            {/* Özellikler - Sadece bank_accounts DEĞİLSE göster */}
-            {formData.key !== 'bank_accounts' && (
+            {/* Özellikler - Sadece bank_accounts veya contact_info DEĞİLSE göster */}
+            {formData.key !== 'bank_accounts' && formData.key !== 'contact_info' && (
               <div className="col-span-2">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Özellikler
@@ -363,6 +377,55 @@ export default function EditContentPage() {
                     <PlusIcon className="h-5 w-5" />
                     Yeni Hesap Ekle
                   </button>
+                </div>
+              </div>
+            )}
+
+            {/* İletişim Bilgileri - Sadece contact_info olduğunda göster */}
+            {formData.key === 'contact_info' && (
+              <div className="col-span-2 space-y-4 pt-4 border-t">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">İletişim Detayları</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Telefon</label>
+                    <input
+                      type="text"
+                      value={contactInfo.phone}
+                      onChange={(e) => setContactInfo({ ...contactInfo, phone: e.target.value })}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="0555 123 45 67"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">E-posta</label>
+                    <input
+                      type="email"
+                      value={contactInfo.email}
+                      onChange={(e) => setContactInfo({ ...contactInfo, email: e.target.value })}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="info@360sehpa.com"
+                    />
+                  </div>
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Adres</label>
+                    <textarea
+                      rows={2}
+                      value={contactInfo.address}
+                      onChange={(e) => setContactInfo({ ...contactInfo, address: e.target.value })}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="Sanayi Mah. ..."
+                    />
+                  </div>
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Çalışma Saatleri</label>
+                    <input
+                      type="text"
+                      value={contactInfo.workingHours}
+                      onChange={(e) => setContactInfo({ ...contactInfo, workingHours: e.target.value })}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="Pzt - Cum: 09:00 - 18:00"
+                    />
+                  </div>
                 </div>
               </div>
             )}

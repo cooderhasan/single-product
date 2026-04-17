@@ -7,11 +7,13 @@ import { ShoppingCart, Menu, X, Search, Phone, Truck, Shield, User, LogOut } fro
 import { useCartStore } from '@/store/cart';
 import { useAuthStore } from '@/store/auth';
 import { cn } from '@/lib/utils';
+import { siteContentApi } from '@/lib/api';
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+  const [phone, setPhone] = useState('0555 123 45 67');
   const pathname = usePathname();
 
   const { count } = useCartStore();
@@ -22,6 +24,19 @@ export function Header() {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
     };
+    
+    const fetchPhone = async () => {
+      try {
+        const response = await siteContentApi.getByKey('contact_info');
+        if (response.data && response.data.data?.contactInfo?.phone) {
+          setPhone(response.data.data.contactInfo.phone);
+        }
+      } catch (error) {
+        console.error('Header phone fetch error:', error);
+      }
+    };
+
+    fetchPhone();
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -44,13 +59,13 @@ export function Header() {
         <div className="container mx-auto px-4 flex justify-between items-center">
           <div className="flex items-center gap-6">
             <a 
-              href="tel:+905551234567" 
+              href={`tel:${phone.replace(/\s+/g, '')}`} 
               className="flex items-center gap-2 hover:text-blue-400 transition-colors duration-200"
             >
               <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center">
                 <Phone className="w-3 h-3" />
               </div>
-              <span className="font-medium">0555 123 45 67</span>
+              <span className="font-medium">{phone}</span>
             </a>
             <span className="flex items-center gap-2 text-slate-300">
               <Truck className="w-3.5 h-3.5" />

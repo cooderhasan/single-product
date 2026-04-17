@@ -148,7 +148,12 @@ export default function NewProductPage() {
           comparePrice: formData.comparePrice ? parseFloat(formData.comparePrice) : undefined,
           stock: parseInt(formData.stock),
           images,
-          variants,
+          images,
+          variants: variants.map(v => ({
+            ...v,
+            price: parseFloat(v.price),
+            stock: parseInt(v.stock)
+          })),
         }),
       })
 
