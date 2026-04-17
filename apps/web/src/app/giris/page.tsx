@@ -16,6 +16,7 @@ import {
 import { useAuthStore } from '@/store/auth';
 import toast from 'react-hot-toast';
 import Link from 'next/link';
+import { trackLogin, trackSignUp } from '@/components/analytics/dataLayer';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -43,6 +44,10 @@ export default function LoginPage() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const validateEmail = (email: string) => {
+    return /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(email);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -51,10 +56,22 @@ export default function LoginPage() {
         toast.error('Lütfen tüm alanları doldurun');
         return;
       }
+      if (!validateEmail(formData.email)) {
+        toast.error('Lütfen geçerli bir e-posta adresi giriniz');
+        return;
+      }
       await login(formData.email, formData.password);
     } else {
       if (!formData.firstName || !formData.lastName || !formData.email || !formData.password) {
         toast.error('Lütfen tüm alanları doldurun');
+        return;
+      }
+      if (!validateEmail(formData.email)) {
+        toast.error('Lütfen geçerli bir e-posta adresi giriniz');
+        return;
+      }
+      if (formData.password.length < 6) {
+        toast.error('Şifreniz en az 6 karakter olmalıdır');
         return;
       }
       await register({
@@ -67,6 +84,13 @@ export default function LoginPage() {
 
     if (!error && isAuthenticated) {
       toast.success(activeTab === 'login' ? 'Giriş başarılı' : 'Kayıt başarılı');
+      
+      // Analytics tracking
+      if (activeTab === 'login') {
+        trackLogin('email');
+      } else {
+        trackSignUp('email');
+      }
     } else if (error) {
       toast.error(error);
     }
@@ -145,7 +169,7 @@ export default function LoginPage() {
                           required
                           value={formData.firstName}
                           onChange={handleChange}
-                          className="w-full pl-12 pr-4 py-4 bg-slate-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-primary-100 focus:ring-4 focus:ring-primary-600/5 transition-all outline-none font-medium placeholder:text-slate-300"
+                          className="w-full pl-12 pr-4 py-4 bg-white border-2 border-slate-200 rounded-2xl focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all duration-200 outline-none font-medium placeholder:text-slate-400 hover:border-slate-300"
                           placeholder="Ad"
                         />
                       </div>
@@ -160,7 +184,7 @@ export default function LoginPage() {
                           required
                           value={formData.lastName}
                           onChange={handleChange}
-                          className="w-full pl-12 pr-4 py-4 bg-slate-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-primary-100 focus:ring-4 focus:ring-primary-600/5 transition-all outline-none font-medium placeholder:text-slate-300"
+                          className="w-full pl-12 pr-4 py-4 bg-white border-2 border-slate-200 rounded-2xl focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all duration-200 outline-none font-medium placeholder:text-slate-400 hover:border-slate-300"
                           placeholder="Soyad"
                         />
                       </div>
@@ -178,7 +202,7 @@ export default function LoginPage() {
                       required
                       value={formData.email}
                       onChange={handleChange}
-                      className="w-full pl-12 pr-4 py-4 bg-slate-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-primary-100 focus:ring-4 focus:ring-primary-600/5 transition-all outline-none font-medium placeholder:text-slate-300"
+                      className="w-full pl-12 pr-4 py-4 bg-white border-2 border-slate-200 rounded-2xl focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all duration-200 outline-none font-medium placeholder:text-slate-400 hover:border-slate-300"
                       placeholder="ornek@email.com"
                     />
                   </div>
@@ -199,7 +223,7 @@ export default function LoginPage() {
                       required
                       value={formData.password}
                       onChange={handleChange}
-                      className="w-full pl-12 pr-4 py-4 bg-slate-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-primary-100 focus:ring-4 focus:ring-primary-600/5 transition-all outline-none font-medium placeholder:text-slate-300"
+                      className="w-full pl-12 pr-4 py-4 bg-white border-2 border-slate-200 rounded-2xl focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all duration-200 outline-none font-medium placeholder:text-slate-400 hover:border-slate-300"
                       placeholder="••••••••"
                     />
                   </div>

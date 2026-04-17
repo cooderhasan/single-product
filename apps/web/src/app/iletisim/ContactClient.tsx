@@ -5,6 +5,7 @@ import { Phone, Mail, MapPin, Clock, Send, Loader2 } from 'lucide-react';
 import { contactApi, siteContentApi } from '@/lib/api';
 import toast from 'react-hot-toast';
 import { useEffect } from 'react';
+import { trackContactFormSubmission } from '@/components/analytics/dataLayer';
 
 export default function ContactClient() {
   const [formData, setFormData] = useState({
@@ -37,13 +38,47 @@ export default function ContactClient() {
     fetchContactInfo();
   }, []);
 
+  const validateEmail = (email: string) => {
+    return /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(email);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Form doğrulama
+    if (!formData.name.trim()) {
+      toast.error('Lütfen adınızı ve soyadınızı giriniz');
+      return;
+    }
+    
+    if (!formData.email.trim()) {
+      toast.error('Lütfen e-posta adresinizi giriniz');
+      return;
+    }
+    
+    if (!validateEmail(formData.email)) {
+      toast.error('Lütfen geçerli bir e-posta adresi giriniz');
+      return;
+    }
+    
+    if (formData.phone && formData.phone.replace(/\D/g, '').length < 10) {
+      toast.error('Lütfen geçerli bir telefon numarası giriniz');
+      return;
+    }
+    
+    if (!formData.message.trim()) {
+      toast.error('Lütfen mesajınızı giriniz');
+      return;
+    }
+    
     setIsSubmitting(true);
 
     try {
       await contactApi.send(formData);
       toast.success('Mesajınız başarıyla gönderildi! Uzman ekibimiz en kısa sürede sizinle iletişime geçecektir.');
+      
+      // Track contact form submission
+      trackContactFormSubmission('contact_form');
       setFormData({
         name: '',
         email: '',
@@ -133,45 +168,57 @@ export default function ContactClient() {
             
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium mb-1">Adınız Soyadınız</label>
+                <label className="block text-sm font-bold text-slate-700 mb-2 ml-1">Adınız Soyadınız *</label>
                 <input
                   type="text"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                  required
+                  className="w-full px-4 py-3 bg-white border-2 border-slate-200 rounded-xl focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all duration-200 outline-none font-medium placeholder:text-slate-400 hover:border-slate-300"
+                  placeholder="Adınız ve soyadınız"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-1">E-posta</label>
+                <label className="block text-sm font-bold text-slate-700 mb-2 ml-1">E-posta *</label>
                 <input
                   type="email"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                  required
+                  className="w-full px-4 py-3 bg-white border-2 border-slate-200 rounded-xl focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all duration-200 outline-none font-medium placeholder:text-slate-400 hover:border-slate-300"
+                  placeholder="ornek@email.com"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-1">Telefon</label>
+                <label className="block text-sm font-bold text-slate-700 mb-2 ml-1">Telefon</label>
                 <input
                   type="tel"
                   value={formData.phone}
-                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                  className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                  onChange={(e) => {
+                    const val = e.target.value.replace(/\D/g, '');
+                    if (val.length <= 11) {
+                      setFormData({ ...formData, phone: val });
+                    }
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key.length === 1 && /[^0-9]/.test(e.key)) {
+                      e.preventDefault();
+                    }
+                  }}
+                  className="w-full px-4 py-3 bg-white border-2 border-slate-200 rounded-xl focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all duration-200 outline-none font-medium placeholder:text-slate-400 hover:border-slate-300"
+                  placeholder="05XX XXX XX XX"
+                  maxLength={11}
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-1">Mesajınız</label>
+                <label className="block text-sm font-bold text-slate-700 mb-2 ml-1">Mesajınız *</label>
                 <textarea
                   rows={4}
                   value={formData.message}
                   onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                  className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                  required
+                  className="w-full px-4 py-3 bg-white border-2 border-slate-200 rounded-xl focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all duration-200 outline-none font-medium placeholder:text-slate-400 hover:border-slate-300 resize-none"
+                  placeholder="Mesajınızı buraya yazınız..."
                 />
               </div>
 

@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { CheckCircle, Package, Mail, ArrowRight } from 'lucide-react';
+import { trackPurchase } from '@/components/analytics/dataLayer';
 
 export default function OrderSuccessContent() {
   const searchParams = useSearchParams();
@@ -23,6 +24,31 @@ export default function OrderSuccessContent() {
 
     return () => clearInterval(timer);
   }, []);
+
+  // Track purchase conversion
+  useEffect(() => {
+    if (orderNumber) {
+      // Get order details from localStorage (set during checkout)
+      const orderData = localStorage.getItem('lastOrder');
+      if (orderData) {
+        try {
+          const parsed = JSON.parse(orderData);
+          trackPurchase({
+            transaction_id: orderNumber,
+            value: parsed.total || 0,
+            tax: parsed.tax || 0,
+            shipping: parsed.shipping || 0,
+            currency: 'TRY',
+            items: parsed.items || [],
+          });
+          // Clear after tracking
+          localStorage.removeItem('lastOrder');
+        } catch (e) {
+          console.error('Purchase tracking error:', e);
+        }
+      }
+    }
+  }, [orderNumber]);
 
   return (
     <div className="min-h-screen bg-gray-50 py-12">

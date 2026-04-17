@@ -5,6 +5,8 @@ import { usePathname } from 'next/navigation';
 import { Phone, Mail, MapPin } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { siteContentApi } from '@/lib/api';
+import toast from 'react-hot-toast';
+import { trackNewsletterSubscription } from '@/components/analytics/dataLayer';
 
 export function Footer() {
   const pathname = usePathname();
@@ -43,11 +45,28 @@ export function Footer() {
                 Yeni ürünler ve özel fırsatlar için bültenimize abone olun.
               </p>
             </div>
-            <form className="flex gap-2">
+            <form 
+              className="flex gap-2"
+              onSubmit={(e) => {
+                e.preventDefault();
+                const form = e.target as HTMLFormElement;
+                const email = (form.elements.namedItem('email') as HTMLInputElement)?.value;
+                
+                if (email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                  trackNewsletterSubscription('newsletter_footer');
+                  toast.success('Bülten aboneliğiniz için teşekkürler!');
+                  form.reset();
+                } else {
+                  toast.error('Lütfen geçerli bir e-posta adresi giriniz');
+                }
+              }}
+            >
               <input
+                name="email"
                 type="email"
                 placeholder="Email adresiniz"
-                className="flex-1 px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                className="flex-1 px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-white"
+                required
               />
               <button
                 type="submit"

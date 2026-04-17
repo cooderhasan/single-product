@@ -37,21 +37,21 @@ export function LocationSelector({
 
   return (
     <div className="w-full">
-      <label className="block text-sm font-medium text-gray-700 mb-1">
+      <label className="block text-sm font-bold text-slate-700 mb-2 ml-1">
         {label}
       </label>
       
-      <div className="relative">
-        <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none z-10" />
+      <div className="relative group">
+        <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 pointer-events-none z-10 group-hover:text-primary-600 transition-colors" />
         
         <select
           value={value}
           onChange={(e) => onChange(e.target.value)}
           disabled={isDisabled}
           className={cn(
-            "w-full appearance-none bg-white border rounded-lg py-2.5 pl-10 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all cursor-pointer",
-            error ? "border-red-500" : "border-gray-200",
-            isDisabled && "bg-gray-100 text-gray-400 cursor-not-allowed"
+            "w-full appearance-none bg-white border-2 border-slate-200 rounded-2xl py-4 pl-12 pr-10 text-sm font-medium focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all duration-200 cursor-pointer hover:border-slate-300",
+            error ? "border-red-500" : "border-slate-200",
+            isDisabled && "bg-slate-100 text-slate-400 cursor-not-allowed border-slate-200"
           )}
         >
           <option value="" disabled>
@@ -66,9 +66,9 @@ export function LocationSelector({
         </select>
         
         {/* Custom arrow */}
-        <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+        <div className="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
           <svg 
-            className="w-4 h-4 text-gray-400" 
+            className="w-5 h-5 text-slate-400" 
             fill="none" 
             stroke="currentColor" 
             viewBox="0 0 24 24"

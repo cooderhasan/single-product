@@ -73,10 +73,28 @@ export default function CheckoutPage() {
     fetchCart();
   }, [fetchCart]);
 
+  const validateEmail = (email: string) => {
+    return String(email)
+      .toLowerCase()
+      .match(
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      );
+  };
+
   const handleCreateOrder = async () => {
     if (!guestAddress.fullName || !guestAddress.email || !guestAddress.phone || !guestAddress.city || !guestAddress.district || !guestAddress.address) {
       toast.error('Lütfen tüm adres alanlarını eksiksiz doldurun');
       setStep('address');
+      return;
+    }
+
+    if (!validateEmail(guestAddress.email)) {
+      toast.error('Lütfen geçerli bir e-posta adresi giriniz');
+      return;
+    }
+
+    if (guestAddress.phone.replace(/\D/g, '').length < 10) {
+      toast.error('Lütfen geçerli bir telefon numarası giriniz');
       return;
     }
 
@@ -109,6 +127,21 @@ export default function CheckoutPage() {
       };
 
       const { data: order } = await ordersApi.create(orderData);
+      
+      // Store order data for analytics tracking
+      const shippingCost = total >= 1000 ? 0 : 75;
+      localStorage.setItem('lastOrder', JSON.stringify({
+        total: total + shippingCost,
+        tax: 0,
+        shipping: shippingCost,
+        items: items.map(item => ({
+          id: item.product.id,
+          name: item.product.name,
+          price: Number(item.product.price),
+          quantity: item.quantity,
+          category: item.product.category?.name,
+        })),
+      }));
       
       await clearCart();
 
@@ -243,7 +276,7 @@ export default function CheckoutPage() {
                             type="text"
                             value={guestAddress.fullName}
                             onChange={(e) => setGuestAddress({ ...guestAddress, fullName: e.target.value })}
-                            className="w-full pl-12 pr-4 py-4 bg-slate-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-primary-100 focus:ring-4 focus:ring-primary-600/5 transition-all outline-none font-medium placeholder:text-slate-300"
+                            className="w-full pl-12 pr-4 py-4 bg-white border-2 border-slate-200 rounded-2xl focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all duration-200 outline-none font-medium placeholder:text-slate-400 hover:border-slate-300"
                             placeholder="Adınız Soyadınız"
                           />
                         </div>
@@ -255,11 +288,28 @@ export default function CheckoutPage() {
                           <input
                             type="tel"
                             value={guestAddress.phone}
-                            onChange={(e) => setGuestAddress({ ...guestAddress, phone: e.target.value })}
-                            className="w-full pl-12 pr-4 py-4 bg-slate-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-primary-100 focus:ring-4 focus:ring-primary-600/5 transition-all outline-none font-medium placeholder:text-slate-300"
+                            onChange={(e) => {
+                              // Sadece rakamlara izin ver
+                              const val = e.target.value.replace(/\D/g, '');
+                              // Maksimum 11 karakter (Türkiye telefon formatı: 05XX XXX XX XX)
+                              if (val.length <= 11) {
+                                setGuestAddress({ ...guestAddress, phone: val });
+                              }
+                            }}
+                            onKeyDown={(e) => {
+                              // Harf girişini engelle
+                              if (e.key.length === 1 && /[^0-9]/.test(e.key)) {
+                                e.preventDefault();
+                              }
+                            }}
+                            className="w-full pl-12 pr-4 py-4 bg-white border-2 border-slate-200 rounded-2xl focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all duration-200 outline-none font-medium placeholder:text-slate-400 hover:border-slate-300"
                             placeholder="05XX XXX XX XX"
+                            maxLength={11}
                           />
                         </div>
+                        {guestAddress.phone && guestAddress.phone.length < 10 && (
+                          <p className="text-xs text-red-500 font-medium ml-1">Geçerli bir telefon numarası giriniz (en az 10 rakam)</p>
+                        )}
                       </div>
                     </div>
 
@@ -271,10 +321,19 @@ export default function CheckoutPage() {
                           type="email"
                           value={guestAddress.email}
                           onChange={(e) => setGuestAddress({ ...guestAddress, email: e.target.value })}
-                          className="w-full pl-12 pr-4 py-4 bg-slate-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-primary-100 focus:ring-4 focus:ring-primary-600/5 transition-all outline-none font-medium placeholder:text-slate-300"
+                          onBlur={(e) => {
+                            const email = e.target.value;
+                            if (email && !validateEmail(email)) {
+                              toast.error('Lütfen geçerli bir e-posta adresi giriniz');
+                            }
+                          }}
+                          className="w-full pl-12 pr-4 py-4 bg-white border-2 border-slate-200 rounded-2xl focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all duration-200 outline-none font-medium placeholder:text-slate-400 hover:border-slate-300"
                           placeholder="ornek@email.com"
                         />
                       </div>
+                      {guestAddress.email && !validateEmail(guestAddress.email) && (
+                        <p className="text-xs text-red-500 font-medium ml-1">Geçerli bir e-posta adresi giriniz (ornek@email.com)</p>
+                      )}
                     </div>
 
                     <div className="grid sm:grid-cols-2 gap-6">
@@ -301,7 +360,7 @@ export default function CheckoutPage() {
                         <textarea
                           value={guestAddress.address}
                           onChange={(e) => setGuestAddress({ ...guestAddress, address: e.target.value })}
-                          className="w-full pl-12 pr-4 py-4 bg-slate-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-primary-100 focus:ring-4 focus:ring-primary-600/5 transition-all outline-none font-medium placeholder:text-slate-300 min-h-[120px]"
+                          className="w-full pl-12 pr-4 py-4 bg-white border-2 border-slate-200 rounded-2xl focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all duration-200 outline-none font-medium placeholder:text-slate-400 min-h-[120px] hover:border-slate-300 resize-none"
                           placeholder="Mahalle, Sokak, No, Daire bilgilerini giriniz..."
                         />
                       </div>
@@ -311,6 +370,14 @@ export default function CheckoutPage() {
                       onClick={() => {
                         if (!guestAddress.fullName || !guestAddress.phone || !guestAddress.city || !guestAddress.district || !guestAddress.address) {
                           toast.error('Lütfen tüm zorunlu alanları doldurun');
+                          return;
+                        }
+                        if (!validateEmail(guestAddress.email)) {
+                          toast.error('Lütfen geçerli bir e-posta adresi giriniz');
+                          return;
+                        }
+                        if (guestAddress.phone.replace(/\D/g, '').length < 10) {
+                          toast.error('Lütfen geçerli bir telefon numarası giriniz');
                           return;
                         }
                         setStep('payment');
@@ -479,12 +546,14 @@ export default function CheckoutPage() {
               <div className="space-y-4 mb-8 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
                 {items.map((item) => (
                   <div key={item.id} className="flex gap-4 p-3 rounded-2xl hover:bg-slate-50 transition-colors">
-                    <div className="w-16 h-16 bg-white rounded-xl flex-shrink-0 border border-slate-100 p-1 relative">
-                       <Image 
-                        src={getImageUrl(item.product.images?.[0])} 
+                    <div className="w-16 h-16 bg-white rounded-xl flex-shrink-0 border border-slate-100 p-1 relative overflow-hidden flex items-center justify-center">
+                       <img 
+                        src={item.product.images?.[0] ? getImageUrl(item.product.images[0]) : '/images/placeholder.png'} 
                         alt={item.product.name} 
-                        fill 
-                        className="object-contain"
+                        className="w-full h-full object-contain"
+                        onError={(e) => {
+                          e.currentTarget.src = '/images/placeholder.png';
+                        }}
                        />
                     </div>
                     <div className="flex-1 min-w-0 flex flex-col justify-center">
