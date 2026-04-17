@@ -2,6 +2,7 @@ import Link from 'next/link';
 import React from 'react';
 import { Star } from 'lucide-react';
 import { useCartStore } from '@/store/cart';
+import { getImageUrl } from '@/lib/utils';
 
 interface ProductCardProps {
   product: {
