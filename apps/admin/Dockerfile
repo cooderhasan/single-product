@@ -16,7 +16,7 @@ COPY apps/admin/package.json ./apps/admin/
 COPY packages/database/package.json ./packages/database/
 
 # Install dependencies - optimized
-RUN npm ci --legacy-peer-deps --loglevel warn && \
+RUN npm install --legacy-peer-deps --loglevel warn && \
     npm cache clean --force
 
 # Copy the rest of the source
