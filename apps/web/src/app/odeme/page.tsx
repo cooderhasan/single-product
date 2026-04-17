@@ -276,7 +276,7 @@ export default function CheckoutPage() {
                             type="text"
                             value={guestAddress.fullName}
                             onChange={(e) => setGuestAddress({ ...guestAddress, fullName: e.target.value })}
-                            className="w-full pl-12 pr-4 py-4 bg-white border-2 border-slate-200 rounded-2xl focus:border-primary-600 transition-all duration-200 outline-none font-medium placeholder:text-slate-400 hover:border-slate-300"
+                            className="w-full pl-12 pr-4 py-4 bg-white border-2 border-slate-200 rounded-2xl focus:border-primary-600 transition-all duration-200 outline-none font-medium placeholder:text-slate-300 hover:border-slate-300 shadow-sm"
                             placeholder="Adınız Soyadınız"
                           />
                         </div>
@@ -289,20 +289,12 @@ export default function CheckoutPage() {
                             type="tel"
                             value={guestAddress.phone}
                             onChange={(e) => {
-                              // Sadece rakamlara izin ver
                               const val = e.target.value.replace(/\D/g, '');
-                              // Maksimum 11 karakter (Türkiye telefon formatı: 05XX XXX XX XX)
                               if (val.length <= 11) {
                                 setGuestAddress({ ...guestAddress, phone: val });
                               }
                             }}
-                            onKeyDown={(e) => {
-                              // Harf girişini engelle
-                              if (e.key.length === 1 && /[^0-9]/.test(e.key)) {
-                                e.preventDefault();
-                              }
-                            }}
-                            className="w-full pl-12 pr-4 py-4 bg-white border-2 border-slate-200 rounded-2xl focus:border-primary-600 transition-all duration-200 outline-none font-medium placeholder:text-slate-400 hover:border-slate-300"
+                            className="w-full pl-12 pr-4 py-4 bg-white border-2 border-slate-200 rounded-2xl focus:border-primary-600 transition-all duration-200 outline-none font-medium placeholder:text-slate-300 hover:border-slate-300 shadow-sm"
                             placeholder="05XX XXX XX XX"
                             maxLength={11}
                           />
@@ -327,7 +319,7 @@ export default function CheckoutPage() {
                               toast.error('Lütfen geçerli bir e-posta adresi giriniz');
                             }
                           }}
-                          className="w-full pl-12 pr-4 py-4 bg-white border-2 border-slate-200 rounded-2xl focus:border-primary-600 transition-all duration-200 outline-none font-medium placeholder:text-slate-400 hover:border-slate-300"
+                          className="w-full pl-12 pr-4 py-4 bg-white border-2 border-slate-200 rounded-2xl focus:border-primary-600 focus:ring-0 transition-all duration-200 outline-none font-medium placeholder:text-slate-300 hover:border-slate-300 shadow-sm"
                           placeholder="ornek@email.com"
                         />
                       </div>
@@ -360,7 +352,7 @@ export default function CheckoutPage() {
                         <textarea
                           value={guestAddress.address}
                           onChange={(e) => setGuestAddress({ ...guestAddress, address: e.target.value })}
-                          className="w-full pl-12 pr-4 py-4 bg-white border-2 border-slate-200 rounded-2xl focus:border-primary-600 transition-all duration-200 outline-none font-medium placeholder:text-slate-400 min-h-[120px] hover:border-slate-300 resize-none"
+                          className="w-full pl-12 pr-4 py-4 bg-white border-2 border-slate-200 rounded-2xl focus:border-primary-600 focus:ring-0 transition-all duration-200 outline-none font-medium placeholder:text-slate-300 hover:border-slate-300 shadow-sm min-h-[120px] resize-none"
                           placeholder="Mahalle, Sokak, No, Daire bilgilerini giriniz..."
                         />
                       </div>

@@ -173,7 +173,7 @@ export default function ContactClient() {
                   type="text"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full px-4 py-3 bg-white border-2 border-slate-200 rounded-xl focus:border-primary-600 transition-all duration-200 outline-none font-medium placeholder:text-slate-400 hover:border-slate-300"
+                  className="w-full px-4 py-3 bg-white border-2 border-slate-200 rounded-xl focus:border-primary-600 focus:ring-0 transition-all duration-200 outline-none font-medium placeholder:text-slate-300 hover:border-slate-300 shadow-sm"
                   placeholder="Adınız ve soyadınız"
                 />
               </div>
@@ -184,7 +184,7 @@ export default function ContactClient() {
                   type="email"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="w-full px-4 py-3 bg-white border-2 border-slate-200 rounded-xl focus:border-primary-600 transition-all duration-200 outline-none font-medium placeholder:text-slate-400 hover:border-slate-300"
+                  className="w-full px-4 py-3 bg-white border-2 border-slate-200 rounded-xl focus:border-primary-600 focus:ring-0 transition-all duration-200 outline-none font-medium placeholder:text-slate-300 hover:border-slate-300 shadow-sm"
                   placeholder="ornek@email.com"
                 />
               </div>
@@ -200,12 +200,7 @@ export default function ContactClient() {
                       setFormData({ ...formData, phone: val });
                     }
                   }}
-                  onKeyDown={(e) => {
-                    if (e.key.length === 1 && /[^0-9]/.test(e.key)) {
-                      e.preventDefault();
-                    }
-                  }}
-                  className="w-full px-4 py-3 bg-white border-2 border-slate-200 rounded-xl focus:border-primary-600 transition-all duration-200 outline-none font-medium placeholder:text-slate-400 hover:border-slate-300"
+                  className="w-full px-4 py-3 bg-white border-2 border-slate-200 rounded-xl focus:border-primary-600 focus:ring-0 transition-all duration-200 outline-none font-medium placeholder:text-slate-300 hover:border-slate-300 shadow-sm"
                   placeholder="05XX XXX XX XX"
                   maxLength={11}
                 />
@@ -217,7 +212,7 @@ export default function ContactClient() {
                   rows={4}
                   value={formData.message}
                   onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                  className="w-full px-4 py-3 bg-white border-2 border-slate-200 rounded-xl focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all duration-200 outline-none font-medium placeholder:text-slate-400 hover:border-slate-300 resize-none"
+                  className="w-full px-4 py-3 bg-white border-2 border-slate-200 rounded-xl focus:border-primary-600 focus:ring-0 transition-all duration-200 outline-none font-medium placeholder:text-slate-300 hover:border-slate-300 shadow-sm resize-none"
                   placeholder="Mesajınızı buraya yazınız..."
                 />
               </div>

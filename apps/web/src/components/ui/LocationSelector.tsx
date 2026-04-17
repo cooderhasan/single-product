@@ -49,9 +49,9 @@ export function LocationSelector({
           onChange={(e) => onChange(e.target.value)}
           disabled={isDisabled}
           className={cn(
-            "w-full appearance-none bg-white border-2 border-slate-200 rounded-2xl py-4 pl-12 pr-10 text-sm font-medium focus:outline-none focus:border-primary-600 transition-all duration-200 cursor-pointer hover:border-slate-300",
+            "w-full appearance-none bg-white border-2 border-slate-200 rounded-2xl py-4 pl-12 pr-10 text-sm font-medium focus:outline-none focus:border-primary-600 transition-all duration-200 cursor-pointer hover:border-slate-300 shadow-sm",
             error ? "border-red-500" : "border-slate-200",
-            isDisabled && "bg-slate-100 text-slate-400 cursor-not-allowed border-slate-200"
+            isDisabled && "bg-slate-50 text-slate-400 cursor-not-allowed border-slate-200"
           )}
         >
           <option value="" disabled>

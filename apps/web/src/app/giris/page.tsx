@@ -161,30 +161,30 @@ export default function LoginPage() {
                   <div className="grid sm:grid-cols-2 gap-4">
                     <div className="space-y-1.5">
                       <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Adınız</label>
-                      <div className="relative group">
-                        <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-primary-600 transition-colors" />
+                      <div className="relative group/field">
+                        <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within/field:text-primary-600 transition-colors z-10" />
                         <input
                           name="firstName"
                           type="text"
                           required
                           value={formData.firstName}
                           onChange={handleChange}
-                          className="w-full pl-12 pr-4 py-4 bg-white border-2 border-slate-200 rounded-2xl focus:border-primary-600 transition-all duration-200 outline-none font-medium placeholder:text-slate-400 hover:border-slate-300"
+                          className="w-full pl-12 pr-4 py-4 bg-white border-2 border-slate-200 rounded-2xl focus:border-primary-600 focus:ring-0 transition-all duration-200 outline-none font-medium placeholder:text-slate-300 hover:border-slate-300 shadow-sm"
                           placeholder="Ad"
                         />
                       </div>
                     </div>
                     <div className="space-y-1.5">
                       <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Soyadınız</label>
-                      <div className="relative group">
-                        <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-primary-600 transition-colors" />
+                      <div className="relative group/field">
+                        <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within/field:text-primary-600 transition-colors z-10" />
                         <input
                           name="lastName"
                           type="text"
                           required
                           value={formData.lastName}
                           onChange={handleChange}
-                          className="w-full pl-12 pr-4 py-4 bg-white border-2 border-slate-200 rounded-2xl focus:border-primary-600 transition-all duration-200 outline-none font-medium placeholder:text-slate-400 hover:border-slate-300"
+                          className="w-full pl-12 pr-4 py-4 bg-white border-2 border-slate-200 rounded-2xl focus:border-primary-600 focus:ring-0 transition-all duration-200 outline-none font-medium placeholder:text-slate-300 hover:border-slate-300 shadow-sm"
                           placeholder="Soyad"
                         />
                       </div>
@@ -194,15 +194,15 @@ export default function LoginPage() {
 
                 <div className="space-y-1.5">
                   <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">E-posta</label>
-                  <div className="relative group">
-                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-primary-600 transition-colors" />
+                  <div className="relative group/field">
+                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within/field:text-primary-600 transition-colors z-10" />
                     <input
                       name="email"
                       type="email"
                       required
                       value={formData.email}
                       onChange={handleChange}
-                      className="w-full pl-12 pr-4 py-4 bg-white border-2 border-slate-200 rounded-2xl focus:border-primary-600 transition-all duration-200 outline-none font-medium placeholder:text-slate-400 hover:border-slate-300"
+                      className="w-full pl-12 pr-4 py-4 bg-white border-2 border-slate-200 rounded-2xl focus:border-primary-600 focus:ring-0 transition-all duration-200 outline-none font-medium placeholder:text-slate-300 hover:border-slate-300 shadow-sm"
                       placeholder="ornek@email.com"
                     />
                   </div>
@@ -215,15 +215,15 @@ export default function LoginPage() {
                         <Link href="/sifre-yenile" className="text-xs font-bold text-primary-600 hover:text-primary-700 underline">Unuttum?</Link>
                     )}
                   </div>
-                  <div className="relative group">
-                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-primary-600 transition-colors" />
+                  <div className="relative group/field">
+                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within/field:text-primary-600 transition-colors z-10" />
                     <input
                       name="password"
                       type="password"
                       required
                       value={formData.password}
                       onChange={handleChange}
-                      className="w-full pl-12 pr-4 py-4 bg-white border-2 border-slate-200 rounded-2xl focus:border-primary-600 transition-all duration-200 outline-none font-medium placeholder:text-slate-400 hover:border-slate-300"
+                      className="w-full pl-12 pr-4 py-4 bg-white border-2 border-slate-200 rounded-2xl focus:border-primary-600 focus:ring-0 transition-all duration-200 outline-none font-medium placeholder:text-slate-300 hover:border-slate-300 shadow-sm"
                       placeholder="••••••••"
                     />
                   </div>
