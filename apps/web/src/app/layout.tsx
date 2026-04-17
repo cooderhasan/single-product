@@ -49,7 +49,7 @@ export default function RootLayout({
     <html lang="tr">
       <body className={`${inter.className} bg-white text-gray-900 antialiased`}>
         <Header />
-        <main className="min-h-screen bg-white">{children}</main>
+        <main className="min-h-screen bg-white pt-16 sm:pt-[96px] lg:pt-[112px]">{children}</main>
         <Footer />
         <Toaster position="top-right" />
         <Analytics />

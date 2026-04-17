@@ -25,16 +25,7 @@ export function ProductCard({ product }: ProductCardProps) {
   const mainImg = product.images?.find((img: any) => typeof img === 'object' && img?.isMain);
   const imageUrl = mainImg || firstImg;
 
-  const getFullUrl = (u: any) => {
-    if (!u) return '';
-    const str = typeof u === 'string' ? u : u?.url;
-    if (!str) return '';
-    if (str.startsWith('http')) return str;
-    if (str.startsWith('/')) return `${apiBase}${str}`;
-    return `${apiBase}/uploads/${str}`;
-  };
-
-  const mainImage = imageUrl ? getFullUrl(imageUrl) : null;
+  const mainImage = getImageUrl(imageUrl);
   const discount = product.comparePrice 
     ? Math.round(((product.comparePrice - product.price) / product.comparePrice) * 100)
     : 0;

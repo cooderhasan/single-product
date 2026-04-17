@@ -32,8 +32,8 @@ export class PaymentsController {
     private configService: ConfigService,
   ) {}
 
+  @Public()
   @Post('paytr/initialize')
-  @ApiBearerAuth()
   @ApiOperation({ summary: 'PayTR ödeme başlat' })
   async initializePaytrPayment(
     @Body() dto: CreatePaytrPaymentDto,

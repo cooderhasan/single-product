@@ -72,6 +72,7 @@ export class OrdersController {
     return this.ordersService.findById(id, checkUserId);
   }
 
+  @Public()
   @Post()
   @ApiOperation({ summary: 'Yeni sipariş oluştur' })
   async create(

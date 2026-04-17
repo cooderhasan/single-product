@@ -30,10 +30,27 @@ export function generateSlug(text: string): string {
     .trim();
 }
 
-export function getImageUrl(url: string | null | undefined): string {
-  if (!url || typeof url !== 'string') return '/images/placeholder.png';
-  if (url.startsWith('http')) return url;
-  return url;
+export function getImageUrl(u: any): string {
+  if (!u) return '/images/placeholder.png';
+  
+  const apiBase = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3041';
+  
+  // u bir string olabilir veya { url, path, src } içeren bir obje olabilir
+  let str = '';
+  if (typeof u === 'string') {
+    str = u;
+  } else if (u && typeof u === 'object') {
+    str = u.url || u.path || u.src || '';
+  }
+  
+  if (!str) return '/images/placeholder.png';
+  if (str.startsWith('http')) return str;
+  if (str.startsWith('//')) return `https:${str}`;
+  
+  // Relative path ise API_BASE ekle
+  // Bazı durumlarda path başında / olmayabilir veya /uploads/ ile başlayabilir
+  if (str.startsWith('/')) return `${apiBase}${str}`;
+  return `${apiBase}/uploads/${str}`;
 }
 
 export function truncateText(text: string, maxLength: number): string {

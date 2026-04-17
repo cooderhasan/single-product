@@ -14,6 +14,7 @@ export default function EditContentPage() {
   const [loading, setLoading] = useState(false)
   const [fetching, setFetching] = useState(true)
   const [features, setFeatures] = useState<string[]>([])
+  const [bankAccounts, setBankAccounts] = useState<any[]>([])
   const [newFeature, setNewFeature] = useState('')
   const [formData, setFormData] = useState({
     title: '',
@@ -52,6 +53,7 @@ export default function EditContentPage() {
             isActive: content.isActive,
           })
           setFeatures(content.data?.features || [])
+          setBankAccounts(content.data?.bankAccounts || [])
         }
       }
     } catch (error) {
@@ -86,7 +88,9 @@ export default function EditContentPage() {
         },
         body: JSON.stringify({
           ...formData,
-          data: { features },
+          data: formData.key === 'bank_accounts' 
+            ? { bankAccounts } 
+            : { features },
         }),
       })
 
@@ -224,43 +228,144 @@ export default function EditContentPage() {
               </label>
             </div>
 
-            {/* Özellikler */}
-            <div className="col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Özellikler
-              </label>
-              <div className="flex gap-2 mb-3">
-                <input
-                  type="text"
-                  value={newFeature}
-                  onChange={(e) => setNewFeature(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddFeature())}
-                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="Yeni özellik ekle..."
-                />
-                <button
-                  type="button"
-                  onClick={handleAddFeature}
-                  className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors"
-                >
-                  <PlusIcon className="h-5 w-5" />
-                </button>
+            {/* Özellikler - Sadece bank_accounts DEĞİLSE göster */}
+            {formData.key !== 'bank_accounts' && (
+              <div className="col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Özellikler
+                </label>
+                <div className="flex gap-2 mb-3">
+                  <input
+                    type="text"
+                    value={newFeature}
+                    onChange={(e) => setNewFeature(e.target.value)}
+                    onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddFeature())}
+                    className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="Yeni özellik ekle..."
+                  />
+                  <button
+                    type="button"
+                    onClick={handleAddFeature}
+                    className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors"
+                  >
+                    <PlusIcon className="h-5 w-5" />
+                  </button>
+                </div>
+                <div className="space-y-2">
+                  {features.map((feature, index) => (
+                    <div key={index} className="flex items-center justify-between bg-gray-50 px-4 py-2 rounded-lg">
+                      <span className="text-sm text-gray-700">{feature}</span>
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveFeature(index)}
+                        className="text-red-500 hover:text-red-700"
+                      >
+                        <XMarkIcon className="h-4 w-4" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
               </div>
-              <div className="space-y-2">
-                {features.map((feature, index) => (
-                  <div key={index} className="flex items-center justify-between bg-gray-50 px-4 py-2 rounded-lg">
-                    <span className="text-sm text-gray-700">{feature}</span>
-                    <button
-                      type="button"
-                      onClick={() => handleRemoveFeature(index)}
-                      className="text-red-500 hover:text-red-700"
-                    >
-                      <XMarkIcon className="h-4 w-4" />
-                    </button>
-                  </div>
-                ))}
+            )}
+
+            {/* Banka Hesapları - Sadece bank_accounts olduğunda göster */}
+            {formData.key === 'bank_accounts' && (
+              <div className="col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-4">
+                  Banka Hesap Listesi
+                </label>
+                <div className="space-y-6">
+                  {bankAccounts.map((account, index) => (
+                    <div key={index} className="p-4 border border-gray-200 rounded-xl bg-gray-50 relative group">
+                      <button
+                        type="button"
+                        onClick={() => setBankAccounts(bankAccounts.filter((_, i) => i !== index))}
+                        className="absolute -top-2 -right-2 bg-red-100 text-red-600 rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        <XMarkIcon className="h-4 w-4" />
+                      </button>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-xs font-bold text-gray-500 mb-1">Banka Adı</label>
+                          <input
+                            type="text"
+                            value={account.bank}
+                            onChange={(e) => {
+                              const newAccounts = [...bankAccounts];
+                              newAccounts[index].bank = e.target.value;
+                              setBankAccounts(newAccounts);
+                            }}
+                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white"
+                            placeholder="Ziraat Bankası"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-bold text-gray-500 mb-1">Hesap Sahibi</label>
+                          <input
+                            type="text"
+                            value={account.accountName}
+                            onChange={(e) => {
+                              const newAccounts = [...bankAccounts];
+                              newAccounts[index].accountName = e.target.value;
+                              setBankAccounts(newAccounts);
+                            }}
+                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white"
+                          />
+                        </div>
+                        <div className="col-span-2">
+                          <label className="block text-xs font-bold text-gray-500 mb-1">IBAN</label>
+                          <input
+                            type="text"
+                            value={account.iban}
+                            onChange={(e) => {
+                              const newAccounts = [...bankAccounts];
+                              newAccounts[index].iban = e.target.value;
+                              setBankAccounts(newAccounts);
+                            }}
+                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white font-mono"
+                            placeholder="TR00 0000..."
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-bold text-gray-500 mb-1">Şube</label>
+                          <input
+                            type="text"
+                            value={account.branch}
+                            onChange={(e) => {
+                              const newAccounts = [...bankAccounts];
+                              newAccounts[index].branch = e.target.value;
+                              setBankAccounts(newAccounts);
+                            }}
+                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-bold text-gray-500 mb-1">Hesap No</label>
+                          <input
+                            type="text"
+                            value={account.accountNo}
+                            onChange={(e) => {
+                              const newAccounts = [...bankAccounts];
+                              newAccounts[index].accountNo = e.target.value;
+                              setBankAccounts(newAccounts);
+                            }}
+                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={() => setBankAccounts([...bankAccounts, { bank: '', iban: '', accountName: '', branch: '', accountNo: '' }])}
+                    className="w-full py-3 border-2 border-dashed border-gray-300 rounded-xl text-gray-500 hover:text-blue-600 hover:border-blue-300 hover:bg-blue-50 transition-all flex items-center justify-center gap-2"
+                  >
+                    <PlusIcon className="h-5 w-5" />
+                    Yeni Hesap Ekle
+                  </button>
+                </div>
               </div>
-            </div>
+            )}
           </div>
 
           <div className="flex justify-end space-x-4 pt-6 border-t">

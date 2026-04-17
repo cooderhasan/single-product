@@ -2,9 +2,20 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Lock, Mail, User, ChevronRight } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { 
+  Lock, 
+  Mail, 
+  User, 
+  ChevronRight, 
+  ArrowRight,
+  ShieldCheck,
+  Zap,
+  Star
+} from 'lucide-react';
 import { useAuthStore } from '@/store/auth';
 import toast from 'react-hot-toast';
+import Link from 'next/link';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -25,7 +36,6 @@ export default function LoginPage() {
   }, [isAuthenticated, router]);
 
   useEffect(() => {
-    // Clear old errors when switching tabs
     clearError();
   }, [activeTab, clearError]);
 
@@ -62,148 +72,202 @@ export default function LoginPage() {
     }
   };
 
-  if (isAuthenticated) {
-    return null; // Don't render anything if already authenticated
-  }
-
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
-        <div className="text-center">
-          <h2 className="text-3xl font-bold text-gray-900 tracking-tight">
-            {activeTab === 'login' ? 'Hesabınıza Giriş Yapın' : 'Yeni Hesap Oluşturun'}
-          </h2>
-          <p className="mt-2 text-sm text-gray-600">
-            {activeTab === 'login' ? 'Siparişlerinizi takip etmek için giriş yapın.' : 'Ayrıcalıklardan faydalanmak için hemen üye olun.'}
-          </p>
-        </div>
+    <div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+      {/* Decorative background elements */}
+      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary-600/5 blur-[120px] rounded-full -mr-48 -mt-48" />
+      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-blue-600/5 blur-[120px] rounded-full -ml-48 -mb-48" />
 
-        <div className="flex bg-gray-100 p-1 rounded-lg">
-          <button
-            className={`flex-1 py-2 text-sm font-medium rounded-md transition-all ${
-              activeTab === 'login' ? 'bg-white text-primary-600 shadow-sm' : 'text-gray-600 hover:text-gray-900'
-            }`}
-            onClick={() => setActiveTab('login')}
-            type="button"
-          >
-            Giriş Yap
-          </button>
-          <button
-            className={`flex-1 py-2 text-sm font-medium rounded-md transition-all ${
-              activeTab === 'register' ? 'bg-white text-primary-600 shadow-sm' : 'text-gray-600 hover:text-gray-900'
-            }`}
-            onClick={() => setActiveTab('register')}
-            type="button"
-          >
-            Kayıt Ol
-          </button>
-        </div>
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="max-w-xl w-full"
+      >
+        <div className="bg-white p-8 sm:p-12 rounded-[40px] shadow-2xl shadow-slate-200/50 border border-slate-100 relative z-10">
+          <div className="text-center mb-10">
+            <motion.div 
+              initial={{ scale: 0.8 }}
+              animate={{ scale: 1 }}
+              className="w-16 h-16 bg-primary-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-xl shadow-primary-600/20"
+            >
+              <ShieldCheck className="w-8 h-8 text-white" />
+            </motion.div>
+            <h2 className="text-3xl font-black text-slate-900 tracking-tight mb-2">
+              {activeTab === 'login' ? 'Hoş Geldiniz' : 'Hesap Oluşturun'}
+            </h2>
+            <p className="text-slate-500 font-medium leading-relaxed">
+              {activeTab === 'login' 
+                ? 'Siparişlerinizi takip etmek ve avantajlardan yararlanmak için giriş yapın.' 
+                : '360° ayrılacalığına adım atmak için hemen kayıt olun.'}
+            </p>
+          </div>
 
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="space-y-4">
-            {activeTab === 'register' && (
-              <div className="flex gap-4">
-                <div className="flex-1">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Adınız</label>
-                  <div className="relative">
-                    <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+          {/* New Tab Switcher */}
+          <div className="flex bg-slate-100 p-1.5 rounded-2xl mb-10">
+            <button
+              className={`flex-1 flex items-center justify-center gap-2 py-3 text-sm font-black rounded-xl transition-all ${
+                activeTab === 'login' ? 'bg-white text-primary-600 shadow-sm' : 'text-slate-500 hover:text-slate-900'
+              }`}
+              onClick={() => setActiveTab('login')}
+              type="button"
+            >
+              Giriş Yap
+            </button>
+            <button
+              className={`flex-1 flex items-center justify-center gap-2 py-3 text-sm font-black rounded-xl transition-all ${
+                activeTab === 'register' ? 'bg-white text-primary-600 shadow-sm' : 'text-slate-500 hover:text-slate-900'
+              }`}
+              onClick={() => setActiveTab('register')}
+              type="button"
+            >
+              Kayıt Ol
+            </button>
+          </div>
+
+          <form className="space-y-6" onSubmit={handleSubmit}>
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeTab}
+                initial={{ opacity: 0, x: activeTab === 'login' ? -10 : 10 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: activeTab === 'login' ? 10 : -10 }}
+                className="space-y-4"
+              >
+                {activeTab === 'register' && (
+                  <div className="grid sm:grid-cols-2 gap-4">
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Adınız</label>
+                      <div className="relative group">
+                        <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-primary-600 transition-colors" />
+                        <input
+                          name="firstName"
+                          type="text"
+                          required
+                          value={formData.firstName}
+                          onChange={handleChange}
+                          className="w-full pl-12 pr-4 py-4 bg-slate-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-primary-100 focus:ring-4 focus:ring-primary-600/5 transition-all outline-none font-medium placeholder:text-slate-300"
+                          placeholder="Ad"
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Soyadınız</label>
+                      <div className="relative group">
+                        <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-primary-600 transition-colors" />
+                        <input
+                          name="lastName"
+                          type="text"
+                          required
+                          value={formData.lastName}
+                          onChange={handleChange}
+                          className="w-full pl-12 pr-4 py-4 bg-slate-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-primary-100 focus:ring-4 focus:ring-primary-600/5 transition-all outline-none font-medium placeholder:text-slate-300"
+                          placeholder="Soyad"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                <div className="space-y-1.5">
+                  <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">E-posta</label>
+                  <div className="relative group">
+                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-primary-600 transition-colors" />
                     <input
-                      name="firstName"
-                      type="text"
+                      name="email"
+                      type="email"
                       required
-                      value={formData.firstName}
+                      value={formData.email}
                       onChange={handleChange}
-                      className="appearance-none block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
-                      placeholder="Adınız"
+                      className="w-full pl-12 pr-4 py-4 bg-slate-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-primary-100 focus:ring-4 focus:ring-primary-600/5 transition-all outline-none font-medium placeholder:text-slate-300"
+                      placeholder="ornek@email.com"
                     />
                   </div>
                 </div>
-                <div className="flex-1">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Soyadınız</label>
-                  <div className="relative">
-                    <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+
+                <div className="space-y-1.5">
+                  <div className="flex justify-between items-center px-1">
+                    <label className="text-xs font-black text-slate-400 uppercase tracking-widest">Şifre</label>
+                    {activeTab === 'login' && (
+                        <Link href="/sifre-yenile" className="text-xs font-bold text-primary-600 hover:text-primary-700 underline">Unuttum?</Link>
+                    )}
+                  </div>
+                  <div className="relative group">
+                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-primary-600 transition-colors" />
                     <input
-                      name="lastName"
-                      type="text"
+                      name="password"
+                      type="password"
                       required
-                      value={formData.lastName}
+                      value={formData.password}
                       onChange={handleChange}
-                      className="appearance-none block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
-                      placeholder="Soyadınız"
+                      className="w-full pl-12 pr-4 py-4 bg-slate-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-primary-100 focus:ring-4 focus:ring-primary-600/5 transition-all outline-none font-medium placeholder:text-slate-300"
+                      placeholder="••••••••"
                     />
                   </div>
                 </div>
-              </div>
-            )}
+              </motion.div>
+            </AnimatePresence>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">E-posta Adresi</label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                <input
-                  name="email"
-                  type="email"
-                  autoComplete="email"
-                  required
-                  value={formData.email}
-                  onChange={handleChange}
-                  className="appearance-none block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
-                  placeholder="ornek@email.com"
-                />
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="w-full py-5 px-6 bg-slate-900 hover:bg-slate-800 text-white font-black rounded-[20px] transition-all hover:scale-[1.01] shadow-2xl shadow-slate-900/10 flex items-center justify-center gap-3 active:scale-95 disabled:opacity-70 group"
+            >
+              {isLoading ? (
+                <div className="w-6 h-6 border-b-2 border-white rounded-full animate-spin" />
+              ) : (
+                <>
+                  {activeTab === 'login' ? 'GİRİŞ YAP' : 'ÜYE OL'}
+                  <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                </>
+              )}
+            </button>
+
+            <div className="relative py-4">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-slate-100"></div>
+              </div>
+              <div className="relative flex justify-center text-xs">
+                <span className="px-4 bg-white text-slate-400 font-bold tracking-widest uppercase">veya</span>
               </div>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Şifre</label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                <input
-                  name="password"
-                  type="password"
-                  autoComplete={activeTab === 'login' ? 'current-password' : 'new-password'}
-                  required
-                  value={formData.password}
-                  onChange={handleChange}
-                  className="appearance-none block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
-                  placeholder="••••••••"
-                />
-              </div>
+            <button
+              type="button"
+              onClick={() => router.push('/sepet')}
+              className="w-full py-5 px-6 bg-white border-2 border-slate-100 hover:bg-slate-50 text-slate-600 font-black rounded-[20px] transition-all flex items-center justify-center gap-3 active:scale-95 group"
+            >
+              ÜYE OLMADAN DEVAM ET
+              <ArrowRight className="w-5 h-5 text-slate-400 group-hover:translate-x-1 group-hover:text-primary-600 transition-all" />
+            </button>
+          </form>
+
+          {/* Footer Features */}
+          <div className="mt-12 grid grid-cols-3 gap-4 border-t border-slate-50 pt-10">
+            <div className="text-center">
+               <div className="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center mx-auto mb-2 text-emerald-600">
+                  <Zap className="w-5 h-5" />
+               </div>
+               <p className="text-[10px] font-black text-slate-400 tracking-tighter uppercase">Hızlı İşlem</p>
+            </div>
+            <div className="text-center border-x border-slate-50">
+               <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center mx-auto mb-2 text-blue-600">
+                  <ShieldCheck className="w-5 h-5" />
+               </div>
+               <p className="text-[10px] font-black text-slate-400 tracking-tighter uppercase">Güvenli Veri</p>
+            </div>
+            <div className="text-center">
+               <div className="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center mx-auto mb-2 text-amber-600">
+                  <Star className="w-5 h-5" />
+               </div>
+               <p className="text-[10px] font-black text-slate-400 tracking-tighter uppercase">Avantajlar</p>
             </div>
           </div>
-
-          {error && (
-            <div className="text-red-500 text-sm font-medium text-center">
-              {error}
-            </div>
-          )}
-
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="w-full flex justify-center items-center gap-2 py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors disabled:opacity-70"
-          >
-            {isLoading ? 'İşleniyor...' : (activeTab === 'login' ? 'Giriş Yap' : 'Kayıt Ol')}
-            {!isLoading && <ChevronRight className="w-4 h-4" />}
-          </button>
-
-          <div className="relative my-6">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-200"></div>
-            </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-white text-gray-500">veya</span>
-            </div>
-          </div>
-
-          <button
-            type="button"
-            onClick={() => router.push('/odeme')}
-            className="w-full flex justify-center items-center gap-2 py-3 px-4 border border-gray-200 text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none transition-colors"
-          >
-            Üye Olmadan Devam Et
-          </button>
-        </form>
-      </div>
+        </div>
+        
+        <p className="text-center mt-8 text-slate-400 text-sm font-medium">
+          Yardıma mı ihtiyacınız var? <Link href="/iletisim" className="text-primary-600 font-bold hover:underline">Destek Merkezi</Link>
+        </p>
+      </motion.div>
     </div>
   );
 }

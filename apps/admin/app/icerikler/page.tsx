@@ -44,6 +44,10 @@ const contentLabels: Record<string, { name: string; description: string }> = {
     name: 'İletişim Bilgileri',
     description: 'İletişim sayfası bilgileri',
   },
+  'bank_accounts': {
+    name: 'Banka Hesapları',
+    description: 'Havale / EFT için banka hesap bilgileri',
+  },
 }
 
 export default function SiteContentPage() {

@@ -1,8 +1,10 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
+import { motion, AnimatePresence } from 'framer-motion';
 import { 
   CreditCard, 
   Banknote, 
@@ -15,11 +17,15 @@ import {
   User,
   Phone,
   Home,
-  Mail
+  Mail,
+  ArrowLeft,
+  CheckCircle2,
+  Building2
 } from 'lucide-react';
 import { useCartStore } from '@/store/cart';
 import { useAuthStore } from '@/store/auth';
 import { ordersApi } from '@/lib/api';
+import { getImageUrl } from '@/lib/utils';
 import toast from 'react-hot-toast';
 import { LocationSelector } from '@/components/ui/LocationSelector';
 
@@ -36,7 +42,8 @@ interface GuestAddress {
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const { items, total, count, fetchCart } = useCartStore();
+  const searchParams = useSearchParams();
+  const { items, total, count, fetchCart, clearCart } = useCartStore();
   const { user, isAuthenticated } = useAuthStore();
   
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('CREDIT_CARD');
@@ -53,15 +60,15 @@ export default function CheckoutPage() {
   });
 
   useEffect(() => {
-    if (isAuthenticated && user && !guestAddress.fullName) {
+    if (isAuthenticated && user) {
       setGuestAddress(prev => ({
         ...prev,
-        fullName: `${user.firstName} ${user.lastName}`,
-        phone: prev.phone || '', // User phone from API if exists, otherwise fallback
-        email: user.email // optional standard metadata
+        fullName: prev.fullName || `${user.firstName} ${user.lastName}`,
+        email: prev.email || user.email,
+        phone: prev.phone || user.phone || '',
       }));
     }
-  }, [isAuthenticated, user, guestAddress.fullName]);
+  }, [isAuthenticated, user]);
 
   useEffect(() => {
     fetchCart();
@@ -69,7 +76,8 @@ export default function CheckoutPage() {
 
   const handleCreateOrder = async () => {
     if (!guestAddress.fullName || !guestAddress.email || !guestAddress.phone || !guestAddress.city || !guestAddress.district || !guestAddress.address) {
-      toast.error('Lütfen tüm alanları doldurun');
+      toast.error('Lütfen tüm adres alanlarını eksiksiz doldurun');
+      setStep('address');
       return;
     }
 
@@ -103,8 +111,7 @@ export default function CheckoutPage() {
 
       const { data: order } = await ordersApi.create(orderData);
       
-      // Sepeti temizle
-      await useCartStore.getState().clearCart();
+      await clearCart();
 
       if (paymentMethod === 'CREDIT_CARD') {
         router.push(`/odeme/paytr?order=${order.orderNumber}`);
@@ -118,20 +125,26 @@ export default function CheckoutPage() {
     }
   };
 
-  if (count === 0) {
+  if (count === 0 && !isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 py-12">
-        <div className="container mx-auto px-4 max-w-2xl text-center">
-          <Package className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">Sepetiniz Boş</h1>
-          <p className="text-gray-600 mb-6">Ödeme yapmak için sepetinizde ürün bulunmalı.</p>
+      <div className="min-h-screen bg-[#F8FAFC] py-12 flex items-center justify-center">
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="container mx-auto px-4 max-w-xl text-center bg-white p-12 rounded-[32px] shadow-sm border border-slate-100"
+        >
+          <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-6">
+            <Package className="w-10 h-10 text-slate-300" />
+          </div>
+          <h1 className="text-2xl font-black text-slate-900 mb-4 tracking-tight">Sepetiniz Boş</h1>
+          <p className="text-slate-500 mb-8">Ödeme yapabilmek için sepetinizde en az bir ürün bulunmalı.</p>
           <Link
             href="/urunler"
-            className="inline-flex items-center gap-2 bg-primary-600 hover:bg-primary-700 text-white font-medium py-3 px-6 rounded-lg transition-colors"
+            className="inline-flex items-center gap-2 bg-primary-600 hover:bg-primary-700 text-white font-bold py-4 px-10 rounded-2xl transition-all shadow-lg shadow-primary-600/20"
           >
             Alışverişe Başla
           </Link>
-        </div>
+        </motion.div>
       </div>
     );
   }
@@ -140,313 +153,388 @@ export default function CheckoutPage() {
   const grandTotal = total + shippingCost;
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-[#F8FAFC] py-12">
       <div className="container mx-auto px-4 max-w-6xl">
-        {/* Progress */}
-        <div className="flex items-center justify-center mb-8">
-          <div className="flex items-center gap-4">
-            <div className={`flex items-center gap-2 ${step === 'address' ? 'text-primary-600' : 'text-gray-400'}`}>
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${step === 'address' ? 'bg-primary-600 text-white' : 'bg-gray-200'}`}>
-                1
-              </div>
-              <span className="font-medium">Adres</span>
+        
+        {/* Header & Back */}
+        <div className="flex items-center justify-between mb-10">
+          <Link 
+            href="/sepet" 
+            className="flex items-center gap-2 text-slate-500 hover:text-primary-600 font-bold transition-colors group"
+          >
+            <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+            Sepete Dön
+          </Link>
+          <div className="flex items-center gap-2">
+            <Lock className="w-4 h-4 text-slate-400" />
+            <span className="text-xs font-bold text-slate-400 tracking-widest uppercase">Güvenli Ödeme</span>
+          </div>
+        </div>
+
+        {/* Improved Step Indicator */}
+        <div className="max-w-2xl mx-auto mb-16 relative">
+          <div className="absolute top-1/2 left-0 right-0 h-1 bg-slate-200 -translate-y-1/2 z-0 rounded-full" />
+          <div 
+            className="absolute top-1/2 left-0 h-1 bg-primary-600 -translate-y-1/2 z-0 rounded-full transition-all duration-500"
+            style={{ width: step === 'address' ? '50%' : '100%' }}
+          />
+          
+          <div className="relative z-10 flex justify-between">
+            <div className="flex flex-col items-center gap-3">
+              <motion.div 
+                animate={{ 
+                  scale: step === 'address' ? 1.1 : 1,
+                  backgroundColor: step === 'address' || step === 'payment' ? '#2563eb' : '#e2e8f0'
+                }}
+                className="w-10 h-10 rounded-full flex items-center justify-center text-white font-black shadow-lg shadow-primary-600/20"
+              >
+                {step === 'payment' ? <CheckCircle2 className="w-6 h-6" /> : '1'}
+              </motion.div>
+              <span className={`text-sm font-black tracking-tight ${step === 'address' ? 'text-primary-600' : 'text-slate-400'}`}>Teslimat</span>
             </div>
-            <ChevronRight className="w-5 h-5 text-gray-400" />
-            <div className={`flex items-center gap-2 ${step === 'payment' ? 'text-primary-600' : 'text-gray-400'}`}>
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${step === 'payment' ? 'bg-primary-600 text-white' : 'bg-gray-200'}`}>
+            
+            <div className="flex flex-col items-center gap-3">
+              <motion.div 
+                animate={{ 
+                  scale: step === 'payment' ? 1.1 : 1,
+                  backgroundColor: step === 'payment' ? '#2563eb' : '#e2e8f0'
+                }}
+                className="w-10 h-10 rounded-full flex items-center justify-center text-white font-black transition-colors"
+              >
                 2
-              </div>
-              <span className="font-medium">Ödeme</span>
+              </motion.div>
+              <span className={`text-sm font-black tracking-tight ${step === 'payment' ? 'text-primary-600' : 'text-slate-400'}`}>Ödeme</span>
             </div>
           </div>
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-8">
-          {/* Main Content */}
-          <div className="lg:col-span-2 space-y-6">
-            {step === 'address' ? (
-              /* Address Form */
-              <div className="bg-white rounded-xl shadow-sm p-6">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-                  <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                    <MapPin className="w-5 h-5 text-primary-600" />
-                    Teslimat Bilgileri
-                  </h2>
-                  
-                  {!isAuthenticated ? (
-                    <div className="text-sm bg-blue-50 text-blue-700 px-4 py-2 rounded-lg flex items-center gap-2">
-                      Zaten üye misiniz?
-                      <Link href={`/giris`} className="font-semibold underline hover:text-blue-800">
+        <div className="grid lg:grid-cols-3 gap-12 items-start">
+          {/* Main Form Area */}
+          <div className="lg:col-span-2">
+            <AnimatePresence mode="wait">
+              {step === 'address' ? (
+                <motion.div
+                  key="address-step"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 20 }}
+                  className="bg-white rounded-[32px] shadow-sm border border-slate-100 p-8 sm:p-10"
+                >
+                  <div className="flex items-center justify-between mb-10">
+                    <h2 className="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-3">
+                      <div className="w-10 h-10 bg-primary-50 rounded-xl flex items-center justify-center">
+                        <MapPin className="w-6 h-6 text-primary-600" />
+                      </div>
+                      Teslimat Bilgileri
+                    </h2>
+                    {!isAuthenticated && (
+                      <Link href="/giris" className="text-sm font-bold text-primary-600 hover:text-primary-700 underline underline-offset-4">
                         Giriş Yap
                       </Link>
-                    </div>
-                  ) : (
-                    <div className="text-sm bg-green-50 text-green-700 px-4 py-2 rounded-lg font-medium">
-                      Hesabınızdan bilgilerinizi otomatik çektik.
-                    </div>
-                  )}
-                </div>
-
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Ad Soyad *
-                    </label>
-                    <div className="relative">
-                      <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                      <input
-                        type="text"
-                        value={guestAddress.fullName}
-                        onChange={(e) => setGuestAddress({ ...guestAddress, fullName: e.target.value })}
-                        className="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500"
-                        placeholder="Ad Soyad"
-                      />
-                    </div>
+                    )}
                   </div>
 
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        E-posta *
-                      </label>
-                      <div className="relative">
-                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <div className="grid gap-6">
+                    <div className="grid sm:grid-cols-2 gap-6">
+                      <div className="space-y-2">
+                        <label className="text-sm font-bold text-slate-700 ml-1">Ad Soyad</label>
+                        <div className="relative group">
+                          <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-primary-600 transition-colors" />
+                          <input
+                            type="text"
+                            value={guestAddress.fullName}
+                            onChange={(e) => setGuestAddress({ ...guestAddress, fullName: e.target.value })}
+                            className="w-full pl-12 pr-4 py-4 bg-slate-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-primary-100 focus:ring-4 focus:ring-primary-600/5 transition-all outline-none font-medium placeholder:text-slate-300"
+                            placeholder="Adınız Soyadınız"
+                          />
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-sm font-bold text-slate-700 ml-1">Telefon Numarası</label>
+                        <div className="relative group">
+                          <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-primary-600 transition-colors" />
+                          <input
+                            type="tel"
+                            value={guestAddress.phone}
+                            onChange={(e) => setGuestAddress({ ...guestAddress, phone: e.target.value })}
+                            className="w-full pl-12 pr-4 py-4 bg-slate-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-primary-100 focus:ring-4 focus:ring-primary-600/5 transition-all outline-none font-medium placeholder:text-slate-300"
+                            placeholder="05XX XXX XX XX"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="text-sm font-bold text-slate-700 ml-1">E-posta Adresi</label>
+                      <div className="relative group">
+                        <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-primary-600 transition-colors" />
                         <input
                           type="email"
                           value={guestAddress.email}
                           onChange={(e) => setGuestAddress({ ...guestAddress, email: e.target.value })}
-                          className="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500"
-                          placeholder="e-posta@örnek.com"
+                          className="w-full pl-12 pr-4 py-4 bg-slate-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-primary-100 focus:ring-4 focus:ring-primary-600/5 transition-all outline-none font-medium placeholder:text-slate-300"
+                          placeholder="ornek@email.com"
                         />
                       </div>
                     </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Telefon *
-                      </label>
-                      <div className="relative">
-                        <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                        <input
-                          type="tel"
-                          value={guestAddress.phone}
-                          onChange={(e) => setGuestAddress({ ...guestAddress, phone: e.target.value })}
-                          className="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500"
-                          placeholder="05XX XXX XX XX"
+
+                    <div className="grid sm:grid-cols-2 gap-6">
+                      <LocationSelector
+                        label="Şehir"
+                        type="city"
+                        value={guestAddress.city}
+                        onChange={(val) => setGuestAddress({ ...guestAddress, city: val, district: '' })}
+                      />
+                      <LocationSelector
+                        label="İlçe"
+                        type="district"
+                        selectedCity={guestAddress.city}
+                        value={guestAddress.district}
+                        onChange={(val) => setGuestAddress({ ...guestAddress, district: val })}
+                        placeholder={!guestAddress.city ? "Önce şehir seçin" : "İlçe seçin"}
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="text-sm font-bold text-slate-700 ml-1">Açık Adres</label>
+                      <div className="relative group">
+                        <Home className="absolute left-4 top-4 w-5 h-5 text-slate-400 group-focus-within:text-primary-600 transition-colors" />
+                        <textarea
+                          value={guestAddress.address}
+                          onChange={(e) => setGuestAddress({ ...guestAddress, address: e.target.value })}
+                          className="w-full pl-12 pr-4 py-4 bg-slate-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-primary-100 focus:ring-4 focus:ring-primary-600/5 transition-all outline-none font-medium placeholder:text-slate-300 min-h-[120px]"
+                          placeholder="Mahalle, Sokak, No, Daire bilgilerini giriniz..."
                         />
                       </div>
                     </div>
-                  </div>
 
-                  <div className="grid md:grid-cols-2 gap-4 text-left">
-                    <LocationSelector
-                      label="Şehir *"
-                      type="city"
-                      value={guestAddress.city}
-                      onChange={(val) => setGuestAddress({ ...guestAddress, city: val, district: '' })}
-                    />
-                    <LocationSelector
-                      label="İlçe *"
-                      type="district"
-                      selectedCity={guestAddress.city}
-                      value={guestAddress.district}
-                      onChange={(val) => setGuestAddress({ ...guestAddress, district: val })}
-                      placeholder={!guestAddress.city ? "Önce şehir seçin" : "İlçe ara..."}
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Açık Adres *
-                    </label>
-                    <div className="relative">
-                      <Home className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
-                      <textarea
-                        value={guestAddress.address}
-                        onChange={(e) => setGuestAddress({ ...guestAddress, address: e.target.value })}
-                        className="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500"
-                        rows={3}
-                        placeholder="Mahalle, Sokak, Bina No, Daire No"
-                      />
-                    </div>
-                  </div>
-
-                  <button
-                    onClick={() => {
-                      if (!guestAddress.fullName || !guestAddress.phone || !guestAddress.city || !guestAddress.district || !guestAddress.address) {
-                        toast.error('Lütfen tüm alanları doldurun');
-                        return;
-                      }
-                      setStep('payment');
-                    }}
-                    className="w-full bg-primary-600 hover:bg-primary-700 text-white font-medium py-3 px-6 rounded-lg transition-colors"
-                  >
-                    Devam Et
-                  </button>
-                </div>
-              </div>
-            ) : (
-              /* Payment Method Selection */
-              <div className="bg-white rounded-xl shadow-sm p-6">
-                <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2 mb-6">
-                  <CreditCard className="w-5 h-5 text-primary-600" />
-                  Ödeme Yöntemi
-                </h2>
-
-                <div className="space-y-4">
-                  {/* Credit Card / PayTR */}
-                  <label
-                    className={`flex items-start gap-4 p-5 border-2 rounded-xl cursor-pointer transition-all duration-200 ${
-                      paymentMethod === 'CREDIT_CARD'
-                        ? 'border-primary-500 bg-primary-50/50 shadow-sm'
-                        : 'border-gray-200 hover:border-primary-200 hover:bg-gray-50'
-                    }`}
-                  >
-                    <div className="mt-1">
-                      <input
-                        type="radio"
-                        name="payment"
-                        value="CREDIT_CARD"
-                        className="w-4 h-4 text-primary-600 border-gray-300 focus:ring-primary-500"
-                        checked={paymentMethod === 'CREDIT_CARD'}
-                        onChange={(e) => setPaymentMethod(e.target.value as PaymentMethod)}
-                      />
-                    </div>
-                    <div className="flex-1 w-full">
-                      <div className="flex sm:items-center flex-col sm:flex-row justify-between gap-2">
-                        <div className="flex items-center gap-2">
-                          <CreditCard className={`w-5 h-5 ${paymentMethod === 'CREDIT_CARD' ? 'text-primary-600' : 'text-gray-500'}`} />
-                          <span className="font-semibold text-gray-900">Kredi / Banka Kartı</span>
-                        </div>
-                        <span className="inline-flex text-xs font-bold bg-gray-100 text-gray-600 px-2 py-1 rounded max-w-max border border-gray-200">
-                          PayTR Altyapısı
-                        </span>
-                      </div>
-                      <p className="text-sm text-gray-600 mt-2">
-                        PayTR güvencesiyle tüm kredi ve banka kartlarınızla peşin veya taksitli ödeme yapabilirsiniz.
-                      </p>
-                    </div>
-                  </label>
-
-                  {/* Bank Transfer */}
-                  <label
-                    className={`flex items-start gap-4 p-5 border-2 rounded-xl cursor-pointer transition-all duration-200 ${
-                      paymentMethod === 'BANK_TRANSFER'
-                        ? 'border-primary-500 bg-primary-50/50 shadow-sm'
-                        : 'border-gray-200 hover:border-primary-200 hover:bg-gray-50'
-                    }`}
-                  >
-                    <div className="mt-1">
-                      <input
-                        type="radio"
-                        name="payment"
-                        value="BANK_TRANSFER"
-                        className="w-4 h-4 text-primary-600 border-gray-300 focus:ring-primary-500"
-                        checked={paymentMethod === 'BANK_TRANSFER'}
-                        onChange={(e) => setPaymentMethod(e.target.value as PaymentMethod)}
-                      />
-                    </div>
-                    <div className="flex-1 w-full">
-                      <div className="flex items-center gap-2">
-                        <Banknote className={`w-5 h-5 ${paymentMethod === 'BANK_TRANSFER' ? 'text-primary-600' : 'text-gray-500'}`} />
-                        <span className="font-semibold text-gray-900">Havale / EFT</span>
-                      </div>
-                      <p className="text-sm text-gray-600 mt-2">
-                        Siparişi onayladıktan sonra size verilecek olan IBAN numarasına gönderim yapabilirsiniz.
-                      </p>
-                    </div>
-                  </label>
-
-                  <div className="flex items-center gap-4 pt-4">
                     <button
-                      onClick={() => setStep('address')}
-                      className="text-gray-600 hover:text-gray-700 font-medium"
+                      onClick={() => {
+                        if (!guestAddress.fullName || !guestAddress.phone || !guestAddress.city || !guestAddress.district || !guestAddress.address) {
+                          toast.error('Lütfen tüm zorunlu alanları doldurun');
+                          return;
+                        }
+                        setStep('payment');
+                      }}
+                      className="w-full mt-4 bg-primary-600 hover:bg-primary-700 text-white font-black py-5 px-6 rounded-[20px] transition-all hover:scale-[1.01] active:scale-95 shadow-xl shadow-primary-600/20 flex items-center justify-center gap-2"
                     >
-                      ← Geri
+                      ÖDEMEYE DEVAM ET
+                      <ChevronRight className="w-5 h-5" />
                     </button>
+                  </div>
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="payment-step"
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  className="bg-white rounded-[32px] shadow-sm border border-slate-100 p-8 sm:p-10"
+                >
+                  <div className="flex items-center justify-between mb-10">
+                    <button 
+                      onClick={() => setStep('address')}
+                      className="flex items-center gap-2 text-slate-400 hover:text-slate-600 font-bold transition-colors"
+                    >
+                      <ArrowLeft className="w-4 h-4" />
+                      Adrese Dön
+                    </button>
+                    <h2 className="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-3">
+                      <div className="w-10 h-10 bg-primary-50 rounded-xl flex items-center justify-center">
+                        <CreditCard className="w-6 h-6 text-primary-600" />
+                      </div>
+                      Ödeme Yöntemi
+                    </h2>
+                  </div>
+
+                  <div className="grid gap-6">
+                    {/* PayTR Option */}
+                    <label 
+                      onClick={() => setPaymentMethod('CREDIT_CARD')}
+                      className={`relative flex flex-col sm:flex-row items-center sm:items-start gap-6 p-8 border-2 rounded-[28px] cursor-pointer transition-all ${
+                        paymentMethod === 'CREDIT_CARD' 
+                          ? 'border-primary-600 bg-primary-50/30' 
+                          : 'border-slate-100 bg-white hover:border-slate-200 shadow-sm'
+                      }`}
+                    >
+                      <div className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-colors ${
+                        paymentMethod === 'CREDIT_CARD' ? 'bg-primary-600 text-white' : 'bg-slate-50 text-slate-400'
+                      }`}>
+                        <CreditCard className="w-7 h-7" />
+                      </div>
+                      <div className="text-center sm:text-left">
+                        <div className="flex flex-wrap items-center justify-center sm:justify-start gap-3 mb-2">
+                          <span className="font-bold text-lg text-slate-900 tracking-tight">Kredi / Banka Kartı</span>
+                          <span className="text-[10px] uppercase font-black tracking-widest bg-slate-900 text-white px-2 py-0.5 rounded-md">Güvenli</span>
+                        </div>
+                        <p className="text-sm text-slate-500 font-medium leading-relaxed max-w-sm">
+                          PayTR altyapısı ile peşin veya taksitli ödeme yapabilirsiniz. Kart bilgileriniz asla sunucularımızda saklanmaz.
+                        </p>
+                      </div>
+                      {paymentMethod === 'CREDIT_CARD' && (
+                        <motion.div 
+                          layoutId="active-indicator"
+                          className="absolute top-4 right-4"
+                        >
+                          <CheckCircle2 className="w-6 h-6 text-primary-600" />
+                        </motion.div>
+                      )}
+                    </label>
+
+                    {/* Bank Transfer Option */}
+                    <label 
+                      onClick={() => setPaymentMethod('BANK_TRANSFER')}
+                      className={`relative flex flex-col sm:flex-row items-center sm:items-start gap-6 p-8 border-2 rounded-[28px] cursor-pointer transition-all ${
+                        paymentMethod === 'BANK_TRANSFER' 
+                          ? 'border-primary-600 bg-primary-50/30' 
+                          : 'border-slate-100 bg-white hover:border-slate-200 shadow-sm'
+                      }`}
+                    >
+                      <div className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-colors ${
+                        paymentMethod === 'BANK_TRANSFER' ? 'bg-primary-600 text-white' : 'bg-slate-50 text-slate-400'
+                      }`}>
+                        <Building2 className="w-7 h-7" />
+                      </div>
+                      <div className="text-center sm:text-left">
+                        <div className="flex flex-wrap items-center justify-center sm:justify-start gap-3 mb-2">
+                          <span className="font-bold text-lg text-slate-900 tracking-tight">Havale / EFT</span>
+                          <span className="text-[10px] uppercase font-black tracking-widest bg-emerald-500 text-white px-2 py-0.5 rounded-md">%3 İndirim</span>
+                        </div>
+                        <p className="text-sm text-slate-500 font-medium leading-relaxed max-w-sm">
+                          Banka hesaplarımıza doğrudan transfer yaparak ödeme sağlayabilirsiniz. İşleminiz kontrol edildikten sonra onaylanır.
+                        </p>
+                      </div>
+                      {paymentMethod === 'BANK_TRANSFER' && (
+                        <motion.div 
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: 'auto' }}
+                          className="mt-4 p-4 bg-emerald-50 rounded-2xl border border-emerald-100 flex items-start gap-3"
+                        >
+                          <CheckCircle2 className="w-5 h-5 text-emerald-600 flex-shrink-0" />
+                          <div>
+                            <p className="text-xs font-bold text-emerald-800">Havale / EFT ile %3 İndirim!</p>
+                            <p className="text-[10px] text-emerald-700 font-medium">Sipariş sonrası gösterilecek banka hesaplarımıza yapacağınız ödemelerde %3 ekstra indirim kazanırsınız.</p>
+                          </div>
+                        </motion.div>
+                      )}
+                      {paymentMethod === 'BANK_TRANSFER' && (
+                        <motion.div 
+                          layoutId="active-indicator"
+                          className="absolute top-4 right-4"
+                        >
+                          <CheckCircle2 className="w-6 h-6 text-primary-600" />
+                        </motion.div>
+                      )}
+                    </label>
+
+                    <div className="mt-8 p-6 bg-slate-50 rounded-[24px] border border-slate-100 flex items-start gap-4">
+                      <ShieldCheck className="w-6 h-6 text-primary-600 flex-shrink-0" />
+                      <p className="text-xs text-slate-500 font-medium leading-relaxed">
+                        Siparişi onaylayarak <Link href="/sozlesme" className="underline font-bold">Mesafeli Satış Sözleşmesi</Link>'ni ve 
+                        <Link href="/aydinlatma" className="underline font-bold"> Aydınlatma Metni</Link>'ni okuduğunuzu ve kabul ettiğinizi onaylıyorsunuz.
+                      </p>
+                    </div>
+
                     <button
                       onClick={handleCreateOrder}
                       disabled={isLoading}
-                      className="flex-1 bg-primary-600 hover:bg-primary-700 disabled:bg-gray-300 text-white font-medium py-3 px-6 rounded-lg transition-colors"
+                      className="w-full bg-slate-900 hover:bg-slate-800 text-white font-black py-5 px-6 rounded-[20px] transition-all hover:scale-[1.01] shadow-2xl shadow-slate-900/10 flex items-center justify-center gap-3 disabled:opacity-50 mt-4 active:scale-95"
                     >
-                      {isLoading ? 'İşleniyor...' : 'Siparişi Tamamla'}
+                      {isLoading ? (
+                        <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1 }}>
+                          <Package className="w-6 h-6" />
+                        </motion.div>
+                      ) : (
+                        <ShieldCheck className="w-6 h-6" />
+                      )}
+                      {isLoading ? 'SİPARİŞ OLUŞTURULUYOR...' : 'SİPARİŞİ ONAYLA'}
                     </button>
                   </div>
-                </div>
-              </div>
-            )}
+                </motion.div>
+              )}
+            </AnimatePresence>
 
-            {/* Trust Badges */}
-            <div className="flex items-center justify-center gap-8 text-sm text-gray-600">
-              <div className="flex items-center gap-2">
-                <Lock className="w-4 h-4 text-primary-600" />
-                <span>256-bit SSL</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <ShieldCheck className="w-4 h-4 text-primary-600" />
-                <span>Güvenli Ödeme</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Truck className="w-4 h-4 text-primary-600" />
-                <span>Hızlı Kargo</span>
-              </div>
+            {/* Bottom trust section */}
+            <div className="mt-12 flex flex-wrap items-center justify-center gap-8 opacity-40 grayscale hover:opacity-100 hover:grayscale-0 transition-all duration-700">
+               <img src="https://iyzico.com/assets/images/logo/iyzico-logo.svg" alt="iyzico" className="h-4" />
+               <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Mastercard_2019_logo.svg/1200px-Mastercard_2019_logo.svg.png" alt="Mastercard" className="h-5" />
+               <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/16/Former_Visa_%28company%29_logo.svg/1200px-Former_Visa_%28company%29_logo.svg.png" alt="Visa" className="h-4" />
             </div>
           </div>
 
-          {/* Order Summary */}
+          {/* Sticky Mini Summary */}
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-xl shadow-sm p-6 sticky top-24">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">Sipariş Özeti</h2>
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="bg-white rounded-[32px] p-8 shadow-sm border border-slate-100 sticky top-24 overflow-hidden group"
+            >
+              <h3 className="text-xl font-black text-slate-900 mb-8 flex items-center justify-between">
+                Sipariş Özeti
+                <div className="w-8 h-8 bg-slate-50 rounded-lg flex items-center justify-center">
+                   <Package className="w-4 h-4 text-slate-400" />
+                </div>
+              </h3>
 
-              {/* Products */}
-              <div className="space-y-3 mb-4 max-h-60 overflow-y-auto">
+              {/* Products Mini List */}
+              <div className="space-y-4 mb-8 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
                 {items.map((item) => (
-                  <div key={item.id} className="flex items-center gap-3">
-                    <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <Package className="w-6 h-6 text-gray-400" />
+                  <div key={item.id} className="flex gap-4 p-3 rounded-2xl hover:bg-slate-50 transition-colors">
+                    <div className="w-16 h-16 bg-white rounded-xl flex-shrink-0 border border-slate-100 p-1 relative">
+                       <Image 
+                        src={getImageUrl(item.product.images?.[0])} 
+                        alt={item.product.name} 
+                        fill 
+                        className="object-contain"
+                       />
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-gray-900 truncate">{item.product.name}</p>
-                      <p className="text-xs text-gray-500">{item.quantity} adet</p>
+                    <div className="flex-1 min-w-0 flex flex-col justify-center">
+                      <p className="text-sm font-bold text-slate-900 truncate pr-2">{item.product.name}</p>
+                      <div className="flex items-center justify-between mt-1">
+                        <span className="text-xs font-medium text-slate-400">{item.quantity} Adet</span>
+                        <span className="text-sm font-black text-slate-900">{(Number(item.product.price) * item.quantity).toLocaleString('tr-TR')} ₺</span>
+                      </div>
                     </div>
-                    <p className="text-sm font-medium text-gray-900">
-                      {(Number(item.product.price) * item.quantity).toLocaleString('tr-TR')} ₺
-                    </p>
                   </div>
                 ))}
               </div>
 
-              <div className="border-t pt-4 space-y-2">
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">Ara Toplam</span>
-                  <span>{total.toLocaleString('tr-TR')} ₺</span>
+              <div className="space-y-4 pt-6 border-t border-slate-100">
+                <div className="flex justify-between text-slate-500 font-bold text-sm">
+                  <span>Ara Toplam</span>
+                  <span className="text-slate-900">{total.toLocaleString('tr-TR')} ₺</span>
                 </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">Kargo</span>
-                  <span className={shippingCost === 0 ? 'text-green-600' : ''}>
-                    {shippingCost === 0 ? 'Ücretsiz' : `${shippingCost.toLocaleString('tr-TR')} ₺`}
-                  </span>
+                <div className="flex justify-between text-slate-500 font-bold text-sm">
+                  <span>Kargo</span>
+                  {shippingCost === 0 ? (
+                    <span className="text-emerald-500">Ücretsiz</span>
+                  ) : (
+                    <span className="text-slate-900">75,00 ₺</span>
+                  )}
+                </div>
+                
+                <div className="pt-6 relative">
+                  <div className="flex justify-between items-end mb-1">
+                    <span className="text-sm font-bold text-slate-400 capitalize">Ödenecek Tutar</span>
+                    <span className="text-3xl font-black text-primary-600 tracking-tight">
+                      {grandTotal.toLocaleString('tr-TR')} ₺
+                    </span>
+                  </div>
+                  <p className="text-[10px] text-slate-400 text-right font-medium">Fiyatlara KDV Dahildir</p>
                 </div>
               </div>
 
-              <div className="border-t pt-4 mt-4">
-                <div className="flex justify-between text-lg font-bold">
-                  <span>Toplam</span>
-                  <span className="text-primary-600">{grandTotal.toLocaleString('tr-TR')} ₺</span>
+              {/* Security info card */}
+              <div className="mt-8 bg-slate-900 rounded-[24px] p-5 text-center group-hover:scale-[1.02] transition-transform duration-500">
+                <div className="flex items-center justify-center gap-2 text-white mb-2">
+                   <Lock className="w-4 h-4 text-primary-500" />
+                   <span className="text-xs font-black tracking-widest uppercase">SSL SECURE</span>
                 </div>
+                <p className="text-[10px] text-slate-400 leading-relaxed font-medium">
+                  Bilgileriniz uçtan uca şifrelenmektedir.
+                </p>
               </div>
-
-              {step === 'payment' && (
-                <div className="mt-6 pt-6 border-t">
-                  <h3 className="text-sm font-medium text-gray-900 mb-2">Teslimat Adresi</h3>
-                  <p className="text-sm text-gray-600">
-                    {guestAddress.fullName}<br />
-                    {guestAddress.phone}<br />
-                    {guestAddress.address}<br />
-                    {guestAddress.district}, {guestAddress.city}
-                  </p>
-                </div>
-              )}
-            </div>
+            </motion.div>
           </div>
         </div>
       </div>
