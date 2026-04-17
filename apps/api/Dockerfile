@@ -10,13 +10,14 @@ COPY package.json ./
 COPY apps/api/package.json ./apps/api/
 COPY packages/database/package.json ./packages/database/
 
-# Create placeholder package.json for other workspaces so npm workspaces doesn't complain
+# Create placeholder package.json for other workspaces
 RUN mkdir -p apps/web apps/admin && \
     echo '{"name":"@ecommerce/web","version":"1.0.0"}' > apps/web/package.json && \
     echo '{"name":"@ecommerce/admin","version":"1.0.0"}' > apps/admin/package.json
 
-# Install - no lock file since we modified workspace placeholders
-RUN npm install --legacy-peer-deps --loglevel warn && \
+# Install dependencies - minimal flags to save disk space
+RUN npm install --legacy-peer-deps --no-audit --no-fund --prefer-offline 2>/dev/null; \
+    npm install --legacy-peer-deps --no-audit --no-fund && \
     npm cache clean --force
 
 # Copy source
@@ -29,6 +30,9 @@ ENV DATABASE_URL=${DATABASE_URL}
 RUN cd packages/database && npx prisma generate
 RUN npx turbo run build --filter=@ecommerce/database
 RUN npx turbo run build --filter=@ecommerce/api
+
+# Remove dev dependencies to save space
+RUN npm prune --production --legacy-peer-deps 2>/dev/null || true
 
 ENV NODE_ENV=production
 ENV PORT=3041

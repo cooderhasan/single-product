@@ -15,8 +15,8 @@ RUN mkdir -p apps/api apps/admin && \
     echo '{"name":"@ecommerce/api","version":"1.0.0"}' > apps/api/package.json && \
     echo '{"name":"@ecommerce/admin","version":"1.0.0"}' > apps/admin/package.json
 
-# Install dependencies
-RUN npm install --legacy-peer-deps --loglevel warn && \
+# Install dependencies - minimal flags to save disk space
+RUN npm install --legacy-peer-deps --no-audit --no-fund && \
     npm cache clean --force
 
 # Copy source
@@ -34,7 +34,7 @@ ENV NEXT_PUBLIC_SITE_URL=${NEXT_PUBLIC_SITE_URL}
 RUN cd packages/database && npx prisma generate
 RUN npx turbo run build --filter=@ecommerce/web
 
-# Production image
+# Production image - only copy what's needed, leave build deps behind
 FROM node:20-alpine AS runner
 WORKDIR /app
 
