@@ -1,8 +1,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { Combobox } from '@headlessui/react';
-import { Check, ChevronsUpDown, Search } from 'lucide-react';
+import { ChevronDown, MapPin } from 'lucide-react';
 import { TURKEY_LOCATIONS, City } from '@/constants/turkey-locations';
 import { cn } from '@/lib/utils';
 
@@ -25,7 +24,7 @@ export function LocationSelector({
   error,
   placeholder
 }: LocationSelectorProps) {
-  const [query, setQuery] = useState('');
+  const [isOpen, setIsOpen] = useState(false);
 
   const options = useMemo(() => {
     if (type === 'city') {
@@ -36,91 +35,84 @@ export function LocationSelector({
     }
   }, [type, selectedCity]);
 
-  const filteredOptions = query === ''
-    ? options
-    : options.filter((option) =>
-        option
-          .toLowerCase()
-          .replace(/i/g, 'İ')
-          .replace(/ı/g, 'I')
-          .includes(query.toLowerCase().replace(/i/g, 'İ').replace(/ı/g, 'I'))
-      );
+  const handleSelect = (option: string) => {
+    onChange(option);
+    setIsOpen(false);
+  };
 
   return (
-    <div className="w-full">
-      <Combobox value={value} onChange={(val: string | null) => val && onChange(val)}>
-        {({ open }) => (
-          <div className="relative">
-            <Combobox.Label className="block text-sm font-medium text-gray-700 mb-1">
-              {label}
-            </Combobox.Label>
-            <div className="relative">
-              <Combobox.Input
-                className={cn(
-                  "w-full bg-white border rounded-lg py-2.5 pl-4 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all",
-                  error ? "border-red-500" : "border-gray-200"
-                )}
-                displayValue={(val: string) => val}
-                onChange={(event) => setQuery(event.target.value)}
-                placeholder={placeholder || (type === 'city' ? "Şehir ara..." : "İlçe ara...")}
-              />
-              <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-3">
-                <ChevronsUpDown className="h-4 h-4 text-gray-400" aria-hidden="true" />
-              </Combobox.Button>
-            </div>
+    <div className="w-full relative">
+      <label className="block text-sm font-medium text-gray-700 mb-1">
+        {label}
+      </label>
+      
+      {/* Custom Select Button */}
+      <button
+        type="button"
+        onClick={() => setIsOpen(!isOpen)}
+        disabled={type === 'district' && !selectedCity}
+        className={cn(
+          "w-full bg-white border rounded-lg py-2.5 pl-4 pr-10 text-left text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all flex items-center justify-between",
+          error ? "border-red-500" : "border-gray-200",
+          type === 'district' && !selectedCity && "bg-gray-100 text-gray-400 cursor-not-allowed"
+        )}
+      >
+        <span className={cn("block truncate", !value && "text-gray-400")}>
+          {value || placeholder || (type === 'city' ? "Şehir seçin" : "İlçe seçin")}
+        </span>
+        <ChevronDown className={cn("h-4 w-4 text-gray-400 transition-transform", isOpen && "rotate-180")} />
+      </button>
 
-            <Combobox.Options className="absolute z-50 mt-1 max-h-60 w-full overflow-auto rounded-xl bg-white py-1 text-base shadow-xl border border-gray-100 focus:outline-none sm:text-sm">
-              <div className="sticky top-0 z-10 bg-white px-2 py-1.5 border-b border-gray-50 flex items-center gap-2">
-                <Search className="w-3.5 h-3.5 text-gray-400" />
-                <input
-                  className="w-full text-xs focus:outline-none"
-                  placeholder="Ara..."
-                  autoFocus
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                />
+      {/* Dropdown Options */}
+      {isOpen && (
+        <>
+          {/* Backdrop */}
+          <div 
+            className="fixed inset-0 z-40"
+            onClick={() => setIsOpen(false)}
+          />
+          
+          {/* Options List */}
+          <div className="absolute z-50 mt-1 max-h-60 w-full overflow-auto rounded-xl bg-white py-1 text-sm shadow-xl border border-gray-100 focus:outline-none">
+            <div className="sticky top-0 z-10 bg-gray-50 px-3 py-2 border-b border-gray-100">
+              <div className="flex items-center gap-2 text-gray-500">
+                <MapPin className="w-4 h-4" />
+                <span className="text-xs font-medium">
+                  {type === 'city' ? 'Şehir Seçin' : `${selectedCity} İlçeleri`}
+                </span>
               </div>
-              
-              {filteredOptions.length === 0 && query !== '' ? (
-                <div className="relative cursor-default select-none py-4 px-4 text-gray-500 text-center italic text-sm">
-                  Sonuç bulunamadı.
+            </div>
+            
+            <div className="py-1">
+              {options.length === 0 ? (
+                <div className="py-4 px-4 text-gray-500 text-center italic text-sm">
+                  {type === 'district' && !selectedCity 
+                    ? "Önce şehir seçin" 
+                    : "Sonuç bulunamadı."}
                 </div>
               ) : (
-                filteredOptions.map((option) => (
-                  <Combobox.Option
+                options.map((option) => (
+                  <button
                     key={option}
-                    className={({ active }) =>
-                      cn(
-                        "relative cursor-pointer select-none py-2.5 pl-10 pr-4 transition-colors",
-                        active ? "bg-primary-50 text-primary-900" : "text-gray-900"
-                      )
-                    }
-                    value={option}
-                  >
-                    {({ selected, active }) => (
-                      <>
-                        <span className={cn("block truncate", selected ? "font-semibold" : "font-normal")}>
-                          {option}
-                        </span>
-                        {selected ? (
-                          <span
-                            className={cn(
-                              "absolute inset-y-0 left-0 flex items-center pl-3",
-                              active ? "text-primary-600" : "text-primary-600"
-                            )}
-                          >
-                            <Check className="h-4 w-4" aria-hidden="true" />
-                          </span>
-                        ) : null}
-                      </>
+                    type="button"
+                    onClick={() => handleSelect(option)}
+                    className={cn(
+                      "w-full text-left px-4 py-2.5 text-sm transition-colors hover:bg-primary-50 flex items-center justify-between",
+                      value === option ? "bg-primary-50 text-primary-700 font-medium" : "text-gray-700"
                     )}
-                  </Combobox.Option>
+                  >
+                    <span>{option}</span>
+                    {value === option && (
+                      <span className="text-primary-600">✓</span>
+                    )}
+                  </button>
                 ))
               )}
-            </Combobox.Options>
+            </div>
           </div>
-        )}
-      </Combobox>
+        </>
+      )}
+      
       {error && <p className="mt-1 text-xs text-red-500">{error}</p>}
     </div>
   );
