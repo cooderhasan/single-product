@@ -276,7 +276,7 @@ export default function CheckoutPage() {
                             type="text"
                             value={guestAddress.fullName}
                             onChange={(e) => setGuestAddress({ ...guestAddress, fullName: e.target.value })}
-                            className="w-full pl-12 pr-4 py-4 bg-white border-2 border-slate-200 rounded-2xl focus:border-primary-600 focus:ring-4 focus:ring-primary-600/10 transition-all duration-200 outline-none font-medium placeholder:text-slate-400 hover:border-slate-300"
+                            className="w-full pl-12 pr-4 py-4 bg-white border-2 border-slate-200 rounded-2xl focus:border-primary-600 transition-all duration-200 outline-none font-medium placeholder:text-slate-400 hover:border-slate-300"
                             placeholder="Adınız Soyadınız"
                           />
                         </div>
@@ -302,7 +302,7 @@ export default function CheckoutPage() {
                                 e.preventDefault();
                               }
                             }}
-                            className="w-full pl-12 pr-4 py-4 bg-white border-2 border-slate-200 rounded-2xl focus:border-primary-600 focus:ring-4 focus:ring-primary-600/10 transition-all duration-200 outline-none font-medium placeholder:text-slate-400 hover:border-slate-300"
+                            className="w-full pl-12 pr-4 py-4 bg-white border-2 border-slate-200 rounded-2xl focus:border-primary-600 transition-all duration-200 outline-none font-medium placeholder:text-slate-400 hover:border-slate-300"
                             placeholder="05XX XXX XX XX"
                             maxLength={11}
                           />
@@ -327,7 +327,7 @@ export default function CheckoutPage() {
                               toast.error('Lütfen geçerli bir e-posta adresi giriniz');
                             }
                           }}
-                          className="w-full pl-12 pr-4 py-4 bg-white border-2 border-slate-200 rounded-2xl focus:border-primary-600 focus:ring-4 focus:ring-primary-600/10 transition-all duration-200 outline-none font-medium placeholder:text-slate-400 hover:border-slate-300"
+                          className="w-full pl-12 pr-4 py-4 bg-white border-2 border-slate-200 rounded-2xl focus:border-primary-600 transition-all duration-200 outline-none font-medium placeholder:text-slate-400 hover:border-slate-300"
                           placeholder="ornek@email.com"
                         />
                       </div>
@@ -360,7 +360,7 @@ export default function CheckoutPage() {
                         <textarea
                           value={guestAddress.address}
                           onChange={(e) => setGuestAddress({ ...guestAddress, address: e.target.value })}
-                          className="w-full pl-12 pr-4 py-4 bg-white border-2 border-slate-200 rounded-2xl focus:border-primary-600 focus:ring-4 focus:ring-primary-600/10 transition-all duration-200 outline-none font-medium placeholder:text-slate-400 min-h-[120px] hover:border-slate-300 resize-none"
+                          className="w-full pl-12 pr-4 py-4 bg-white border-2 border-slate-200 rounded-2xl focus:border-primary-600 transition-all duration-200 outline-none font-medium placeholder:text-slate-400 min-h-[120px] hover:border-slate-300 resize-none"
                           placeholder="Mahalle, Sokak, No, Daire bilgilerini giriniz..."
                         />
                       </div>

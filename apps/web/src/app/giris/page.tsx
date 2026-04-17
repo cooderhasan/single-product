@@ -169,7 +169,7 @@ export default function LoginPage() {
                           required
                           value={formData.firstName}
                           onChange={handleChange}
-                          className="w-full pl-12 pr-4 py-4 bg-white border-2 border-slate-200 rounded-2xl focus:border-primary-600 focus:ring-4 focus:ring-primary-600/10 transition-all duration-200 outline-none font-medium placeholder:text-slate-400 hover:border-slate-300"
+                          className="w-full pl-12 pr-4 py-4 bg-white border-2 border-slate-200 rounded-2xl focus:border-primary-600 transition-all duration-200 outline-none font-medium placeholder:text-slate-400 hover:border-slate-300"
                           placeholder="Ad"
                         />
                       </div>
@@ -184,7 +184,7 @@ export default function LoginPage() {
                           required
                           value={formData.lastName}
                           onChange={handleChange}
-                          className="w-full pl-12 pr-4 py-4 bg-white border-2 border-slate-200 rounded-2xl focus:border-primary-600 focus:ring-4 focus:ring-primary-600/10 transition-all duration-200 outline-none font-medium placeholder:text-slate-400 hover:border-slate-300"
+                          className="w-full pl-12 pr-4 py-4 bg-white border-2 border-slate-200 rounded-2xl focus:border-primary-600 transition-all duration-200 outline-none font-medium placeholder:text-slate-400 hover:border-slate-300"
                           placeholder="Soyad"
                         />
                       </div>
@@ -202,7 +202,7 @@ export default function LoginPage() {
                       required
                       value={formData.email}
                       onChange={handleChange}
-                      className="w-full pl-12 pr-4 py-4 bg-white border-2 border-slate-200 rounded-2xl focus:border-primary-600 focus:ring-4 focus:ring-primary-600/10 transition-all duration-200 outline-none font-medium placeholder:text-slate-400 hover:border-slate-300"
+                      className="w-full pl-12 pr-4 py-4 bg-white border-2 border-slate-200 rounded-2xl focus:border-primary-600 transition-all duration-200 outline-none font-medium placeholder:text-slate-400 hover:border-slate-300"
                       placeholder="ornek@email.com"
                     />
                   </div>
@@ -223,7 +223,7 @@ export default function LoginPage() {
                       required
                       value={formData.password}
                       onChange={handleChange}
-                      className="w-full pl-12 pr-4 py-4 bg-white border-2 border-slate-200 rounded-2xl focus:border-primary-600 focus:ring-4 focus:ring-primary-600/10 transition-all duration-200 outline-none font-medium placeholder:text-slate-400 hover:border-slate-300"
+                      className="w-full pl-12 pr-4 py-4 bg-white border-2 border-slate-200 rounded-2xl focus:border-primary-600 transition-all duration-200 outline-none font-medium placeholder:text-slate-400 hover:border-slate-300"
                       placeholder="••••••••"
                     />
                   </div>

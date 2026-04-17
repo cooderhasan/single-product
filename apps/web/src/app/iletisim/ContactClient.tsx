@@ -173,7 +173,7 @@ export default function ContactClient() {
                   type="text"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full px-4 py-3 bg-white border-2 border-slate-200 rounded-xl focus:border-primary-600 focus:ring-4 focus:ring-primary-600/10 transition-all duration-200 outline-none font-medium placeholder:text-slate-400 hover:border-slate-300"
+                  className="w-full px-4 py-3 bg-white border-2 border-slate-200 rounded-xl focus:border-primary-600 transition-all duration-200 outline-none font-medium placeholder:text-slate-400 hover:border-slate-300"
                   placeholder="Adınız ve soyadınız"
                 />
               </div>
@@ -184,7 +184,7 @@ export default function ContactClient() {
                   type="email"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="w-full px-4 py-3 bg-white border-2 border-slate-200 rounded-xl focus:border-primary-600 focus:ring-4 focus:ring-primary-600/10 transition-all duration-200 outline-none font-medium placeholder:text-slate-400 hover:border-slate-300"
+                  className="w-full px-4 py-3 bg-white border-2 border-slate-200 rounded-xl focus:border-primary-600 transition-all duration-200 outline-none font-medium placeholder:text-slate-400 hover:border-slate-300"
                   placeholder="ornek@email.com"
                 />
               </div>
@@ -205,7 +205,7 @@ export default function ContactClient() {
                       e.preventDefault();
                     }
                   }}
-                  className="w-full px-4 py-3 bg-white border-2 border-slate-200 rounded-xl focus:border-primary-600 focus:ring-4 focus:ring-primary-600/10 transition-all duration-200 outline-none font-medium placeholder:text-slate-400 hover:border-slate-300"
+                  className="w-full px-4 py-3 bg-white border-2 border-slate-200 rounded-xl focus:border-primary-600 transition-all duration-200 outline-none font-medium placeholder:text-slate-400 hover:border-slate-300"
                   placeholder="05XX XXX XX XX"
                   maxLength={11}
                 />
