@@ -29,7 +29,7 @@ ARG NEXT_PUBLIC_API_URL
 ENV DATABASE_URL=${DATABASE_URL}
 ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
 
-RUN npm run db:generate
+RUN cd packages/database && npx prisma generate
 RUN npx turbo run build --filter=@ecommerce/admin
 
 # Production image
