@@ -143,11 +143,15 @@ export default function CartPage() {
                       className="w-full sm:w-32 h-32 flex-shrink-0 relative rounded-2xl overflow-hidden bg-slate-50 border border-slate-100 group-hover:border-primary-100 transition-colors"
                     >
                       <Image
-                        src={getImageUrl(item.product.images?.[0])}
+                        src={item.product.images?.[0] ? getImageUrl(item.product.images[0]) : '/images/placeholder.png'}
                         alt={item.product.name}
                         fill
                         className="object-contain p-2 mix-blend-multiply group-hover:scale-110 transition-transform duration-500"
                         sizes="(max-width: 768px) 100vw, 128px"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.src = '/images/placeholder.png';
+                        }}
                       />
                     </Link>
 

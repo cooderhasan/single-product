@@ -43,9 +43,10 @@ export function getImageUrl(u: any): string {
     str = u.url || u.path || u.src || '';
   }
   
-  if (!str) return '/images/placeholder.png';
+  if (!str || str === 'null' || str === 'undefined') return '/images/placeholder.png';
   if (str.startsWith('http')) return str;
   if (str.startsWith('//')) return `https:${str}`;
+  if (str.startsWith('/images/')) return str; // Local images
   
   // Relative path ise API_BASE ekle
   // Bazı durumlarda path başında / olmayabilir veya /uploads/ ile başlayabilir
