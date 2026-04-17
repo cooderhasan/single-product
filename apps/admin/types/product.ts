@@ -24,7 +24,8 @@ export interface ProductVariant {
   sku: string
   price: number
   stock: number
-  options: VariantOption[]
+  isActive: boolean
+  options?: VariantOption[]
 }
 
 export interface VariantOption {

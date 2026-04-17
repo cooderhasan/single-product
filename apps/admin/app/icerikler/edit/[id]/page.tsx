@@ -23,6 +23,7 @@ export default function EditContentPage() {
   })
   const [newFeature, setNewFeature] = useState('')
   const [formData, setFormData] = useState({
+    key: '',
     title: '',
     subtitle: '',
     description: '',
@@ -49,6 +50,7 @@ export default function EditContentPage() {
         const content = data.find((c: any) => c.id === id)
         if (content) {
           setFormData({
+            key: content.key || '',
             title: content.title || '',
             subtitle: content.subtitle || '',
             description: content.description || '',
