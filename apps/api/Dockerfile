@@ -1,28 +1,28 @@
-# API Dockerfile
+# API Dockerfile - Minimal & Reliable
 FROM node:20-alpine
 
-RUN apk add --no-cache openssl libc6-compat dos2unix
+RUN apk add --no-cache openssl libc6-compat
 
 WORKDIR /app
 
-# Copy only the packages needed for API
+# Copy package files
 COPY package.json ./
 COPY apps/api/package.json ./apps/api/
 COPY packages/database/package.json ./packages/database/
 
-# Create placeholder package.json for other workspaces
+# Placeholder workspaces
 RUN mkdir -p apps/web apps/admin && \
     echo '{"name":"@ecommerce/web","version":"1.0.0"}' > apps/web/package.json && \
     echo '{"name":"@ecommerce/admin","version":"1.0.0"}' > apps/admin/package.json
 
-# Install ALL dependencies (dev+prod - no prune so prisma/tsx survive)
+# Install all deps (no prune - keep prisma/tsx for runtime)
 RUN npm install --legacy-peer-deps --no-audit --no-fund && \
     npm cache clean --force
 
-# Copy source
+# Copy all source
 COPY . .
 
-# Generate Prisma Client and Build
+# Build
 ARG DATABASE_URL
 ENV DATABASE_URL=${DATABASE_URL}
 
@@ -33,18 +33,14 @@ RUN npx turbo run build --filter=@ecommerce/api
 ENV NODE_ENV=production
 ENV PORT=3041
 
-# Fix CRLF line endings in entrypoint (Windows compatibility)
-RUN dos2unix apps/api/entrypoint.sh && chmod +x apps/api/entrypoint.sh
-
-# Security: Don't run as root
+# User setup
 RUN addgroup --system --gid 1001 nodejs && \
     adduser --system --uid 1001 nestjs && \
-    chown -R nestjs:nodejs /app
-
-# Create uploads directory
-RUN mkdir -p /app/uploads && chown -R nestjs:nodejs /app/uploads
+    chown -R nestjs:nodejs /app && \
+    mkdir -p /app/uploads && chown -R nestjs:nodejs /app/uploads
 
 USER nestjs
 EXPOSE 3041
 
-ENTRYPOINT ["apps/api/entrypoint.sh"]
+# SIMPLE: just start the server - no prisma/seed at runtime
+CMD ["node", "apps/api/dist/main"]
