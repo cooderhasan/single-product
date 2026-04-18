@@ -17,39 +17,35 @@ async function bootstrap() {
   const frontendUrl = configService.get('FRONTEND_URL') || 'http://localhost:3040';
   const adminUrl = configService.get('ADMIN_URL') || 'http://localhost:3042';
 
-  // CORS - Daha güvenilir bir yapıya geçiyoruz
-  const allowedOrigins = [
-    frontendUrl.replace(/\/$/, ''),
-    adminUrl.replace(/\/$/, ''),
-    'https://www.paytr.com',
-    'https://paytr.com'
-  ];
-  
+  // CORS: En erken aşamada OPTIONS preflight'ları yakala (Helmet'ten önce)
+  app.use((req: any, res: any, next: any) => {
+    const origin = req.headers.origin || '';
+    const isOurDomain = origin.includes('360sehpa.com') || origin.includes('localhost') || !origin;
+
+    if (isOurDomain) {
+      res.header('Access-Control-Allow-Origin', origin || '*');
+      res.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS');
+      res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin');
+      res.header('Access-Control-Allow-Credentials', 'true');
+      res.header('Access-Control-Max-Age', '86400');
+    }
+
+    // OPTIONS isteklerini burada bitir
+    if (req.method === 'OPTIONS') {
+      return res.status(204).end();
+    }
+
+    next();
+  });
+
+  // enableCors da açık bırakıyoruz (çift güvence)
   app.enableCors({
-    origin: (origin, callback) => {
-      // Geliştirme ortamında veya origin yoksa izin ver
-      if (!origin || !isProduction) {
-        return callback(null, true);
-      }
-
-      // Origin temizleme
-      const cleanOrigin = origin.replace(/\/$/, '');
-
-      // İzin verilen listesi kontrolü
-      const isAllowedExplicitly = allowedOrigins.includes(cleanOrigin);
-      
-      // Kendi alan adımız (360sehpa.com) kontrolü
-      const isOurDomain = cleanOrigin.endsWith('360sehpa.com') || cleanOrigin.includes('360sehpa.com');
-
-      if (isAllowedExplicitly || isOurDomain) {
-        callback(null, true);
-      } else {
-        console.warn(`CORS rejected for origin: ${origin}`);
-        callback(null, false); // Hata fırlatmak yerine false dönerek headers'ın eklenmesini sağlarız
-      }
-    },
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    origin: true,
+    methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
     credentials: true,
+    preflightContinue: false,
+    optionsSuccessStatus: 204,
   });
 
   // Güvenlik (CORS'tan sonra uygulanması daha sağlıklıdır)
