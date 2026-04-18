@@ -15,6 +15,9 @@
     "turbo": "^2.0.0"
   },
   "workspaces": ["apps/*", "packages/*"],
+  "prisma": {
+    "seed": "tsx packages/database/prisma/seed.ts"
+  },
   "packageManager": "npm@10.2.4",
   "engines": {
     "node": ">=20.0.0"

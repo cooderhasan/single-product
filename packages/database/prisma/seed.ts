@@ -7,12 +7,15 @@ async function main() {
   console.log('🌱 Seeding database...');
 
   // Admin kullanıcısı oluştur
-  const adminPassword = await hash('admin123', 12);
+  const adminPassword = await hash('Admin123!', 12);
   const admin = await prisma.user.upsert({
-    where: { email: 'admin@example.com' },
-    update: {},
+    where: { email: 'admin@360sehpa.com' },
+    update: {
+      password: adminPassword,
+      role: 'ADMIN',
+    },
     create: {
-      email: 'admin@example.com',
+      email: 'admin@360sehpa.com',
       password: adminPassword,
       firstName: 'Admin',
       lastName: 'User',
@@ -35,18 +38,6 @@ async function main() {
       description: 'Hidrolik sistemli motosiklet kaldırma sehpaları',
       sortOrder: 2,
     },
-    {
-      slug: 'manuel-sehpalar',
-      name: 'Manuel Sehpalar',
-      description: 'Manuel kaldırma mekanizmalı sehpalar',
-      sortOrder: 3,
-    },
-    {
-      slug: 'aksesuarlar',
-      name: 'Aksesuarlar',
-      description: 'Sehpa aksesuarları ve yedek parçalar',
-      sortOrder: 4,
-    },
   ];
 
   for (const cat of categories) {
@@ -58,32 +49,6 @@ async function main() {
   }
   console.log('✅ Categories created');
 
-  // Banner oluştur
-  await prisma.banner.createMany({
-    skipDuplicates: true,
-    data: [
-      {
-        title: 'Profesyonel Motosiklet Sehpaları',
-        subtitle: 'Türkiye\'nin #1 Motosiklet Kaldırma Sehpası Üreticisi',
-        image: '/images/banners/hero-1.jpg',
-        link: '/kategori/motosiklet-sehpalari',
-        buttonText: 'Ürünleri İncele',
-        position: 'HOME_HERO',
-        sortOrder: 1,
-      },
-      {
-        title: 'Hidrolik Seri',
-        subtitle: 'Tek parmakla kaldırın',
-        image: '/images/banners/hero-2.jpg',
-        link: '/kategori/hidrolik-sehpalar',
-        buttonText: 'Keşfet',
-        position: 'HOME_HERO',
-        sortOrder: 2,
-      },
-    ],
-  });
-  console.log('✅ Banners created');
-
   // Ayarlar oluştur
   const settings = [
     { key: 'site_name', value: '360 Sehpa', group: 'general' },
@@ -91,8 +56,6 @@ async function main() {
     { key: 'contact_email', value: 'info@360sehpa.com', group: 'contact' },
     { key: 'contact_phone', value: '+90 555 123 4567', group: 'contact' },
     { key: 'whatsapp_number', value: '905551234567', group: 'contact' },
-    { key: 'shipping_free_threshold', value: '1000', group: 'shipping' },
-    { key: 'shipping_default_cost', value: '75', group: 'shipping' },
   ];
 
   for (const setting of settings) {
@@ -103,6 +66,56 @@ async function main() {
     });
   }
   console.log('✅ Settings created');
+
+  // Site İçerikleri (İletişim, Banka, vb.)
+  const siteContents = [
+    {
+      key: 'contact_info',
+      title: 'İletişim Bilgilerimiz',
+      description: 'Bize aşağıdaki kanallardan ulaşabilirsiniz.',
+      data: {
+        address: 'İkitelli OSB, Mutfakçılar Sanayi Sitesi, M10 Blok No: 34, Başakşehir/İstanbul',
+        phone: '+90 532 123 45 67',
+        email: 'iletisim@360sehpa.com',
+        whatsapp: '905321234567',
+        working_hours: 'Pzt-Cmt: 09:00 - 19:00'
+      }
+    },
+    {
+      key: 'bank_accounts',
+      title: 'Banka Hesap Bilgilerimiz',
+      description: 'Ödemelerinizi aşağıdaki IBAN numaralarına yapabilirsiniz.',
+      data: {
+        accounts: [
+          { bank: 'Garanti BBVA', owner: '360 Sehpa LTD. ŞTİ.', iban: 'TR00 0000 0000 0000 0000 0000 00' },
+          { bank: 'Ziraat Bankası', owner: '360 Sehpa LTD. ŞTİ.', iban: 'TR11 1111 1111 1111 1111 1111 11' }
+        ]
+      }
+    },
+    {
+      key: 'product_showcase',
+      title: 'Motosiklet Bakımını Bir Sanat Haline Getir',
+      description: '360 Derece Tam Döner Mekanizma ile her açıdan erişim ve kontrol sağlayın.',
+      buttonText: 'Hemen Keşfet',
+      buttonLink: '/urun/universal-motosiklet-kaldirma-sehpasi-360-derece-doner-kilitli'
+    }
+  ];
+
+  for (const content of siteContents) {
+    await prisma.siteContent.upsert({
+      where: { key: content.key },
+      update: {
+        title: content.title,
+        description: content.description,
+        data: content.data as any,
+      },
+      create: {
+        ...content,
+        isActive: true,
+      },
+    });
+  }
+  console.log('✅ Site Contents created');
 
   console.log('✨ Seeding completed!');
 }

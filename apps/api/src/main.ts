@@ -17,7 +17,42 @@ async function bootstrap() {
   const frontendUrl = configService.get('FRONTEND_URL') || 'http://localhost:3040';
   const adminUrl = configService.get('ADMIN_URL') || 'http://localhost:3042';
 
-  // Güvenlik
+  // CORS - Daha güvenilir bir yapıya geçiyoruz
+  const allowedOrigins = [
+    frontendUrl.replace(/\/$/, ''),
+    adminUrl.replace(/\/$/, ''),
+    'https://www.paytr.com',
+    'https://paytr.com'
+  ];
+  
+  app.enableCors({
+    origin: (origin, callback) => {
+      // Geliştirme ortamında veya origin yoksa izin ver
+      if (!origin || !isProduction) {
+        return callback(null, true);
+      }
+
+      // Origin temizleme
+      const cleanOrigin = origin.replace(/\/$/, '');
+
+      // İzin verilen listesi kontrolü
+      const isAllowedExplicitly = allowedOrigins.includes(cleanOrigin);
+      
+      // Kendi alan adımız (360sehpa.com) kontrolü
+      const isOurDomain = cleanOrigin.endsWith('360sehpa.com') || cleanOrigin.includes('360sehpa.com');
+
+      if (isAllowedExplicitly || isOurDomain) {
+        callback(null, true);
+      } else {
+        console.warn(`CORS rejected for origin: ${origin}`);
+        callback(null, false); // Hata fırlatmak yerine false dönerek headers'ın eklenmesini sağlarız
+      }
+    },
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    credentials: true,
+  });
+
+  // Güvenlik (CORS'tan sonra uygulanması daha sağlıklıdır)
   app.use(helmet({
     crossOriginResourcePolicy: { policy: "cross-origin" },
     contentSecurityPolicy: {
@@ -26,41 +61,12 @@ async function bootstrap() {
         scriptSrc: ["'self'", "'unsafe-inline'", "https://www.googletagmanager.com"],
         styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
         imgSrc: ["'self'", "data:", "blob:", "https://res.cloudinary.com", frontendUrl, adminUrl],
-        connectSrc: ["'self'", frontendUrl, adminUrl, "https://api.paytr.com"],
+        connectSrc: ["'self'", frontendUrl, adminUrl, "https://api.360sehpa.com", "https://api.paytr.com"],
       },
     }
   }));
   app.use(compression());
   app.use(cookieParser());
-
-  // CORS - Birden fazla origin'e izin ver
-  const allowedOrigins = [
-    frontendUrl,
-    adminUrl,
-    'https://www.paytr.com',
-    'https://paytr.com'
-  ];
-  
-  app.enableCors({
-    origin: (origin, callback) => {
-      // Geliştirme ortamında veya origin yoksa (CSR olmayan istekler) izin ver
-      if (!origin || !isProduction) return callback(null, true);
-
-      // Tam eşleşme listesi
-      const isAllowedExplicitly = allowedOrigins.some(o => origin.startsWith(o));
-      
-      // Pattern bazlı eşleşme (kendi alan adımızın tüm subdomainlerine güven)
-      const isSubdomainOfSite = origin.endsWith('.360sehpa.com') || origin === 'https://360sehpa.com';
-
-      if (isAllowedExplicitly || isSubdomainOfSite) {
-        callback(null, true);
-      } else {
-        console.warn(`CORS rejected for origin: ${origin}`);
-        callback(new Error('Not allowed by CORS'));
-      }
-    },
-    credentials: true,
-  });
 
 
   // Validation

@@ -276,7 +276,7 @@ export default function CheckoutPage() {
                             type="text"
                             value={guestAddress.fullName}
                             onChange={(e) => setGuestAddress({ ...guestAddress, fullName: e.target.value })}
-                            className="w-full pl-12 pr-4 py-4 bg-white border-2 border-slate-200 rounded-2xl focus:border-primary-600 transition-all duration-200 outline-none font-medium placeholder:text-slate-300 hover:border-slate-300 shadow-sm"
+                            className="w-full pl-12 pr-4 py-4 bg-white border-2 border-slate-200 rounded-2xl focus:border-primary-600 focus:ring-0 transition-all duration-200 outline-none font-medium placeholder:text-slate-300 hover:border-slate-300 shadow-sm"
                             placeholder="Adınız Soyadınız"
                           />
                         </div>
@@ -294,7 +294,7 @@ export default function CheckoutPage() {
                                 setGuestAddress({ ...guestAddress, phone: val });
                               }
                             }}
-                            className="w-full pl-12 pr-4 py-4 bg-white border-2 border-slate-200 rounded-2xl focus:border-primary-600 transition-all duration-200 outline-none font-medium placeholder:text-slate-300 hover:border-slate-300 shadow-sm"
+                            className="w-full pl-12 pr-4 py-4 bg-white border-2 border-slate-200 rounded-2xl focus:border-primary-600 focus:ring-0 transition-all duration-200 outline-none font-medium placeholder:text-slate-300 hover:border-slate-300 shadow-sm"
                             placeholder="05XX XXX XX XX"
                             maxLength={11}
                           />
