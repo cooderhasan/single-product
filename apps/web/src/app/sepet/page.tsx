@@ -270,7 +270,13 @@ export default function CartPage() {
 
                   <div className="space-y-3">
                     <button
-                      onClick={() => router.push('/odeme')}
+                      onClick={() => {
+                        if (isAuthenticated) {
+                          router.push('/odeme');
+                        } else {
+                          router.push('/giris?redirect=/odeme');
+                        }
+                      }}
                       className="w-full bg-white hover:bg-primary-50 text-slate-900 font-black py-4 px-6 rounded-2xl transition-all hover:scale-[1.02] flex items-center justify-center gap-2 shadow-xl active:scale-95"
                     >
                       ÖDEMEYE GEÇ

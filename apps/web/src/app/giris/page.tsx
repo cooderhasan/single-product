@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Lock, 
@@ -20,6 +20,8 @@ import { trackLogin, trackSignUp } from '@/components/analytics/dataLayer';
 
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirect = searchParams.get('redirect') || '/';
   const { login, register, isAuthenticated, isLoading, error, clearError } = useAuthStore();
   const [activeTab, setActiveTab] = useState<'login' | 'register'>('login');
 
@@ -32,9 +34,9 @@ export default function LoginPage() {
 
   useEffect(() => {
     if (isAuthenticated) {
-      router.push('/');
+      router.push(redirect);
     }
-  }, [isAuthenticated, router]);
+  }, [isAuthenticated, router, redirect]);
 
   useEffect(() => {
     clearError();
@@ -257,7 +259,7 @@ export default function LoginPage() {
 
             <button
               type="button"
-              onClick={() => router.push('/sepet')}
+              onClick={() => router.push(redirect !== '/' ? redirect : '/sepet')}
               className="w-full py-5 px-6 bg-white border-2 border-slate-100 hover:bg-slate-50 text-slate-600 font-black rounded-[20px] transition-all flex items-center justify-center gap-3 active:scale-95 group"
             >
               ÜYE OLMADAN DEVAM ET
