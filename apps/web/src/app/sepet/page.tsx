@@ -299,10 +299,10 @@ export default function CartPage() {
               {/* Trust badges footer */}
               <div className="mt-8 pt-8 border-t border-slate-800 flex flex-col items-center gap-4">
                 <div className="flex items-center gap-4 opacity-50 grayscale hover:grayscale-0 transition-all duration-500 cursor-pointer">
-                  <img src="https://iyzico.com/assets/images/logo/iyzico-logo.svg" alt="iyzico" className="h-4 invert" />
+                  <img src="https://www.iyzico.com/assets/images/logo/iyzico-logo.svg" alt="iyzico" className="h-4 invert" />
                   <div className="w-[1px] h-3 bg-slate-700" />
-                  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Mastercard_2019_logo.svg/1200px-Mastercard_2019_logo.svg.png" alt="Mastercard" className="h-4" />
-                  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/16/Former_Visa_%28company%29_logo.svg/1200px-Former_Visa_%28company%29_logo.svg.png" alt="Visa" className="h-3" />
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/b/b7/MasterCard_Logo.svg" alt="Mastercard" className="h-4" />
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/d/d6/Visa_2021.svg" alt="Visa" className="h-3" />
                 </div>
                 <p className="text-[10px] text-slate-500 text-center leading-relaxed">
                   Güvenli ödeme altyapısı ile kart bilgileriniz 256-bit SSL sertifikası ile korunmaktadır.

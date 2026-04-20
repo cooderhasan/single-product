@@ -514,9 +514,9 @@ export default function CheckoutPage() {
 
             {/* Bottom trust section */}
             <div className="mt-12 flex flex-wrap items-center justify-center gap-8 opacity-40 grayscale hover:opacity-100 hover:grayscale-0 transition-all duration-700">
-               <img src="https://iyzico.com/assets/images/logo/iyzico-logo.svg" alt="iyzico" className="h-4" />
-               <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Mastercard_2019_logo.svg/1200px-Mastercard_2019_logo.svg.png" alt="Mastercard" className="h-5" />
-               <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/16/Former_Visa_%28company%29_logo.svg/1200px-Former_Visa_%28company%29_logo.svg.png" alt="Visa" className="h-4" />
+               <img src="https://www.iyzico.com/assets/images/logo/iyzico-logo.svg" alt="iyzico" className="h-4" />
+               <img src="https://upload.wikimedia.org/wikipedia/commons/b/b7/MasterCard_Logo.svg" alt="Mastercard" className="h-5" />
+               <img src="https://upload.wikimedia.org/wikipedia/commons/d/d6/Visa_2021.svg" alt="Visa" className="h-4" />
             </div>
           </div>
 
