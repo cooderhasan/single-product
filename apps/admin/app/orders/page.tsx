@@ -183,7 +183,7 @@ export default function OrdersPage() {
   }
 
   const handlePrint = () => {
-    if (!printRef.current) return
+    if (!selectedOrder) return
     
     const printWindow = window.open('', '_blank')
     if (!printWindow) {
@@ -191,53 +191,398 @@ export default function OrdersPage() {
       return
     }
 
-    const printContent = printRef.current.innerHTML
+    const order = selectedOrder
+    const statusLabel = statusLabels[order.status]
+    const paymentStatusLabel = paymentStatusLabels[order.paymentStatus]
+    
+    const statusColors: Record<OrderStatus, {bg: string, color: string}> = {
+      PENDING: {bg: '#fef3c7', color: '#92400e'},
+      CONFIRMED: {bg: '#dbeafe', color: '#1e40af'},
+      PROCESSING: {bg: '#e9d5ff', color: '#7c3aed'},
+      SHIPPED: {bg: '#c7d2fe', color: '#3730a3'},
+      DELIVERED: {bg: '#bbf7d0', color: '#166534'},
+      CANCELLED: {bg: '#fecaca', color: '#991b1b'},
+      REFUNDED: {bg: '#e5e7eb', color: '#374151'},
+    }
+    
+    const paymentColors: Record<PaymentStatus, {bg: string, color: string}> = {
+      PENDING: {bg: '#fef3c7', color: '#92400e'},
+      PAID: {bg: '#bbf7d0', color: '#166534'},
+      FAILED: {bg: '#fecaca', color: '#991b1b'},
+      REFUNDED: {bg: '#e5e7eb', color: '#374151'},
+      CANCELLED: {bg: '#fecaca', color: '#991b1b'},
+    }
+
+    const paymentMethodText = 
+      order.paymentMethod === 'CREDIT_CARD' ? 'Kredi Kartı' :
+      order.paymentMethod === 'BANK_TRANSFER' ? 'Havale/EFT' :
+      order.paymentMethod === 'CASH_ON_DELIVERY' ? 'Kapıda Ödeme' :
+      order.paymentMethod || '-'
+
+    const itemsHtml = order.items?.map(item => `
+      <tr>
+        <td style="padding: 12px; border-bottom: 1px solid #e5e7eb;">
+          <div style="font-weight: 500; color: #111827;">${item.productName}</div>
+          ${item.variantName ? `<div style="font-size: 12px; color: #6b7280; margin-top: 2px;">${item.variantName}</div>` : ''}
+          <div style="font-size: 11px; color: #9ca3af; margin-top: 2px;">SKU: ${item.sku}</div>
+        </td>
+        <td style="padding: 12px; border-bottom: 1px solid #e5e7eb; text-align: center; color: #4b5563;">${item.quantity}</td>
+        <td style="padding: 12px; border-bottom: 1px solid #e5e7eb; text-align: right; color: #4b5563;">₺${item.price.toLocaleString()}</td>
+        <td style="padding: 12px; border-bottom: 1px solid #e5e7eb; text-align: right; font-weight: 500; color: #111827;">₺${item.total.toLocaleString()}</td>
+      </tr>
+    `).join('') || ''
+
     printWindow.document.write(`
       <!DOCTYPE html>
       <html>
         <head>
-          <title>Sipariş #${selectedOrder?.orderNumber}</title>
+          <title>Sipariş #${order.orderNumber}</title>
           <meta charset="UTF-8">
           <style>
-            @media print {
-              body { font-family: Arial, sans-serif; margin: 20px; }
-              .no-print { display: none !important; }
+            * { box-sizing: border-box; margin: 0; padding: 0; }
+            body { 
+              font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; 
+              font-size: 14px; 
+              line-height: 1.5; 
+              color: #374151; 
+              background: #f3f4f6;
+              padding: 20px;
             }
-            body { font-family: Arial, sans-serif; margin: 20px; color: #333; }
-            .header { border-bottom: 2px solid #333; padding-bottom: 20px; margin-bottom: 30px; }
-            .header h1 { margin: 0; font-size: 24px; }
-            .header p { margin: 5px 0; color: #666; }
-            .section { margin-bottom: 30px; }
-            .section h2 { font-size: 16px; border-bottom: 1px solid #ddd; padding-bottom: 10px; margin-bottom: 15px; }
-            .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-            .info-item { margin-bottom: 10px; }
-            .info-label { font-weight: bold; color: #666; font-size: 12px; }
-            .info-value { font-size: 14px; margin-top: 3px; }
-            table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-            th, td { text-align: left; padding: 12px; border-bottom: 1px solid #ddd; }
-            th { background-color: #f5f5f5; font-weight: bold; }
-            .text-right { text-align: right; }
-            .total-section { margin-top: 30px; border-top: 2px solid #333; padding-top: 20px; }
-            .total-row { display: flex; justify-content: space-between; margin-bottom: 10px; }
-            .total-row.grand { font-size: 18px; font-weight: bold; border-top: 1px solid #ddd; padding-top: 10px; margin-top: 10px; }
-            .status-badge { display: inline-block; padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: bold; }
-            .status-PENDING { background: #fef3c7; color: #92400e; }
-            .status-CONFIRMED { background: #dbeafe; color: #1e40af; }
-            .status-PROCESSING { background: #e9d5ff; color: #7c3aed; }
-            .status-SHIPPED { background: #c7d2fe; color: #3730a3; }
-            .status-DELIVERED { background: #bbf7d0; color: #166534; }
-            .status-CANCELLED { background: #fecaca; color: #991b1b; }
-            .status-REFUNDED { background: #e5e7eb; color: #374151; }
-            .no-print { margin: 20px 0; text-align: center; }
-            .print-btn { background: #2563eb; color: white; padding: 12px 30px; border: none; border-radius: 6px; cursor: pointer; font-size: 16px; }
-            .print-btn:hover { background: #1d4ed8; }
+            .container {
+              max-width: 800px;
+              margin: 0 auto;
+              background: white;
+              border-radius: 8px;
+              box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+              overflow: hidden;
+            }
+            .header { 
+              background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+              color: white;
+              padding: 30px;
+            }
+            .header h1 { 
+              font-size: 28px; 
+              font-weight: 700;
+              margin-bottom: 8px;
+            }
+            .header-meta {
+              opacity: 0.9;
+              font-size: 14px;
+            }
+            .content {
+              padding: 30px;
+            }
+            .section { 
+              margin-bottom: 24px; 
+            }
+            .section-title {
+              font-size: 12px;
+              font-weight: 600;
+              color: #6b7280;
+              text-transform: uppercase;
+              letter-spacing: 0.5px;
+              margin-bottom: 12px;
+            }
+            .info-grid { 
+              display: grid; 
+              grid-template-columns: 1fr 1fr; 
+              gap: 24px; 
+            }
+            .info-box {
+              background: #f9fafb;
+              border: 1px solid #e5e7eb;
+              border-radius: 8px;
+              padding: 16px;
+            }
+            .info-box h3 {
+              font-size: 14px;
+              font-weight: 600;
+              color: #111827;
+              margin-bottom: 12px;
+              display: flex;
+              align-items: center;
+              gap: 8px;
+            }
+            .info-box p {
+              font-size: 13px;
+              color: #4b5563;
+              margin-bottom: 6px;
+            }
+            .info-box p strong {
+              color: #111827;
+            }
+            .status-row {
+              display: flex;
+              gap: 16px;
+              margin-bottom: 24px;
+            }
+            .status-box {
+              flex: 1;
+              background: #f9fafb;
+              border: 1px solid #e5e7eb;
+              border-radius: 8px;
+              padding: 16px;
+            }
+            .status-label {
+              font-size: 12px;
+              color: #6b7280;
+              margin-bottom: 8px;
+            }
+            .status-badge {
+              display: inline-block;
+              padding: 6px 14px;
+              border-radius: 20px;
+              font-size: 13px;
+              font-weight: 600;
+            }
+            .products-table {
+              width: 100%;
+              border-collapse: collapse;
+              margin-top: 12px;
+              border: 1px solid #e5e7eb;
+              border-radius: 8px;
+              overflow: hidden;
+            }
+            .products-table th {
+              background: #f3f4f6;
+              padding: 12px;
+              text-align: left;
+              font-size: 11px;
+              font-weight: 600;
+              color: #6b7280;
+              text-transform: uppercase;
+              letter-spacing: 0.5px;
+            }
+            .products-table th:last-child,
+            .products-table td:last-child {
+              text-align: right;
+            }
+            .products-table th:nth-child(2),
+            .products-table td:nth-child(2) {
+              text-align: center;
+            }
+            .totals {
+              background: #f9fafb;
+              border: 1px solid #e5e7eb;
+              border-radius: 8px;
+              padding: 20px;
+              margin-top: 24px;
+            }
+            .total-row {
+              display: flex;
+              justify-content: space-between;
+              margin-bottom: 10px;
+              font-size: 14px;
+            }
+            .total-row.grand {
+              font-size: 18px;
+              font-weight: 700;
+              color: #111827;
+              border-top: 2px solid #e5e7eb;
+              padding-top: 12px;
+              margin-top: 12px;
+            }
+            .notes {
+              background: #fef3c7;
+              border: 1px solid #fcd34d;
+              border-radius: 8px;
+              padding: 16px;
+              margin-bottom: 24px;
+            }
+            .notes h4 {
+              font-size: 13px;
+              font-weight: 600;
+              color: #92400e;
+              margin-bottom: 8px;
+            }
+            .notes p {
+              font-size: 13px;
+              color: #a16207;
+            }
+            .no-print { 
+              text-align: center; 
+              padding: 20px;
+              background: #f3f4f6;
+              border-top: 1px solid #e5e7eb;
+            }
+            .print-btn { 
+              background: #2563eb; 
+              color: white; 
+              padding: 12px 32px; 
+              border: none; 
+              border-radius: 6px; 
+              cursor: pointer; 
+              font-size: 15px;
+              font-weight: 500;
+              display: inline-flex;
+              align-items: center;
+              gap: 8px;
+            }
+            .print-btn:hover { 
+              background: #1d4ed8; 
+            }
+            @media print {
+              body { 
+                background: white;
+                padding: 0;
+              }
+              .container {
+                box-shadow: none;
+                max-width: 100%;
+              }
+              .no-print { 
+                display: none !important; 
+              }
+              .header {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+              }
+            }
           </style>
         </head>
         <body>
-          <div class="no-print">
-            <button class="print-btn" onclick="window.print()">🖨️ Yazdır</button>
+          <div class="container">
+            <div class="header">
+              <h1>Sipariş #${order.orderNumber}</h1>
+              <div class="header-meta">
+                ${new Date(order.createdAt).toLocaleDateString('tr-TR', { day: '2-digit', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
+              </div>
+            </div>
+            
+            <div class="content">
+              <!-- Durumlar -->
+              <div class="status-row">
+                <div class="status-box">
+                  <div class="status-label">Sipariş Durumu</div>
+                  <span class="status-badge" style="background: ${statusColors[order.status].bg}; color: ${statusColors[order.status].color};">
+                    ${statusLabel}
+                  </span>
+                </div>
+                <div class="status-box">
+                  <div class="status-label">Ödeme Durumu</div>
+                  <span class="status-badge" style="background: ${paymentColors[order.paymentStatus].bg}; color: ${paymentColors[order.paymentStatus].color};">
+                    ${paymentStatusLabel}
+                  </span>
+                </div>
+              </div>
+
+              <!-- Müşteri ve Adres -->
+              <div class="section">
+                <div class="info-grid">
+                  <div class="info-box">
+                    <h3>👤 Müşteri Bilgileri</h3>
+                    ${order.user ? `
+                      <p><strong>Ad Soyad:</strong> ${order.user.firstName} ${order.user.lastName}</p>
+                      <p><strong>Email:</strong> ${order.user.email}</p>
+                      ${order.user.phone ? `<p><strong>Telefon:</strong> ${order.user.phone}</p>` : ''}
+                    ` : `
+                      <p><strong>Misafir Müşteri</strong></p>
+                      <p><strong>Email:</strong> ${order.guestEmail || '-'}</p>
+                      ${order.guestPhone ? `<p><strong>Telefon:</strong> ${order.guestPhone}</p>` : ''}
+                    `}
+                  </div>
+                  
+                  <div class="info-box">
+                    <h3>📍 Teslimat Adresi</h3>
+                    ${order.shippingAddress ? `
+                      <p><strong>${order.shippingAddress.fullName || ''}</strong></p>
+                      <p>${order.shippingAddress.address || ''}</p>
+                      ${order.shippingAddress.addressLine2 ? `<p>${order.shippingAddress.addressLine2}</p>` : ''}
+                      <p>${order.shippingAddress.district || ''} / ${order.shippingAddress.city || ''} ${order.shippingAddress.postalCode || ''}</p>
+                      <p style="margin-top: 8px;"><strong>Telefon:</strong> ${order.shippingAddress.phone || '-'}</p>
+                    ` : '<p>Adres bilgisi bulunamadı</p>'}
+                  </div>
+                </div>
+              </div>
+
+              <!-- Ödeme ve Kargo -->
+              <div class="section">
+                <div class="info-grid">
+                  <div class="info-box">
+                    <h3>💳 Ödeme Bilgileri</h3>
+                    <p><strong>Ödeme Yöntemi:</strong> ${paymentMethodText}</p>
+                    ${order.couponCode ? `<p><strong>Kupon Kodu:</strong> ${order.couponCode}</p>` : ''}
+                  </div>
+                  
+                  <div class="info-box">
+                    <h3>🚚 Kargo Bilgileri</h3>
+                    ${order.trackingNumber ? `
+                      <p><strong>Takip No:</strong> ${order.trackingNumber}</p>
+                    ` : '<p>Henüz kargo bilgisi eklenmemiş</p>'}
+                    ${order.shippedAt ? `<p><strong>Kargoya Verilme:</strong> ${new Date(order.shippedAt).toLocaleDateString('tr-TR')}</p>` : ''}
+                    ${order.deliveredAt ? `<p><strong>Teslim Tarihi:</strong> ${new Date(order.deliveredAt).toLocaleDateString('tr-TR')}</p>` : ''}
+                  </div>
+                </div>
+              </div>
+
+              <!-- Notlar -->
+              ${order.customerNote ? `
+                <div class="notes">
+                  <h4>📝 Müşteri Notu</h4>
+                  <p>${order.customerNote}</p>
+                </div>
+              ` : ''}
+              
+              ${order.adminNote ? `
+                <div class="notes" style="background: #dbeafe; border-color: #93c5fd;">
+                  <h4 style="color: #1e40af;">👨‍💼 Admin Notu</h4>
+                  <p style="color: #1e40af;">${order.adminNote}</p>
+                </div>
+              ` : ''}
+
+              <!-- Ürünler -->
+              <div class="section">
+                <div class="section-title">Sipariş Ürünleri</div>
+                <table class="products-table">
+                  <thead>
+                    <tr>
+                      <th>Ürün</th>
+                      <th style="text-align: center;">Adet</th>
+                      <th style="text-align: right;">Birim Fiyat</th>
+                      <th style="text-align: right;">Toplam</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${itemsHtml}
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- Toplam -->
+              <div class="totals">
+                <div class="total-row">
+                  <span>Ara Toplam</span>
+                  <span>₺${(order.subtotal || 0).toLocaleString()}</span>
+                </div>
+                <div class="total-row">
+                  <span>Kargo Ücreti</span>
+                  <span>${order.shippingCost === 0 ? 'Ücretsiz' : `₺${(order.shippingCost || 0).toLocaleString()}`}</span>
+                </div>
+                ${order.discountAmount > 0 ? `
+                  <div class="total-row">
+                    <span>İndirim</span>
+                    <span style="color: #16a34a;">-₺${order.discountAmount.toLocaleString()}</span>
+                  </div>
+                ` : ''}
+                <div class="total-row grand">
+                  <span>Toplam</span>
+                  <span>₺${order.total.toLocaleString()}</span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="no-print">
+              <button class="print-btn" onclick="window.print()">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                  <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                  <rect x="6" y="14" width="12" height="8"></rect>
+                </svg>
+                Yazdır
+              </button>
+            </div>
           </div>
-          ${printContent}
         </body>
       </html>
     `)
