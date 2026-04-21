@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import toast from 'react-hot-toast'
 import { ArrowLeftIcon } from '@heroicons/react/24/outline'
+import { SingleImageUpload } from '@/components/ui/SingleImageUpload'
 
 type BannerPosition = 'HOME_HERO' | 'HOME_MIDDLE' | 'HOME_BOTTOM' | 'CATEGORY_PAGE' | 'PRODUCT_PAGE'
 
@@ -109,28 +110,23 @@ export default function NewBannerPage() {
 
             <div className="col-span-2">
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Görsel URL *
+                Görsel *
               </label>
-              <input
-                type="url"
-                required
-                value={formData.image}
-                onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                placeholder="https://..."
+              <SingleImageUpload
+                image={formData.image}
+                onChange={(url) => setFormData({ ...formData, image: url })}
+                label="Banner Görseli"
               />
             </div>
 
             <div className="col-span-2">
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Mobil Görsel URL
+                Mobil Görsel
               </label>
-              <input
-                type="url"
-                value={formData.mobileImage}
-                onChange={(e) => setFormData({ ...formData, mobileImage: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                placeholder="https://..."
+              <SingleImageUpload
+                image={formData.mobileImage}
+                onChange={(url) => setFormData({ ...formData, mobileImage: url })}
+                label="Mobil Banner Görseli"
               />
             </div>
 

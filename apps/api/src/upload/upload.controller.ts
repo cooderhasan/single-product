@@ -29,6 +29,17 @@ export class UploadController {
     return { url };
   }
 
+  @Post('image/banner')
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Banner görseli yükle' })
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(FileInterceptor('image'))
+  async uploadBannerImage(@UploadedFile() file: Express.Multer.File) {
+    const url = await this.uploadService.uploadImage(file, 'banners');
+    return { url };
+  }
+
   @Post('images')
   @Roles(UserRole.ADMIN, UserRole.MANAGER)
   @ApiBearerAuth()
