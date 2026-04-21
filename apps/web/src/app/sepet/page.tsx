@@ -298,11 +298,17 @@ export default function CartPage() {
 
               {/* Trust badges footer */}
               <div className="mt-8 pt-8 border-t border-slate-800 flex flex-col items-center gap-4">
-                <div className="flex items-center gap-5 opacity-50 grayscale hover:grayscale-0 transition-all duration-500 cursor-pointer">
-                  <img src="/images/payment/iyzico.svg" alt="iyzico" className="h-5 w-auto invert" />
+                <div className="flex items-center gap-4 opacity-50 grayscale hover:grayscale-0 transition-all duration-500 cursor-pointer">
+                  <div className="h-5 w-14 flex items-center justify-center">
+                    <img src="/images/payment/iyzico.svg" alt="iyzico" className="h-full w-full object-contain invert" />
+                  </div>
                   <div className="w-[1px] h-4 bg-slate-700" />
-                  <img src="/images/payment/mastercard.svg" alt="Mastercard" className="h-5 w-auto" />
-                  <img src="/images/payment/visa.svg" alt="Visa" className="h-5 w-auto" />
+                  <div className="h-5 w-8 flex items-center justify-center">
+                    <img src="/images/payment/mastercard.svg" alt="Mastercard" className="h-full w-full object-contain" />
+                  </div>
+                  <div className="h-5 w-14 flex items-center justify-center">
+                    <img src="/images/payment/visa.svg" alt="Visa" className="h-full w-full object-contain" />
+                  </div>
                 </div>
                 <p className="text-[10px] text-slate-500 text-center leading-relaxed">
                   Güvenli ödeme altyapısı ile kart bilgileriniz 256-bit SSL sertifikası ile korunmaktadır.

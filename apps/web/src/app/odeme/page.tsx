@@ -513,10 +513,16 @@ export default function CheckoutPage() {
             </AnimatePresence>
 
             {/* Bottom trust section */}
-            <div className="mt-12 flex flex-wrap items-center justify-center gap-6 opacity-40 grayscale hover:opacity-100 hover:grayscale-0 transition-all duration-700">
-               <img src="/images/payment/iyzico.svg" alt="iyzico" className="h-5 w-auto" />
-               <img src="/images/payment/mastercard.svg" alt="Mastercard" className="h-5 w-auto" />
-               <img src="/images/payment/visa.svg" alt="Visa" className="h-5 w-auto" />
+            <div className="mt-12 flex flex-wrap items-center justify-center gap-5 opacity-40 grayscale hover:opacity-100 hover:grayscale-0 transition-all duration-700">
+               <div className="h-5 w-14 flex items-center justify-center">
+                 <img src="/images/payment/iyzico.svg" alt="iyzico" className="h-full w-full object-contain" />
+               </div>
+               <div className="h-5 w-8 flex items-center justify-center">
+                 <img src="/images/payment/mastercard.svg" alt="Mastercard" className="h-full w-full object-contain" />
+               </div>
+               <div className="h-5 w-14 flex items-center justify-center">
+                 <img src="/images/payment/visa.svg" alt="Visa" className="h-full w-full object-contain" />
+               </div>
             </div>
           </div>
 

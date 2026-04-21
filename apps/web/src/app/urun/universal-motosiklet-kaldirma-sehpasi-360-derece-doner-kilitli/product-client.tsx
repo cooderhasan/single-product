@@ -435,10 +435,16 @@ export default function ProductPage() {
                     <span className="text-xs font-medium">Güvenli Ödeme</span>
                   </div>
                 </div>
-                <div className="flex items-center justify-center gap-5 mt-3">
-                  <img src="/images/payment/iyzico.svg" alt="iyzico" className="h-6 w-auto opacity-60 grayscale hover:grayscale-0 transition-all" />
-                  <img src="/images/payment/mastercard.svg" alt="Mastercard" className="h-6 w-auto opacity-60 grayscale hover:grayscale-0 transition-all" />
-                  <img src="/images/payment/visa.svg" alt="Visa" className="h-6 w-auto opacity-60 grayscale hover:grayscale-0 transition-all" />
+                <div className="flex items-center justify-center gap-4 mt-3">
+                  <div className="h-6 w-16 flex items-center justify-center">
+                    <img src="/images/payment/iyzico.svg" alt="iyzico" className="h-full w-full object-contain opacity-60 grayscale hover:grayscale-0 transition-all" />
+                  </div>
+                  <div className="h-6 w-10 flex items-center justify-center">
+                    <img src="/images/payment/mastercard.svg" alt="Mastercard" className="h-full w-full object-contain opacity-60 grayscale hover:grayscale-0 transition-all" />
+                  </div>
+                  <div className="h-6 w-16 flex items-center justify-center">
+                    <img src="/images/payment/visa.svg" alt="Visa" className="h-full w-full object-contain opacity-60 grayscale hover:grayscale-0 transition-all" />
+                  </div>
                 </div>
               </div>
 
