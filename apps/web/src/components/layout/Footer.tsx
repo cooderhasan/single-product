@@ -177,6 +177,7 @@ export function Footer() {
                 <span className="whitespace-pre-line">{contactInfo.address}</span>
               </li>
               <li className="flex items-center gap-3">
+                <Phone className="w-5 h-5 text-primary-500 flex-shrink-0" />
                 <a href={`tel:${contactInfo.phone.replace(/\s+/g, '')}`} className="hover:text-primary-400 transition-colors">
                   {contactInfo.phone}
                 </a>
