@@ -39,25 +39,33 @@ export default function NewBannerPage() {
     setLoading(true)
 
     try {
+      const payload = {
+        ...formData,
+        startDate: formData.startDate || undefined,
+        endDate: formData.endDate || undefined,
+      }
+
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/banners`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${localStorage.getItem('admin_token')}`,
         },
-        body: JSON.stringify({
-          ...formData,
-          startDate: formData.startDate || undefined,
-          endDate: formData.endDate || undefined,
-        }),
+        body: JSON.stringify(payload),
       })
 
       if (response.ok) {
         toast.success('Banner başarıyla oluşturuldu')
         router.push('/banners')
       } else {
-        const error = await response.json()
-        throw new Error(error.message || 'Banner oluşturulamadı')
+        let errorMessage = 'Banner oluşturulamadı'
+        try {
+          const error = await response.json()
+          errorMessage = error.message || JSON.stringify(error)
+        } catch {
+          errorMessage = `HTTP ${response.status}: ${response.statusText}`
+        }
+        throw new Error(errorMessage)
       }
     } catch (error: any) {
       toast.error(error.message || 'Banner oluşturulurken hata oluştu')
