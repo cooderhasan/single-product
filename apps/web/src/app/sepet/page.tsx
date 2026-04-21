@@ -298,7 +298,7 @@ export default function CartPage() {
 
               {/* Trust badges footer */}
               <div className="mt-8 pt-8 border-t border-slate-800 flex flex-col items-center gap-4">
-                <div className="flex items-center gap-4 opacity-50 grayscale hover:grayscale-0 transition-all duration-500 cursor-pointer">
+                <div className="flex items-center gap-5 opacity-50 grayscale hover:grayscale-0 transition-all duration-500 cursor-pointer">
                   <img src="/images/payment/iyzico.svg" alt="iyzico" className="h-4 invert" />
                   <div className="w-[1px] h-3 bg-slate-700" />
                   <img src="/images/payment/mastercard.svg" alt="Mastercard" className="h-4" />

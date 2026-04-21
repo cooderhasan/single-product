@@ -435,7 +435,7 @@ export default function ProductPage() {
                     <span className="text-xs font-medium">Güvenli Ödeme</span>
                   </div>
                 </div>
-                <div className="flex items-center justify-center gap-2 mt-3">
+                <div className="flex items-center justify-center gap-4 mt-3">
                   <img src="/images/payment/iyzico.svg" alt="iyzico" className="h-5 opacity-60 grayscale hover:grayscale-0 transition-all" />
                   <img src="/images/payment/mastercard.svg" alt="Mastercard" className="h-5 opacity-60 grayscale hover:grayscale-0 transition-all" />
                   <img src="/images/payment/visa.svg" alt="Visa" className="h-5 opacity-60 grayscale hover:grayscale-0 transition-all" />

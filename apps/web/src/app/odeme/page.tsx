@@ -513,7 +513,7 @@ export default function CheckoutPage() {
             </AnimatePresence>
 
             {/* Bottom trust section */}
-            <div className="mt-12 flex flex-wrap items-center justify-center gap-8 opacity-40 grayscale hover:opacity-100 hover:grayscale-0 transition-all duration-700">
+            <div className="mt-12 flex flex-wrap items-center justify-center gap-6 opacity-40 grayscale hover:opacity-100 hover:grayscale-0 transition-all duration-700">
                <img src="/images/payment/iyzico.svg" alt="iyzico" className="h-4" />
                <img src="/images/payment/mastercard.svg" alt="Mastercard" className="h-5" />
                <img src="/images/payment/visa.svg" alt="Visa" className="h-4" />
