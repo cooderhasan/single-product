@@ -55,15 +55,29 @@ export class BannersService {
   }
 
   async create(data: Prisma.BannerCreateInput) {
+    const createData: any = { ...data };
+    if (data.startDate) {
+      createData.startDate = new Date(data.startDate as any);
+    }
+    if (data.endDate) {
+      createData.endDate = new Date(data.endDate as any);
+    }
     return prisma.banner.create({
-      data,
+      data: createData,
     });
   }
 
   async update(id: string, data: Prisma.BannerUpdateInput) {
+    const updateData: any = { ...data };
+    if (data.startDate) {
+      updateData.startDate = new Date(data.startDate as any);
+    }
+    if (data.endDate) {
+      updateData.endDate = new Date(data.endDate as any);
+    }
     return prisma.banner.update({
       where: { id },
-      data,
+      data: updateData,
     });
   }
 

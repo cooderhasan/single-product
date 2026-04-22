@@ -46,6 +46,8 @@ export class BannersController {
     return this.bannersService.create({
       ...dto,
       position: dto.position as BannerPosition,
+      startDate: dto.startDate ? new Date(dto.startDate) : undefined,
+      endDate: dto.endDate ? new Date(dto.endDate) : undefined,
     });
   }
 
@@ -54,7 +56,11 @@ export class BannersController {
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Banner güncelle (Admin)' })
   async update(@Param('id') id: string, @Body() dto: UpdateBannerDto) {
-    return this.bannersService.update(id, dto);
+    return this.bannersService.update(id, {
+      ...dto,
+      startDate: dto.startDate ? new Date(dto.startDate) : undefined,
+      endDate: dto.endDate ? new Date(dto.endDate) : undefined,
+    });
   }
 
   @Delete(':id')
