@@ -763,36 +763,25 @@ export default function ProductPage() {
             initial={{ y: 100 }}
             animate={{ y: 0 }}
             exit={{ y: 100 }}
-            className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200 p-3 shadow-[0_-10px_20px_-10px_rgba(0,0,0,0.1)] pb-safe"
+            className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200 py-2 px-4 shadow-[0_-2px_10px_rgba(0,0,0,0.08)] pb-safe"
           >
             <div className="container mx-auto px-4">
-              <div className="flex items-center gap-3">
-                {/* Ürün Görseli */}
-                <div className="w-12 h-12 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0 border border-gray-200">
-                  {productImages.length > 0 ? (
-                    <img
-                      src={productImages[0]}
-                      alt="Ürün"
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <Package className="w-6 h-6 m-3 text-gray-400" />
-                  )}
-                </div>
-
-                {/* Ürün Adı ve Fiyat */}
+              <div className="flex items-center justify-between gap-4">
+                {/* Sol: Ürün Adı */}
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs text-gray-500 font-medium truncate">Universal Motosiklet Kaldırma Sehpası</p>
-                  <p className="text-base font-bold text-primary-600">{currentPrice.toLocaleString('tr-TR')} TL</p>
+                  <p className="text-sm text-gray-700 truncate">Universal Motosiklet Kaldırma Sehpası 360° Döner - Kilitli</p>
                 </div>
 
-                {/* Sepete Ekle Butonu */}
+                {/* Orta: Fiyat */}
+                <p className="text-lg font-bold text-gray-900 whitespace-nowrap">{currentPrice.toLocaleString('tr-TR')} TL</p>
+
+                {/* Sağ: Sepete Ekle Butonu */}
                 <button
                   onClick={handleAddToCart}
-                  className="bg-primary-600 hover:bg-primary-700 text-white font-bold px-5 py-2.5 rounded-xl flex items-center gap-2 shadow-lg shadow-primary-600/30 active:scale-95 transition-all whitespace-nowrap"
+                  className="bg-[#00b4d8] hover:bg-[#0096c7] text-white font-semibold text-sm px-5 py-2 rounded flex items-center gap-2 active:scale-95 transition-all whitespace-nowrap"
                 >
                   <ShoppingCart className="w-4 h-4" />
-                  <span className="hidden sm:inline">SEPETE EKLE</span>
+                  <span className="hidden sm:inline">Sepete Ekle</span>
                   <span className="sm:hidden">Ekle</span>
                 </button>
               </div>
