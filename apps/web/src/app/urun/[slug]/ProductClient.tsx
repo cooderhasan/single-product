@@ -31,15 +31,13 @@ export default function ProductClient({ product }: ProductClientProps) {
   const { addItem, isLoading } = useCartStore();
 
   useEffect(() => {
-    // Scroll pozisyonunu izle - basit ve güvenilir yaklaşım
     const handleScroll = () => {
       const scrollY = window.scrollY || window.pageYOffset;
-      // 400px'den fazla scroll yapıldığında sticky barı göster
-      setShowStickyBar(scrollY > 400);
+      setShowStickyBar(scrollY > 300);
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll(); // İlk kontrol
+    handleScroll();
     
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -80,10 +78,9 @@ export default function ProductClient({ product }: ProductClientProps) {
     <div className="min-h-screen bg-gray-50">
       {/* Sticky Add to Cart Bar */}
       <div
-        className={`fixed bottom-0 left-0 right-0 z-[100] bg-white border-t border-gray-200 shadow-[0_-4px_20px_rgba(0,0,0,0.15)] transition-all duration-300 ${
-          showStickyBar ? 'opacity-100 visible' : 'opacity-0 invisible'
+        className={`fixed bottom-0 left-0 right-0 z-[100] bg-white border-t border-gray-200 shadow-lg transition-transform duration-300 ${
+          showStickyBar ? 'translate-y-0' : 'translate-y-full pointer-events-none'
         }`}
-        style={{ transform: showStickyBar ? 'translateY(0)' : 'translateY(100%)' }}
       >
         <div className="container mx-auto px-4 py-3">
           <div className="flex items-center justify-between gap-4">
