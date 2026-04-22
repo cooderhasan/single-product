@@ -31,19 +31,35 @@ export default function ProductClient({ product }: ProductClientProps) {
   const { addItem, isLoading } = useCartStore();
 
   useEffect(() => {
-    const addToCartSection = document.getElementById('add-to-cart-section');
-    if (!addToCartSection) return;
+    // DOM'un tamamen yüklenmesini bekle
+    const initObserver = () => {
+      const addToCartSection = document.getElementById('add-to-cart-section');
+      if (!addToCartSection) {
+        // Element henüz yüklenmediyse tekrar dene
+        setTimeout(initObserver, 100);
+        return;
+      }
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        // Buton viewport'tan çıktığında sticky barı göster
-        setShowStickyBar(!entry.isIntersecting);
-      },
-      { threshold: 0 }
-    );
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          // Buton viewport'tan tamamen çıktığında sticky barı göster
+          setShowStickyBar(!entry.isIntersecting);
+        },
+        { 
+          threshold: 0,
+          rootMargin: '0px 0px -50px 0px' // 50px geçtikten sonra tetikle
+        }
+      );
 
-    observer.observe(addToCartSection);
-    return () => observer.disconnect();
+      observer.observe(addToCartSection);
+      
+      // Cleanup
+      return () => observer.disconnect();
+    };
+
+    // Biraz gecikme ile başlat (Next.js hydration sonrası)
+    const timer = setTimeout(initObserver, 500);
+    return () => clearTimeout(timer);
   }, []);
   
   // Görsel URL'sini al (page.tsx'ten zaten tam URL geliyor)
@@ -82,9 +98,10 @@ export default function ProductClient({ product }: ProductClientProps) {
     <div className="min-h-screen bg-gray-50">
       {/* Sticky Add to Cart Bar */}
       <div
-        className={`fixed bottom-0 left-0 right-0 z-50 bg-white border-t shadow-[0_-4px_20px_rgba(0,0,0,0.1)] transition-transform duration-300 ${
-          showStickyBar ? 'translate-y-0' : 'translate-y-full'
+        className={`fixed bottom-0 left-0 right-0 z-[100] bg-white border-t border-gray-200 shadow-[0_-4px_20px_rgba(0,0,0,0.15)] transition-all duration-300 ${
+          showStickyBar ? 'opacity-100 visible' : 'opacity-0 invisible'
         }`}
+        style={{ transform: showStickyBar ? 'translateY(0)' : 'translateY(100%)' }}
       >
         <div className="container mx-auto px-4 py-3">
           <div className="flex items-center justify-between gap-4">
