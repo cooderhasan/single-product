@@ -168,9 +168,9 @@ export default function ProductPage() {
 
   // CRO Effects
   useEffect(() => {
-    // Scroll listener for Sticky Cart on Mobile
+    // Scroll listener for Sticky Cart
     const handleScroll = () => {
-      if (window.scrollY > 600 && window.innerWidth < 768) {
+      if (window.scrollY > 400) {
         setShowStickyCart(true);
       } else {
         setShowStickyCart(false);
@@ -757,13 +757,13 @@ export default function ProductPage() {
           </motion.div>
         )}
 
-        {/* Mobile Sticky CTA */}
+        {/* Sticky CTA */}
         {showStickyCart && (
           <motion.div
             initial={{ y: 100 }}
             animate={{ y: 0 }}
             exit={{ y: 100 }}
-            className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200 p-4 shadow-[0_-10px_20px_-10px_rgba(0,0,0,0.1)]"
+            className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200 p-4 shadow-[0_-10px_20px_-10px_rgba(0,0,0,0.1)] pb-safe"
           >
             <div className="flex items-center justify-between gap-4">
               <div>
