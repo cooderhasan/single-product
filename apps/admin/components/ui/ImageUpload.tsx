@@ -43,6 +43,12 @@ export function ImageUpload({ images, onChange, maxImages = 10 }: ImageUploadPro
     setUploading(true)
     const token = localStorage.getItem('admin_token')
 
+    if (!token) {
+      toast.error('Oturum süreniz dolmuş. Lütfen tekrar giriş yapın.')
+      setUploading(false)
+      return
+    }
+
     try {
       const formData = new FormData()
       Array.from(files).forEach(file => {
@@ -56,6 +62,12 @@ export function ImageUpload({ images, onChange, maxImages = 10 }: ImageUploadPro
         },
         body: formData,
       })
+
+      if (response.status === 401) {
+        toast.error('Oturum süreniz dolmuş. Lütfen tekrar giriş yapın.')
+        localStorage.removeItem('admin_token')
+        return
+      }
 
       if (!response.ok) {
         throw new Error('Yükleme başarısız')
