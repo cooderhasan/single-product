@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
+import { getImageUrl } from '@/lib/utils';
 
 interface Banner {
   id: string;
@@ -78,11 +79,12 @@ export function HeroBanner({ banners }: HeroBannerProps) {
           className="absolute inset-0"
         >
           <Image
-            src={banners[currentIndex].image}
+            src={getImageUrl(banners[currentIndex].image)}
             alt={banners[currentIndex].title}
             fill
             className="object-cover"
             priority={currentIndex === 0}
+            unoptimized
           />
           <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent" />
         </motion.div>

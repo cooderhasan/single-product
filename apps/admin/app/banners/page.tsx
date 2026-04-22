@@ -150,9 +150,12 @@ export default function BannersPage() {
                   <td className="px-6 py-4">
                     {banner.image ? (
                       <img
-                        src={banner.image}
+                        src={banner.image.startsWith('http') ? banner.image : `${process.env.NEXT_PUBLIC_API_URL || ''}${banner.image}`}
                         alt={banner.title}
                         className="h-16 w-24 rounded-lg object-cover"
+                        onError={(e) => {
+                          e.currentTarget.src = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiB2aWV3Qm94PSIwIDAgMTAwIDEwMCI+PHJlY3QgZmlsbD0iI2YzZjRmNiIgd2lkdGg9IjEwMCIgaGVpZ2h0PSIxMDAiLz48dGV4dCB4PSI1MCIgeT0iNTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIiBmaWxsPSIjOWNhM2FmIj5H8OZyc2VsPC90ZXh0Pjwvc3ZnPg=='
+                        }}
                       />
                     ) : (
                       <div className="h-16 w-24 rounded-lg bg-gray-200 flex items-center justify-center">
