@@ -27,17 +27,24 @@ export default function ProductClient({ product }: ProductClientProps) {
   const router = useRouter();
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
-  const [showStickyBar, setShowStickyBar] = useState(true);
+  const [showStickyBar, setShowStickyBar] = useState(false);
   const { addItem, isLoading } = useCartStore();
 
   useEffect(() => {
     const handleScroll = () => {
-      const scrollY = window.scrollY || window.pageYOffset;
-      setShowStickyBar(scrollY > 300);
+      const addToCartSection = document.getElementById('add-to-cart-section');
+      if (addToCartSection) {
+        const rect = addToCartSection.getBoundingClientRect();
+        // Show sticky bar when the add-to-cart button is out of view (above the viewport)
+        setShowStickyBar(rect.bottom < 0);
+      } else {
+        const scrollY = window.scrollY || window.pageYOffset;
+        setShowStickyBar(scrollY > 400);
+      }
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll();
+    setTimeout(handleScroll, 100);
     
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -78,9 +85,10 @@ export default function ProductClient({ product }: ProductClientProps) {
     <div className="min-h-screen bg-gray-50">
       {/* Sticky Add to Cart Bar */}
       <div
-        className={`fixed bottom-0 left-0 right-0 z-[100] bg-white border-t border-gray-200 shadow-lg transition-transform duration-300 ${
-          showStickyBar ? 'translate-y-0' : 'translate-y-full pointer-events-none'
+        className={`fixed bottom-0 left-0 right-0 z-[100] bg-white border-t border-gray-200 shadow-[0_-5px_15px_-5px_rgba(0,0,0,0.1)] transition-all duration-300 ease-in-out ${
+          showStickyBar ? 'translate-y-0 opacity-100' : 'translate-y-[150%] opacity-0 pointer-events-none'
         }`}
+        style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
       >
         <div className="container mx-auto px-4 py-3">
           <div className="flex items-center justify-between gap-4">
