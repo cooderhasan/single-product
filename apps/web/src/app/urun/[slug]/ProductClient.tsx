@@ -31,35 +31,17 @@ export default function ProductClient({ product }: ProductClientProps) {
   const { addItem, isLoading } = useCartStore();
 
   useEffect(() => {
-    // DOM'un tamamen yüklenmesini bekle
-    const initObserver = () => {
-      const addToCartSection = document.getElementById('add-to-cart-section');
-      if (!addToCartSection) {
-        // Element henüz yüklenmediyse tekrar dene
-        setTimeout(initObserver, 100);
-        return;
-      }
-
-      const observer = new IntersectionObserver(
-        ([entry]) => {
-          // Buton viewport'tan tamamen çıktığında sticky barı göster
-          setShowStickyBar(!entry.isIntersecting);
-        },
-        { 
-          threshold: 0,
-          rootMargin: '0px 0px -50px 0px' // 50px geçtikten sonra tetikle
-        }
-      );
-
-      observer.observe(addToCartSection);
-      
-      // Cleanup
-      return () => observer.disconnect();
+    // Scroll pozisyonunu izle - basit ve güvenilir yaklaşım
+    const handleScroll = () => {
+      const scrollY = window.scrollY || window.pageYOffset;
+      // 400px'den fazla scroll yapıldığında sticky barı göster
+      setShowStickyBar(scrollY > 400);
     };
 
-    // Biraz gecikme ile başlat (Next.js hydration sonrası)
-    const timer = setTimeout(initObserver, 500);
-    return () => clearTimeout(timer);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll(); // İlk kontrol
+    
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
   
   // Görsel URL'sini al (page.tsx'ten zaten tam URL geliyor)
