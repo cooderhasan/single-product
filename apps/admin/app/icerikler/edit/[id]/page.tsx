@@ -6,7 +6,8 @@ import { useState, useEffect } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import Link from 'next/link'
 import toast from 'react-hot-toast'
-import { ArrowLeftIcon, PlusIcon, XMarkIcon } from '@heroicons/react/24/outline'
+import { ArrowLeftIcon, PlusIcon, XMarkIcon, StarIcon } from '@heroicons/react/24/outline'
+import { StarIcon as StarIconSolid } from '@heroicons/react/24/solid'
 import { SingleImageUpload } from '@/components/ui/SingleImageUpload'
 
 export default function EditContentPage() {
@@ -23,6 +24,11 @@ export default function EditContentPage() {
     email: '',
     address: '',
     workingHours: ''
+  })
+  const [reviews, setReviews] = useState<any[]>([])
+  const [testimonialStats, setTestimonialStats] = useState<any>({
+    totalReviews: 0,
+    satisfaction: 0
   })
   const [newFeature, setNewFeature] = useState('')
   const [formData, setFormData] = useState({
@@ -71,6 +77,11 @@ export default function EditContentPage() {
             address: '',
             workingHours: ''
           })
+          setReviews(content.data?.reviews || [])
+          setTestimonialStats(content.data?.stats || {
+            totalReviews: 127,
+            satisfaction: 98
+          })
         }
       }
     } catch (error) {
@@ -109,7 +120,9 @@ export default function EditContentPage() {
             ? { bankAccounts } 
             : formData.key === 'contact_info'
               ? { contactInfo }
-              : { features },
+              : formData.key === 'product_360sehpa_testimonials'
+                ? { reviews, stats: testimonialStats }
+                : { features },
         }),
       })
 
@@ -429,6 +442,143 @@ export default function EditContentPage() {
                       placeholder="Pzt - Cum: 09:00 - 18:00"
                     />
                   </div>
+                </div>
+              </div>
+            )}
+
+            {/* Ürün Yorumları - Sadece product_360sehpa_testimonials olduğunda göster */}
+            {formData.key === 'product_360sehpa_testimonials' && (
+              <div className="col-span-2 space-y-6 pt-4 border-t">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Ürün Yorumları (Kullanıcılar Ne Diyor)</h3>
+                
+                {/* İstatistikler */}
+                <div className="grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded-xl">
+                  <div>
+                    <label className="block text-xs font-bold text-gray-500 mb-1">Toplam Değerlendirme Sayısı</label>
+                    <input
+                      type="number"
+                      value={testimonialStats.totalReviews}
+                      onChange={(e) => setTestimonialStats({ ...testimonialStats, totalReviews: parseInt(e.target.value) || 0 })}
+                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white"
+                      placeholder="127"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-gray-500 mb-1">Memnuniyet Oranı (%)</label>
+                    <input
+                      type="number"
+                      min={0}
+                      max={100}
+                      value={testimonialStats.satisfaction}
+                      onChange={(e) => setTestimonialStats({ ...testimonialStats, satisfaction: parseInt(e.target.value) || 0 })}
+                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white"
+                      placeholder="98"
+                    />
+                  </div>
+                </div>
+
+                {/* Yorum Listesi */}
+                <div className="space-y-4">
+                  {reviews.map((review, index) => (
+                    <div key={index} className="p-4 border border-gray-200 rounded-xl bg-gray-50 relative group">
+                      <button
+                        type="button"
+                        onClick={() => setReviews(reviews.filter((_, i) => i !== index))}
+                        className="absolute -top-2 -right-2 bg-red-100 text-red-600 rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        <XMarkIcon className="h-4 w-4" />
+                      </button>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-xs font-bold text-gray-500 mb-1">Müşteri Adı</label>
+                          <input
+                            type="text"
+                            value={review.name || ''}
+                            onChange={(e) => {
+                              const newReviews = [...reviews];
+                              newReviews[index].name = e.target.value;
+                              setReviews(newReviews);
+                            }}
+                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white"
+                            placeholder="Ahmet Y."
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-bold text-gray-500 mb-1">Konum</label>
+                          <input
+                            type="text"
+                            value={review.location || ''}
+                            onChange={(e) => {
+                              const newReviews = [...reviews];
+                              newReviews[index].location = e.target.value;
+                              setReviews(newReviews);
+                            }}
+                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white"
+                            placeholder="İstanbul"
+                          />
+                        </div>
+                        <div className="md:col-span-2">
+                          <label className="block text-xs font-bold text-gray-500 mb-1">Yorum Başlığı</label>
+                          <input
+                            type="text"
+                            value={review.title || ''}
+                            onChange={(e) => {
+                              const newReviews = [...reviews];
+                              newReviews[index].title = e.target.value;
+                              setReviews(newReviews);
+                            }}
+                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white"
+                            placeholder="Harika bir ürün!"
+                          />
+                        </div>
+                        <div className="md:col-span-2">
+                          <label className="block text-xs font-bold text-gray-500 mb-1">Yorum İçeriği</label>
+                          <textarea
+                            rows={3}
+                            value={review.content || ''}
+                            onChange={(e) => {
+                              const newReviews = [...reviews];
+                              newReviews[index].content = e.target.value;
+                              setReviews(newReviews);
+                            }}
+                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white"
+                            placeholder="Ürün hakkında detaylı yorum..."
+                          />
+                        </div>
+                        <div className="md:col-span-2">
+                          <label className="block text-xs font-bold text-gray-500 mb-1">Puanlama</label>
+                          <div className="flex gap-2">
+                            {[1, 2, 3, 4, 5].map((star) => (
+                              <button
+                                key={star}
+                                type="button"
+                                onClick={() => {
+                                  const newReviews = [...reviews];
+                                  newReviews[index].rating = star;
+                                  setReviews(newReviews);
+                                }}
+                                className="focus:outline-none"
+                              >
+                                {star <= (review.rating || 0) ? (
+                                  <StarIconSolid className="h-6 w-6 text-yellow-400" />
+                                ) : (
+                                  <StarIcon className="h-6 w-6 text-gray-300" />
+                                )}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={() => setReviews([...reviews, { name: '', location: '', title: '', content: '', rating: 5 }])}
+                    className="w-full py-3 border-2 border-dashed border-gray-300 rounded-xl text-gray-500 hover:text-blue-600 hover:border-blue-300 hover:bg-blue-50 transition-all flex items-center justify-center gap-2"
+                  >
+                    <PlusIcon className="h-5 w-5" />
+                    Yeni Yorum Ekle
+                  </button>
                 </div>
               </div>
             )}

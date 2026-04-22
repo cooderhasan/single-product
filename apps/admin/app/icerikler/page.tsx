@@ -50,6 +50,30 @@ const contentLabels: Record<string, { name: string; description: string }> = {
     name: 'Banka Hesapları',
     description: 'Havale / EFT için banka hesap bilgileri',
   },
+  'product_360sehpa_testimonials': {
+    name: 'Ürün Yorumları - 360 Sehpa',
+    description: 'Ürün detay sayfası "Kullanıcılar Ne Diyor" bölümü',
+  },
+  'product_360sehpa_reasons': {
+    name: '6 Neden - 360 Sehpa',
+    description: 'Ürün detay sayfası "Almanız İçin 6 Neden" bölümü',
+  },
+  'product_360sehpa_comparison': {
+    name: 'Karşılaştırma - 360 Sehpa',
+    description: 'Ürün detay sayfası karşılaştırma tablosu',
+  },
+  'product_360sehpa_faqs': {
+    name: 'SSS - 360 Sehpa',
+    description: 'Ürün detay sayfası sık sorulan sorular',
+  },
+  'product_360sehpa_description': {
+    name: 'Ürün Açıklaması - 360 Sehpa',
+    description: 'Ürün detay sayfası açıklama ve özellikler',
+  },
+  'product_360sehpa_specs': {
+    name: 'Teknik Özellikler - 360 Sehpa',
+    description: 'Ürün detay sayfası teknik özellikler tablosu',
+  },
 }
 
 export default function SiteContentPage() {
