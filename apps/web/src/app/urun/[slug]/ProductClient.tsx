@@ -31,18 +31,19 @@ export default function ProductClient({ product }: ProductClientProps) {
   const { addItem, isLoading } = useCartStore();
 
   useEffect(() => {
-    const handleScroll = () => {
-      // Sepete ekle butonunun orijinal konumunu bul
-      const addToCartSection = document.getElementById('add-to-cart-section');
-      if (addToCartSection) {
-        const rect = addToCartSection.getBoundingClientRect();
-        // Buton ekranın üstünden çıktığında sticky barı göster
-        setShowStickyBar(rect.bottom < 0);
-      }
-    };
+    const addToCartSection = document.getElementById('add-to-cart-section');
+    if (!addToCartSection) return;
 
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        // Buton viewport'tan çıktığında sticky barı göster
+        setShowStickyBar(!entry.isIntersecting);
+      },
+      { threshold: 0 }
+    );
+
+    observer.observe(addToCartSection);
+    return () => observer.disconnect();
   }, []);
   
   // Görsel URL'sini al (page.tsx'ten zaten tam URL geliyor)
