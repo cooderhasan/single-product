@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Star, Truck, Shield, Award, Check, Heart, ShoppingCart, Minus, Plus } from 'lucide-react';
@@ -27,7 +27,23 @@ export default function ProductClient({ product }: ProductClientProps) {
   const router = useRouter();
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
+  const [showStickyBar, setShowStickyBar] = useState(false);
   const { addItem, isLoading } = useCartStore();
+
+  useEffect(() => {
+    const handleScroll = () => {
+      // Sepete ekle butonunun orijinal konumunu bul
+      const addToCartSection = document.getElementById('add-to-cart-section');
+      if (addToCartSection) {
+        const rect = addToCartSection.getBoundingClientRect();
+        // Buton ekranın üstünden çıktığında sticky barı göster
+        setShowStickyBar(rect.bottom < 0);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
   
   // Görsel URL'sini al (page.tsx'ten zaten tam URL geliyor)
   const getImageUrl = (u: any) => {
@@ -63,6 +79,72 @@ export default function ProductClient({ product }: ProductClientProps) {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Sticky Add to Cart Bar */}
+      <div
+        className={`fixed bottom-0 left-0 right-0 z-50 bg-white border-t shadow-[0_-4px_20px_rgba(0,0,0,0.1)] transition-transform duration-300 ${
+          showStickyBar ? 'translate-y-0' : 'translate-y-full'
+        }`}
+      >
+        <div className="container mx-auto px-4 py-3">
+          <div className="flex items-center justify-between gap-4">
+            {/* Ürün Bilgisi */}
+            <div className="flex items-center gap-3 flex-1 min-w-0">
+              {product.images[0]?.url && (
+                <img
+                  src={getImageUrl(product.images[0].url)}
+                  alt={product.name}
+                  className="w-12 h-12 rounded-lg object-cover flex-shrink-0"
+                />
+              )}
+              <div className="min-w-0">
+                <h3 className="text-sm font-medium text-gray-900 truncate">{product.name}</h3>
+                <div className="flex items-center gap-2">
+                  <span className="text-lg font-bold text-primary-600">
+                    {product.price.toLocaleString('tr-TR')} ₺
+                  </span>
+                  {product.comparePrice && (
+                    <span className="text-sm text-gray-400 line-through">
+                      {product.comparePrice.toLocaleString('tr-TR')} ₺
+                    </span>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Adet + Butonlar */}
+            <div className="flex items-center gap-3">
+              {/* Adet Seçici */}
+              <div className="flex items-center border rounded-lg">
+                <button
+                  className="px-3 py-2 hover:bg-gray-50 disabled:opacity-50"
+                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                  disabled={quantity <= 1}
+                >
+                  <Minus className="w-4 h-4" />
+                </button>
+                <span className="px-4 py-2 border-x min-w-[3rem] text-center font-medium text-sm">{quantity}</span>
+                <button
+                  className="px-3 py-2 hover:bg-gray-50"
+                  onClick={() => setQuantity(quantity + 1)}
+                >
+                  <Plus className="w-4 h-4" />
+                </button>
+              </div>
+
+              {/* Sepete Ekle */}
+              <button
+                className="bg-primary-600 hover:bg-primary-700 text-white font-medium py-2.5 px-5 rounded-lg transition-colors flex items-center gap-2 disabled:opacity-50 whitespace-nowrap"
+                onClick={handleAddToCart}
+                disabled={isLoading}
+              >
+                <ShoppingCart className="w-5 h-5" />
+                {isLoading ? 'Ekleniyor...' : 'Sepete Ekle'}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Breadcrumb */}
       <div className="bg-white border-b">
         <div className="container mx-auto px-4 py-4">
@@ -206,7 +288,7 @@ export default function ProductClient({ product }: ProductClientProps) {
             </div>
 
             {/* Add to Cart Buttons */}
-            <div className="flex gap-4">
+            <div id="add-to-cart-section" className="flex gap-4">
               <button 
                 className="flex-1 bg-primary-600 hover:bg-primary-700 text-white font-medium py-3 px-6 rounded-lg transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
                 onClick={handleAddToCart}
