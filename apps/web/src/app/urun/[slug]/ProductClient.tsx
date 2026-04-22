@@ -27,7 +27,7 @@ export default function ProductClient({ product }: ProductClientProps) {
   const router = useRouter();
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
-  const [showStickyBar, setShowStickyBar] = useState(false);
+  const [showStickyBar, setShowStickyBar] = useState(true);
   const { addItem, isLoading } = useCartStore();
 
   useEffect(() => {
