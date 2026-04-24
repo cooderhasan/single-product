@@ -485,6 +485,164 @@ export default function NewContentPage() {
                 </button>
               </div>
             )}
+
+            {/* SSS */}
+            {formData.key === 'product_360sehpa_faqs' && (
+              <div className="col-span-2 space-y-4 pt-4 border-t">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Sık Sorulan Sorular</h3>
+                {faqs.map((faq, index) => (
+                  <div key={index} className="p-4 border border-gray-200 rounded-xl bg-gray-50 relative group">
+                    <button
+                      type="button"
+                      onClick={() => setFaqs(faqs.filter((_, i) => i !== index))}
+                      className="absolute -top-2 -right-2 bg-red-100 text-red-600 rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <XMarkIcon className="h-4 w-4" />
+                    </button>
+                    <div className="space-y-4">
+                      <input
+                        type="text"
+                        value={faq.question || ''}
+                        onChange={(e) => {
+                          const newFaqs = [...faqs];
+                          newFaqs[index].question = e.target.value;
+                          setFaqs(newFaqs);
+                        }}
+                        className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg"
+                        placeholder="Soru"
+                      />
+                      <textarea
+                        value={faq.answer || ''}
+                        onChange={(e) => {
+                          const newFaqs = [...faqs];
+                          newFaqs[index].answer = e.target.value;
+                          setFaqs(newFaqs);
+                        }}
+                        className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg"
+                        placeholder="Yanıt"
+                        rows={2}
+                      />
+                    </div>
+                  </div>
+                ))}
+                <button
+                  type="button"
+                  onClick={() => setFaqs([...faqs, { question: '', answer: '' }])}
+                  className="w-full py-2 border-2 border-dashed border-gray-300 rounded-lg text-gray-500 hover:text-blue-600 hover:border-blue-300 flex items-center justify-center gap-2"
+                >
+                  <PlusIcon className="h-5 w-5" /> Yeni Soru Ekle
+                </button>
+              </div>
+            )}
+
+            {/* Teknik Özellikler */}
+            {formData.key === 'product_360sehpa_specs' && (
+              <div className="col-span-2 space-y-4 pt-4 border-t">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Teknik Özellikler</h3>
+                {specs.map((spec, index) => (
+                  <div key={index} className="p-4 border border-gray-200 rounded-xl bg-gray-50 relative group">
+                    <button
+                      type="button"
+                      onClick={() => setSpecs(specs.filter((_, i) => i !== index))}
+                      className="absolute -top-2 -right-2 bg-red-100 text-red-600 rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <XMarkIcon className="h-4 w-4" />
+                    </button>
+                    <div className="grid grid-cols-2 gap-4">
+                      <input
+                        type="text"
+                        value={spec.label || ''}
+                        onChange={(e) => {
+                          const newSpecs = [...specs];
+                          newSpecs[index].label = e.target.value;
+                          setSpecs(newSpecs);
+                        }}
+                        className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg"
+                        placeholder="Etiket (Örn: Malzeme)"
+                      />
+                      <input
+                        type="text"
+                        value={spec.value || ''}
+                        onChange={(e) => {
+                          const newSpecs = [...specs];
+                          newSpecs[index].value = e.target.value;
+                          setSpecs(newSpecs);
+                        }}
+                        className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg"
+                        placeholder="Değer (Örn: Çelik)"
+                      />
+                    </div>
+                  </div>
+                ))}
+                <button
+                  type="button"
+                  onClick={() => setSpecs([...specs, { label: '', value: '' }])}
+                  className="w-full py-2 border-2 border-dashed border-gray-300 rounded-lg text-gray-500 hover:text-blue-600 hover:border-blue-300 flex items-center justify-center gap-2"
+                >
+                  <PlusIcon className="h-5 w-5" /> Yeni Özellik Ekle
+                </button>
+              </div>
+            )}
+
+            {/* Ana Sayfa Özellikler */}
+            {formData.key === 'features_section' && (
+              <div className="col-span-2 space-y-4 pt-4 border-t">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Ana Sayfa Özellikler</h3>
+                {homeFeatures.map((item, index) => (
+                  <div key={index} className="p-4 border border-gray-200 rounded-xl bg-gray-50 relative group">
+                    <button
+                      type="button"
+                      onClick={() => setHomeFeatures(homeFeatures.filter((_, i) => i !== index))}
+                      className="absolute -top-2 -right-2 bg-red-100 text-red-600 rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <XMarkIcon className="h-4 w-4" />
+                    </button>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <input
+                        type="text"
+                        value={item.icon || ''}
+                        onChange={(e) => {
+                          const newItems = [...homeFeatures];
+                          newItems[index].icon = e.target.value;
+                          setHomeFeatures(newItems);
+                        }}
+                        className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg md:col-span-2"
+                        placeholder="İkon (Emoji veya Lucide adı)"
+                      />
+                      <input
+                        type="text"
+                        value={item.title || ''}
+                        onChange={(e) => {
+                          const newItems = [...homeFeatures];
+                          newItems[index].title = e.target.value;
+                          setHomeFeatures(newItems);
+                        }}
+                        className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg"
+                        placeholder="Başlık"
+                      />
+                      <input
+                        type="text"
+                        value={item.description || ''}
+                        onChange={(e) => {
+                          const newItems = [...homeFeatures];
+                          newItems[index].description = e.target.value;
+                          setHomeFeatures(newItems);
+                        }}
+                        className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg"
+                        placeholder="Açıklama"
+                      />
+                    </div>
+                  </div>
+                ))}
+                <button
+                  type="button"
+                  onClick={() => setHomeFeatures([...homeFeatures, { icon: '', title: '', description: '' }])}
+                  className="w-full py-2 border-2 border-dashed border-gray-300 rounded-lg text-gray-500 hover:text-blue-600 hover:border-blue-300 flex items-center justify-center gap-2"
+                >
+                  <PlusIcon className="h-5 w-5" /> Yeni Özellik Ekle
+                </button>
+              </div>
+            )}
           </div>
 
           <div className="flex justify-end space-x-4 pt-6 border-t">
