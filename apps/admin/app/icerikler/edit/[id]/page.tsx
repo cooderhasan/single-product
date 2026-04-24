@@ -302,7 +302,13 @@ export default function EditContentPage() {
               'product_360sehpa_faqs', 
               'product_360sehpa_faq',
               'product_360sehpa_specs',
-              'features_section'
+              'features_section',
+              'policy_privacy',
+              'policy_sales_contract',
+              'policy_refund',
+              'policy_money_back',
+              'policy_terms',
+              'policy_shipping'
             ].includes(formData.key) && (
               <div className="col-span-2">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
