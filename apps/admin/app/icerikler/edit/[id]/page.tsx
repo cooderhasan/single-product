@@ -34,6 +34,7 @@ export default function EditContentPage() {
   const [comparisonRows, setComparisonRows] = useState<any[]>([])
   const [faqs, setFaqs] = useState<any[]>([])
   const [specs, setSpecs] = useState<any[]>([])
+  const [homeFeatures, setHomeFeatures] = useState<any[]>([])
   const [newFeature, setNewFeature] = useState('')
   const [formData, setFormData] = useState({
     key: '',
@@ -90,6 +91,7 @@ export default function EditContentPage() {
           setComparisonRows(content.data?.rows || [])
           setFaqs(content.data?.faqs || [])
           setSpecs(content.data?.specs || [])
+          setHomeFeatures(content.data?.features || [])
         }
       }
     } catch (error) {
@@ -138,7 +140,9 @@ export default function EditContentPage() {
                       ? { faqs }
                       : formData.key === 'product_360sehpa_specs'
                         ? { specs }
-                        : { features },
+                        : formData.key === 'features_section'
+                          ? { features: homeFeatures }
+                          : { features },
         }),
       })
 
@@ -274,8 +278,17 @@ export default function EditContentPage() {
               </label>
             </div>
 
-            {/* Özellikler - Sadece bank_accounts veya contact_info DEĞİLSE göster */}
-            {formData.key !== 'bank_accounts' && formData.key !== 'contact_info' && (
+            {/* Özellikler - Sadece basit liste bekleyen anahtarlar için göster */}
+            {![
+              'bank_accounts', 
+              'contact_info', 
+              'product_360sehpa_testimonials', 
+              'product_360sehpa_reasons', 
+              'product_360sehpa_comparison', 
+              'product_360sehpa_faqs', 
+              'product_360sehpa_specs',
+              'features_section'
+            ].includes(formData.key) && (
               <div className="col-span-2">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Özellikler
@@ -841,6 +854,75 @@ export default function EditContentPage() {
                   <button
                     type="button"
                     onClick={() => setSpecs([...specs, { label: '', value: '' }])}
+                    className="w-full py-3 border-2 border-dashed border-gray-300 rounded-xl text-gray-500 hover:text-blue-600 hover:border-blue-300 hover:bg-blue-50 transition-all flex items-center justify-center gap-2"
+                  >
+                    <PlusIcon className="h-5 w-5" />
+                    Yeni Özellik Ekle
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Ana Sayfa Özellikler - Sadece features_section olduğunda göster */}
+            {formData.key === 'features_section' && (
+              <div className="col-span-2 space-y-6 pt-4 border-t">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Ana Sayfa Özellikler</h3>
+                <div className="space-y-4">
+                  {homeFeatures.map((item, index) => (
+                    <div key={index} className="p-4 border border-gray-200 rounded-xl bg-gray-50 relative group">
+                      <button
+                        type="button"
+                        onClick={() => setHomeFeatures(homeFeatures.filter((_, i) => i !== index))}
+                        className="absolute -top-2 -right-2 bg-red-100 text-red-600 rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        <XMarkIcon className="h-4 w-4" />
+                      </button>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="md:col-span-2">
+                          <label className="block text-xs font-bold text-gray-500 mb-1">İkon (Emoji veya Lucide adı)</label>
+                          <input
+                            type="text"
+                            value={item.icon || ''}
+                            onChange={(e) => {
+                              const newItems = [...homeFeatures];
+                              newItems[index].icon = e.target.value;
+                              setHomeFeatures(newItems);
+                            }}
+                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-bold text-gray-500 mb-1">Başlık</label>
+                          <input
+                            type="text"
+                            value={item.title || ''}
+                            onChange={(e) => {
+                              const newItems = [...homeFeatures];
+                              newItems[index].title = e.target.value;
+                              setHomeFeatures(newItems);
+                            }}
+                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-bold text-gray-500 mb-1">Açıklama</label>
+                          <input
+                            type="text"
+                            value={item.description || ''}
+                            onChange={(e) => {
+                              const newItems = [...homeFeatures];
+                              newItems[index].description = e.target.value;
+                              setHomeFeatures(newItems);
+                            }}
+                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={() => setHomeFeatures([...homeFeatures, { icon: '', title: '', description: '' }])}
                     className="w-full py-3 border-2 border-dashed border-gray-300 rounded-xl text-gray-500 hover:text-blue-600 hover:border-blue-300 hover:bg-blue-50 transition-all flex items-center justify-center gap-2"
                   >
                     <PlusIcon className="h-5 w-5" />
