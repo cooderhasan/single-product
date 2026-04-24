@@ -200,7 +200,7 @@ export function Footer() {
             <p className="text-sm text-gray-500">
               {currentYear} 360 Sehpa. Tüm hakları saklıdır.
             </p>
-            <div className="flex gap-6 text-sm text-gray-500">
+            <div className="flex flex-wrap justify-center md:justify-end gap-x-6 gap-y-2 text-sm text-gray-500">
               <Link href="/gizlilik-politikasi" className="hover:text-gray-300 transition-colors">
                 Gizlilik Politikası
               </Link>
@@ -209,6 +209,15 @@ export function Footer() {
               </Link>
               <Link href="/iade-kosullari" className="hover:text-gray-300 transition-colors">
                 İade Koşulları
+              </Link>
+              <Link href="/para-iade-politikasi" className="hover:text-gray-300 transition-colors">
+                Para İade Politikası
+              </Link>
+              <Link href="/hizmet-sartlari" className="hover:text-gray-300 transition-colors">
+                Hizmet Şartları
+              </Link>
+              <Link href="/kargo-politikasi" className="hover:text-gray-300 transition-colors">
+                Kargo Politikası
               </Link>
             </div>
           </div>
