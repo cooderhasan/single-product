@@ -30,6 +30,10 @@ export default function EditContentPage() {
     totalReviews: 0,
     satisfaction: 0
   })
+  const [reasons, setReasons] = useState<any[]>([])
+  const [comparisonRows, setComparisonRows] = useState<any[]>([])
+  const [faqs, setFaqs] = useState<any[]>([])
+  const [specs, setSpecs] = useState<any[]>([])
   const [newFeature, setNewFeature] = useState('')
   const [formData, setFormData] = useState({
     key: '',
@@ -82,6 +86,10 @@ export default function EditContentPage() {
             totalReviews: 127,
             satisfaction: 98
           })
+          setReasons(content.data?.items || [])
+          setComparisonRows(content.data?.rows || [])
+          setFaqs(content.data?.faqs || [])
+          setSpecs(content.data?.specs || [])
         }
       }
     } catch (error) {
@@ -122,7 +130,15 @@ export default function EditContentPage() {
               ? { contactInfo }
               : formData.key === 'product_360sehpa_testimonials'
                 ? { reviews, stats: testimonialStats }
-                : { features },
+                : formData.key === 'product_360sehpa_reasons'
+                  ? { items: reasons }
+                  : formData.key === 'product_360sehpa_comparison'
+                    ? { rows: comparisonRows }
+                    : formData.key === 'product_360sehpa_faqs'
+                      ? { faqs }
+                      : formData.key === 'product_360sehpa_specs'
+                        ? { specs }
+                        : { features },
         }),
       })
 
@@ -578,6 +594,257 @@ export default function EditContentPage() {
                   >
                     <PlusIcon className="h-5 w-5" />
                     Yeni Yorum Ekle
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* 6 Neden - Sadece product_360sehpa_reasons olduğunda göster */}
+            {formData.key === 'product_360sehpa_reasons' && (
+              <div className="col-span-2 space-y-6 pt-4 border-t">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">6 Neden (Maddeler)</h3>
+                <div className="space-y-4">
+                  {reasons.map((item, index) => (
+                    <div key={index} className="p-4 border border-gray-200 rounded-xl bg-gray-50 relative group">
+                      <button
+                        type="button"
+                        onClick={() => setReasons(reasons.filter((_, i) => i !== index))}
+                        className="absolute -top-2 -right-2 bg-red-100 text-red-600 rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        <XMarkIcon className="h-4 w-4" />
+                      </button>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="md:col-span-2">
+                          <label className="block text-xs font-bold text-gray-500 mb-1">İkon (Emoji veya Metin)</label>
+                          <input
+                            type="text"
+                            value={item.icon || ''}
+                            onChange={(e) => {
+                              const newReasons = [...reasons];
+                              newReasons[index].icon = e.target.value;
+                              setReasons(newReasons);
+                            }}
+                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white"
+                            placeholder="🚀"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-bold text-gray-500 mb-1">Başlık</label>
+                          <input
+                            type="text"
+                            value={item.title || ''}
+                            onChange={(e) => {
+                              const newReasons = [...reasons];
+                              newReasons[index].title = e.target.value;
+                              setReasons(newReasons);
+                            }}
+                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-bold text-gray-500 mb-1">Açıklama</label>
+                          <input
+                            type="text"
+                            value={item.desc || ''}
+                            onChange={(e) => {
+                              const newReasons = [...reasons];
+                              newReasons[index].desc = e.target.value;
+                              setReasons(newReasons);
+                            }}
+                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={() => setReasons([...reasons, { icon: '', title: '', desc: '' }])}
+                    className="w-full py-3 border-2 border-dashed border-gray-300 rounded-xl text-gray-500 hover:text-blue-600 hover:border-blue-300 hover:bg-blue-50 transition-all flex items-center justify-center gap-2"
+                  >
+                    <PlusIcon className="h-5 w-5" />
+                    Yeni Madde Ekle
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Karşılaştırma - Sadece product_360sehpa_comparison olduğunda göster */}
+            {formData.key === 'product_360sehpa_comparison' && (
+              <div className="col-span-2 space-y-6 pt-4 border-t">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Karşılaştırma Tablosu</h3>
+                <div className="space-y-4">
+                  {comparisonRows.map((row, index) => (
+                    <div key={index} className="p-4 border border-gray-200 rounded-xl bg-gray-50 relative group">
+                      <button
+                        type="button"
+                        onClick={() => setComparisonRows(comparisonRows.filter((_, i) => i !== index))}
+                        className="absolute -top-2 -right-2 bg-red-100 text-red-600 rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        <XMarkIcon className="h-4 w-4" />
+                      </button>
+                      <div className="grid grid-cols-3 gap-4">
+                        <div>
+                          <label className="block text-xs font-bold text-gray-500 mb-1">Özellik</label>
+                          <input
+                            type="text"
+                            value={row.feature || ''}
+                            onChange={(e) => {
+                              const newRows = [...comparisonRows];
+                              newRows[index].feature = e.target.value;
+                              setComparisonRows(newRows);
+                            }}
+                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-bold text-gray-500 mb-1">360 Sehpa (Bizimki)</label>
+                          <input
+                            type="text"
+                            value={row.ours || ''}
+                            onChange={(e) => {
+                              const newRows = [...comparisonRows];
+                              newRows[index].ours = e.target.value;
+                              setComparisonRows(newRows);
+                            }}
+                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-bold text-gray-500 mb-1">Standart (Diğerleri)</label>
+                          <input
+                            type="text"
+                            value={row.theirs || ''}
+                            onChange={(e) => {
+                              const newRows = [...comparisonRows];
+                              newRows[index].theirs = e.target.value;
+                              setComparisonRows(newRows);
+                            }}
+                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={() => setComparisonRows([...comparisonRows, { feature: '', ours: '', theirs: '' }])}
+                    className="w-full py-3 border-2 border-dashed border-gray-300 rounded-xl text-gray-500 hover:text-blue-600 hover:border-blue-300 hover:bg-blue-50 transition-all flex items-center justify-center gap-2"
+                  >
+                    <PlusIcon className="h-5 w-5" />
+                    Yeni Satır Ekle
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* SSS - Sadece product_360sehpa_faqs olduğunda göster */}
+            {formData.key === 'product_360sehpa_faqs' && (
+              <div className="col-span-2 space-y-6 pt-4 border-t">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Sık Sorulan Sorular</h3>
+                <div className="space-y-4">
+                  {faqs.map((faq, index) => (
+                    <div key={index} className="p-4 border border-gray-200 rounded-xl bg-gray-50 relative group">
+                      <button
+                        type="button"
+                        onClick={() => setFaqs(faqs.filter((_, i) => i !== index))}
+                        className="absolute -top-2 -right-2 bg-red-100 text-red-600 rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        <XMarkIcon className="h-4 w-4" />
+                      </button>
+                      <div className="space-y-4">
+                        <div>
+                          <label className="block text-xs font-bold text-gray-500 mb-1">Soru</label>
+                          <input
+                            type="text"
+                            value={faq.question || ''}
+                            onChange={(e) => {
+                              const newFaqs = [...faqs];
+                              newFaqs[index].question = e.target.value;
+                              setFaqs(newFaqs);
+                            }}
+                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-bold text-gray-500 mb-1">Yanıt</label>
+                          <textarea
+                            rows={2}
+                            value={faq.answer || ''}
+                            onChange={(e) => {
+                              const newFaqs = [...faqs];
+                              newFaqs[index].answer = e.target.value;
+                              setFaqs(newFaqs);
+                            }}
+                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={() => setFaqs([...faqs, { question: '', answer: '' }])}
+                    className="w-full py-3 border-2 border-dashed border-gray-300 rounded-xl text-gray-500 hover:text-blue-600 hover:border-blue-300 hover:bg-blue-50 transition-all flex items-center justify-center gap-2"
+                  >
+                    <PlusIcon className="h-5 w-5" />
+                    Yeni Soru Ekle
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Teknik Özellikler - Sadece product_360sehpa_specs olduğunda göster */}
+            {formData.key === 'product_360sehpa_specs' && (
+              <div className="col-span-2 space-y-6 pt-4 border-t">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Teknik Özellikler</h3>
+                <div className="space-y-4">
+                  {specs.map((spec, index) => (
+                    <div key={index} className="p-4 border border-gray-200 rounded-xl bg-gray-50 relative group">
+                      <button
+                        type="button"
+                        onClick={() => setSpecs(specs.filter((_, i) => i !== index))}
+                        className="absolute -top-2 -right-2 bg-red-100 text-red-600 rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        <XMarkIcon className="h-4 w-4" />
+                      </button>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-xs font-bold text-gray-500 mb-1">Etiket (Örn: Malzeme)</label>
+                          <input
+                            type="text"
+                            value={spec.label || ''}
+                            onChange={(e) => {
+                              const newSpecs = [...specs];
+                              newSpecs[index].label = e.target.value;
+                              setSpecs(newSpecs);
+                            }}
+                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-bold text-gray-500 mb-1">Değer (Örn: Çelik)</label>
+                          <input
+                            type="text"
+                            value={spec.value || ''}
+                            onChange={(e) => {
+                              const newSpecs = [...specs];
+                              newSpecs[index].value = e.target.value;
+                              setSpecs(newSpecs);
+                            }}
+                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={() => setSpecs([...specs, { label: '', value: '' }])}
+                    className="w-full py-3 border-2 border-dashed border-gray-300 rounded-xl text-gray-500 hover:text-blue-600 hover:border-blue-300 hover:bg-blue-50 transition-all flex items-center justify-center gap-2"
+                  >
+                    <PlusIcon className="h-5 w-5" />
+                    Yeni Özellik Ekle
                   </button>
                 </div>
               </div>
