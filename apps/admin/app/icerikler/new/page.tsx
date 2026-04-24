@@ -79,7 +79,7 @@ export default function NewContentPage() {
                   ? { items: reasons }
                   : formData.key === 'product_360sehpa_comparison'
                     ? { rows: comparisonRows }
-                    : formData.key === 'product_360sehpa_faqs'
+                    : (formData.key === 'product_360sehpa_faqs' || formData.key === 'product_360sehpa_faq')
                       ? { faqs }
                       : formData.key === 'product_360sehpa_specs'
                         ? { specs }
@@ -236,6 +236,7 @@ export default function NewContentPage() {
               'product_360sehpa_reasons', 
               'product_360sehpa_comparison', 
               'product_360sehpa_faqs', 
+              'product_360sehpa_faq',
               'product_360sehpa_specs',
               'features_section'
             ].includes(formData.key) && (
@@ -487,7 +488,7 @@ export default function NewContentPage() {
             )}
 
             {/* SSS */}
-            {formData.key === 'product_360sehpa_faqs' && (
+            {(formData.key === 'product_360sehpa_faqs' || formData.key === 'product_360sehpa_faq') && (
               <div className="col-span-2 space-y-4 pt-4 border-t">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Sık Sorulan Sorular</h3>
                 {faqs.map((faq, index) => (

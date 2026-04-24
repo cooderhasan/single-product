@@ -136,7 +136,7 @@ export default function EditContentPage() {
                   ? { items: reasons }
                   : formData.key === 'product_360sehpa_comparison'
                     ? { rows: comparisonRows }
-                    : formData.key === 'product_360sehpa_faqs'
+                    : (formData.key === 'product_360sehpa_faqs' || formData.key === 'product_360sehpa_faq')
                       ? { faqs }
                       : formData.key === 'product_360sehpa_specs'
                         ? { specs }
@@ -183,6 +183,20 @@ export default function EditContentPage() {
       <div className="bg-white rounded-lg shadow p-6 max-w-2xl">
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-2 gap-6">
+            <div className="col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                İçerik Anahtarı (Key) *
+              </label>
+              <input
+                type="text"
+                required
+                value={formData.key}
+                onChange={(e) => setFormData({ ...formData, key: e.target.value })}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50"
+              />
+              <p className="mt-1 text-xs text-gray-500">Sistem taraflı eşleşme için benzersiz bir anahtar (key) girin. Örn: product_360sehpa_faqs</p>
+            </div>
+
             <div className="col-span-2">
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Başlık
@@ -286,6 +300,7 @@ export default function EditContentPage() {
               'product_360sehpa_reasons', 
               'product_360sehpa_comparison', 
               'product_360sehpa_faqs', 
+              'product_360sehpa_faq',
               'product_360sehpa_specs',
               'features_section'
             ].includes(formData.key) && (
@@ -751,8 +766,8 @@ export default function EditContentPage() {
               </div>
             )}
 
-            {/* SSS - Sadece product_360sehpa_faqs olduğunda göster */}
-            {formData.key === 'product_360sehpa_faqs' && (
+            {/* SSS - Sadece product_360sehpa_faqs veya product_360sehpa_faq olduğunda göster */}
+            {(formData.key === 'product_360sehpa_faqs' || formData.key === 'product_360sehpa_faq') && (
               <div className="col-span-2 space-y-6 pt-4 border-t">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Sık Sorulan Sorular</h3>
                 <div className="space-y-4">
