@@ -7,5 +7,5 @@ export const metadata: Metadata = {
 };
 
 export default function ShippingPolicyPage() {
-  return <PolicyPageContent contentKey="policy_shipping" defaultTitle="Kargo Politikası" />;
+  return <PolicyPageContent contentKey="kargo-politikasi" defaultTitle="Kargo Politikası" />;
 }

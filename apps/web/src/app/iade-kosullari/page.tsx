@@ -7,5 +7,5 @@ export const metadata: Metadata = {
 };
 
 export default function RefundTermsPage() {
-  return <PolicyPageContent contentKey="policy_refund" defaultTitle="İade Koşulları" />;
+  return <PolicyPageContent contentKey="iade-kosullari" defaultTitle="İade Koşulları" />;
 }

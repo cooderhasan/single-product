@@ -7,5 +7,5 @@ export const metadata: Metadata = {
 };
 
 export default function SalesContractPage() {
-  return <PolicyPageContent contentKey="policy_sales_contract" defaultTitle="Mesafeli Satış Sözleşmesi" />;
+  return <PolicyPageContent contentKey="mesafeli-satis-sozlesmesi" defaultTitle="Mesafeli Satış Sözleşmesi" />;
 }

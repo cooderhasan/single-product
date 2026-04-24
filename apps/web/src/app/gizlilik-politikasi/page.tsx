@@ -7,5 +7,5 @@ export const metadata: Metadata = {
 };
 
 export default function PrivacyPolicyPage() {
-  return <PolicyPageContent contentKey="policy_privacy" defaultTitle="Gizlilik Politikası" />;
+  return <PolicyPageContent contentKey="gizlilik-politikasi" defaultTitle="Gizlilik Politikası" />;
 }

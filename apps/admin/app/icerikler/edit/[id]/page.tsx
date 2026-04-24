@@ -308,7 +308,13 @@ export default function EditContentPage() {
               'policy_refund',
               'policy_money_back',
               'policy_terms',
-              'policy_shipping'
+              'policy_shipping',
+              'gizlilik-politikasi',
+              'mesafeli-satis-sozlesmesi',
+              'iade-kosullari',
+              'para-iade-politikasi',
+              'hizmet-sartlari',
+              'kargo-politikasi'
             ].includes(formData.key) && (
               <div className="col-span-2">
                 <label className="block text-sm font-medium text-gray-700 mb-2">

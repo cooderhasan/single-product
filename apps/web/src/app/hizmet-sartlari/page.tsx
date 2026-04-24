@@ -7,5 +7,5 @@ export const metadata: Metadata = {
 };
 
 export default function TermsPage() {
-  return <PolicyPageContent contentKey="policy_terms" defaultTitle="Hizmet Şartları" />;
+  return <PolicyPageContent contentKey="hizmet-sartlari" defaultTitle="Hizmet Şartları" />;
 }

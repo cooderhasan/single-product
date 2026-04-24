@@ -7,5 +7,5 @@ export const metadata: Metadata = {
 };
 
 export default function MoneyBackPage() {
-  return <PolicyPageContent contentKey="policy_money_back" defaultTitle="Para İade Politikası" />;
+  return <PolicyPageContent contentKey="para-iade-politikasi" defaultTitle="Para İade Politikası" />;
 }
