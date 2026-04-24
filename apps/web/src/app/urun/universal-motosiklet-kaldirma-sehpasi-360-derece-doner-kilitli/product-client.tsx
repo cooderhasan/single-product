@@ -778,7 +778,7 @@ export default function ProductPage() {
                 {/* Sağ: Sepete Ekle Butonu */}
                 <button
                   onClick={handleAddToCart}
-                  className="bg-[#00b4d8] hover:bg-[#0096c7] text-white font-semibold text-sm px-5 py-2 rounded flex items-center gap-2 active:scale-95 transition-all whitespace-nowrap"
+                  className="bg-primary-600 hover:bg-primary-700 text-white font-semibold text-sm px-5 py-2 rounded flex items-center gap-2 active:scale-95 transition-all whitespace-nowrap"
                 >
                   <ShoppingCart className="w-4 h-4" />
                   <span className="hidden sm:inline">Sepete Ekle</span>
