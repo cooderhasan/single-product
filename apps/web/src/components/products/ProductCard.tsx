@@ -40,9 +40,9 @@ export function ProductCard({ product }: ProductCardProps) {
     setIsAdding(true);
     try {
       await addItem(product.id, 1);
-      alert('ÃœrÃ¼n sepete eklendi!');
+      alert('Ürün sepete eklendi!');
     } catch (error) {
-      console.error('Sepete ekleme hatasÄ±:', error);
+      console.error('Sepete ekleme hatası:', error);
     } finally {
       setIsAdding(false);
     }
@@ -73,7 +73,7 @@ export function ProductCard({ product }: ProductCardProps) {
         {/* Discount Badge */}
         {discount > 0 && (
           <div className="absolute top-3 left-3 bg-primary-500 text-white text-xs font-bold px-2 py-1 rounded">
-            %{discount} Ä°ndirim
+            %{discount} İndirim
           </div>
         )}
       </Link>
@@ -108,11 +108,11 @@ export function ProductCard({ product }: ProductCardProps) {
         {/* Price */}
         <div className="flex items-center gap-2">
           <span className="text-lg font-bold text-primary-600">
-            {product.price.toLocaleString('tr-TR')} â‚º
+            {product.price.toLocaleString('tr-TR')} ₺
           </span>
           {product.comparePrice && (
             <span className="text-sm text-gray-400 line-through">
-              {product.comparePrice.toLocaleString('tr-TR')} â‚º
+              {product.comparePrice.toLocaleString('tr-TR')} ₺
             </span>
           )}
         </div>
@@ -122,7 +122,7 @@ export function ProductCard({ product }: ProductCardProps) {
           href={`/urun/${product.slug}`}
           className="mt-3 w-full bg-primary-600 hover:bg-primary-700 text-white text-sm font-medium py-2 px-4 rounded-lg transition-colors block text-center"
         >
-          Ä°ncele
+          İncele
         </Link>
       </div>
     </div>
