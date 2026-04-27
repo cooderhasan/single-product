@@ -416,6 +416,53 @@ export default function ProductPage() {
                 </button>
               </div>
 
+              {/* Bulk Discount & Gift Info */}
+              {quantity >= 2 && (
+                <div className="bg-gradient-to-r from-orange-50 to-red-50 border border-orange-200 rounded-2xl p-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center">
+                      <span className="text-xl">🔥</span>
+                    </div>
+                    <div>
+                      <p className="text-sm font-bold text-orange-800">
+                        {quantity} adet alana özel fiyat!
+                      </p>
+                      <p className="text-xs text-orange-600">
+                        Toplam: <span className="font-bold">{(currentPrice * quantity).toLocaleString('tr-TR')} TL</span>
+                        {' '}<span className="line-through opacity-60">{(currentPrice * quantity * 1.1).toLocaleString('tr-TR')} TL</span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Free Gift - Takoz */}
+              <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-2xl p-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                    <span className="text-xl">🎁</span>
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold text-green-800">
+                      Sepete ek takoz hediye!
+                    </p>
+                    <p className="text-xs text-green-600">
+                      Her siparişte 1 adet kaldırma takozu ücretsiz gönderilir.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Adapter Selection Reminder */}
+              <div className="bg-blue-50 border border-blue-200 rounded-xl p-3 flex items-center gap-2">
+                <svg className="w-5 h-5 text-blue-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <p className="text-xs text-blue-700 font-medium">
+                  Uygun takozu seçin: Motosikletinizin alt kısmına uygun ebatta takoz seçimi yapınız.
+                </p>
+              </div>
+
               {/* Trust Badges */}
               <div className="pt-2">
                 <div className="flex flex-wrap items-center justify-center gap-4 py-3 px-4 bg-gray-50 rounded-xl border border-gray-100">
