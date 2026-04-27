@@ -294,7 +294,11 @@ export default function ProductPage() {
                 
                 {/* Badges */}
                 <div className="absolute top-4 left-4 flex flex-col gap-2">
-                  <span className="bg-primary-600 text-white px-3 py-1 rounded-full text-sm font-bold">%10 İNDİRİM</span>
+                  {selectedVariant?.comparePrice && Number(selectedVariant.comparePrice) > currentPrice && (
+                    <span className="bg-primary-600 text-white px-3 py-1 rounded-full text-sm font-bold">
+                      %{Math.round(((Number(selectedVariant.comparePrice) - currentPrice) / Number(selectedVariant.comparePrice)) * 100)} İNDİRİM
+                    </span>
+                  )}
                   <span className="bg-green-500 text-white px-3 py-1 rounded-full text-sm font-medium flex items-center gap-1">
                     <Check className="w-3 h-3" /> Stokta
                   </span>
@@ -372,7 +376,9 @@ export default function ProductPage() {
               <div className="bg-gradient-to-r from-primary-50 to-primary-100 border border-primary-100 rounded-2xl p-6">
                 <div className="flex items-baseline gap-3 mb-2">
                   <span className="text-4xl font-bold text-primary-600">{currentPrice.toLocaleString('tr-TR')} TL</span>
-                  <span className="text-lg text-gray-400 line-through">4.500 TL</span>
+                  {selectedVariant?.comparePrice && (
+                    <span className="text-lg text-gray-400 line-through">{Number(selectedVariant.comparePrice).toLocaleString('tr-TR')} TL</span>
+                  )}
                 </div>
                 <p className="text-gray-600 text-sm">KDV Dahil - Ücretsiz Kargo</p>
               </div>
