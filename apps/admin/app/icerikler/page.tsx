@@ -26,6 +26,10 @@ interface SiteContent {
 }
 
 const contentLabels: Record<string, { name: string; description: string }> = {
+  'about_page': {
+    name: 'Hakkımızda Sayfası',
+    description: 'Hakkımızda sayfası tüm içeriği',
+  },
   'product_showcase': {
     name: 'Ürün Vitrini',
     description: 'Ana sayfa ürün vitrini bölümü',
@@ -109,6 +113,31 @@ export default function SiteContentPage() {
     setLoading(true)
     const samples = [
       {
+        key: 'about_page',
+        title: 'Hakkımızda Sayfası',
+        data: {
+          heroTitle: 'Hakkımızda',
+          heroSubtitle: '10 yıllık tecrübe, 50.000+ mutlu müşteri',
+          storyTitle: 'Hikayemiz',
+          storyContent: [
+            '360 Sehpa, 2014 yılında İstanbul\'da kuruldu. Motosiklet tutkunları olarak, kaliteli ve güvenilir kaldırma sehpaları üretme hayaliyle yola çıktık.',
+            '10 yılda Türkiye\'nin en büyük motosiklet sehpası üreticisi olduk. 50.000\'den fazla motosiklet tutkununa hizmet verdik.'
+          ],
+          valuesTitle: 'Değerlerimiz',
+          values: [
+            { title: 'Kalite', description: 'En yüksek kalite standartlarında üretim' },
+            { title: 'Müşteri Odaklılık', description: 'Müşteri memnuniyeti önceliğimizdir' },
+            { title: 'İnovasyon', description: 'Sürekli gelişim ve yenilik' }
+          ],
+          stats: [
+            { value: '10+', label: 'Yıllık Tecrübe' },
+            { value: '50K+', label: 'Mutlu Müşteri' },
+            { value: '25+', label: 'Ürün Çeşidi' },
+            { value: '81', label: 'İl\'e Kargo' }
+          ]
+        }
+      },
+      {
         key: 'product_showcase',
         title: 'Motosiklet bakımını bir sanat haline getir; her açıdan eriş, her hareketi kontrol et, her an güven içinde ol.',
         description: '360 Derece Tam Döner Mekanizma: Motosikletini kaldırmanın ötesinde, her yöne 360 derece döndürebilirsin! Zincir yağlama, fren balata değişimi, motor bileşenlerine erişim veya lastik tamiri gibi işlerde motosikleti istediğin açıya getir – eğilmek, zorlanmak yok! Standart sehpalarda sınırlı hareket varken, bu senin zamanını ve enerjini %50\'ye varan oranda tasarruf ettirir. Bakım süren kısalır, keyfin artar!',
@@ -178,6 +207,54 @@ export default function SiteContentPage() {
       }
     } catch (error) {
       toast.error('Durum güncellenirken hata oluştu')
+    }
+  }
+
+  const loadAboutPageContent = async () => {
+    if (!confirm('Hakkımızda sayfası içeriği yüklenecek. Devam etmek istiyor musunuz?')) return
+
+    setLoading(true)
+    const aboutContent = {
+      key: 'about_page',
+      title: 'Hakkımızda Sayfası',
+      data: {
+        heroTitle: 'Hakkımızda',
+        heroSubtitle: '10 yıllık tecrübe, 50.000+ mutlu müşteri',
+        storyTitle: 'Hikayemiz',
+        storyContent: [
+          '360 Sehpa, 2014 yılında İstanbul\'da kuruldu. Motosiklet tutkunları olarak, kaliteli ve güvenilir kaldırma sehpaları üretme hayaliyle yola çıktık.',
+          '10 yılda Türkiye\'nin en büyük motosiklet sehpası üreticisi olduk. 50.000\'den fazla motosiklet tutkununa hizmet verdik.'
+        ],
+        valuesTitle: 'Değerlerimiz',
+        values: [
+          { title: 'Kalite', description: 'En yüksek kalite standartlarında üretim' },
+          { title: 'Müşteri Odaklılık', description: 'Müşteri memnuniyeti önceliğimizdir' },
+          { title: 'İnovasyon', description: 'Sürekli gelişim ve yenilik' }
+        ],
+        stats: [
+          { value: '10+', label: 'Yıllık Tecrübe' },
+          { value: '50K+', label: 'Mutlu Müşteri' },
+          { value: '25+', label: 'Ürün Çeşidi' },
+          { value: '81', label: 'İl\'e Kargo' }
+        ]
+      }
+    }
+
+    try {
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/site-content/by-key/about_page`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('admin_token')}`,
+        },
+        body: JSON.stringify(aboutContent),
+      })
+      toast.success('Hakkımızda sayfası içeriği yüklendi')
+      fetchContents()
+    } catch (error) {
+      toast.error('İçerik yüklenirken hata oluştu')
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -295,6 +372,20 @@ export default function SiteContentPage() {
       {contents.length === 0 && (
         <div className="p-8 text-center bg-white rounded-lg shadow">
           <p className="text-gray-500">Henüz site içeriği bulunmamaktadır.</p>
+        </div>
+      )}
+
+      {/* Hakkımızda İçeriği Yükle Butonu */}
+      {!contents.find(c => c.key === 'about_page') && (
+        <div className="mt-6 p-6 bg-blue-50 border border-blue-200 rounded-lg">
+          <h3 className="text-lg font-semibold text-blue-900 mb-2">Hakkımızda Sayfası</h3>
+          <p className="text-blue-700 mb-4">Hakkımızda sayfası henüz oluşturulmamış. Varsayılan içeriği yükleyerek başlayabilirsiniz.</p>
+          <button
+            onClick={loadAboutPageContent}
+            className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            Hakkımızda İçeriğini Yükle
+          </button>
         </div>
       )}
     </div>
