@@ -123,7 +123,8 @@ export default function CheckoutPage() {
           district: guestAddress.district,
           address: guestAddress.address
         },
-        paymentMethod: paymentMethod === 'CREDIT_CARD' ? 'PAYTR' : 'BANK_TRANSFER'
+        paymentMethod: paymentMethod === 'CREDIT_CARD' ? 'PAYTR' : 'BANK_TRANSFER',
+        discountAmount: bankTransferDiscount
       };
 
       const { data: order } = await ordersApi.create(orderData);
@@ -131,9 +132,10 @@ export default function CheckoutPage() {
       // Store order data for analytics tracking
       const shippingCost = total >= 1000 ? 0 : 75;
       localStorage.setItem('lastOrder', JSON.stringify({
-        total: total + shippingCost,
+        total: total + shippingCost - bankTransferDiscount,
         tax: 0,
         shipping: shippingCost,
+        discount: bankTransferDiscount,
         items: items.map(item => ({
           id: item.product.id,
           name: item.product.name,
@@ -182,7 +184,8 @@ export default function CheckoutPage() {
   }
 
   const shippingCost = total >= 1000 ? 0 : 75;
-  const grandTotal = total + shippingCost;
+  const bankTransferDiscount = paymentMethod === 'BANK_TRANSFER' ? Math.round(total * 0.03) : 0;
+  const grandTotal = total + shippingCost - bankTransferDiscount;
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] py-12">
@@ -578,6 +581,12 @@ export default function CheckoutPage() {
                     <span className="text-slate-900">75,00 ₺</span>
                   )}
                 </div>
+                {bankTransferDiscount > 0 && (
+                  <div className="flex justify-between text-emerald-600 font-bold text-sm">
+                    <span>Havale İndirimi (%3)</span>
+                    <span>-{bankTransferDiscount.toLocaleString('tr-TR')} ₺</span>
+                  </div>
+                )}
                 
                 <div className="pt-6 relative">
                   <div className="flex justify-between items-end mb-1">
