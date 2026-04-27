@@ -41,8 +41,7 @@ export default function ProductPage() {
   const { addItem } = useCartStore();
 
   const features = [
-    { icon: Truck, title: "Hızlı Kargo", desc: "Aynı gün çıkış" },
-    { icon: ShieldCheck, title: "2 Yıl Garanti", desc: "Üretici garantisi" },
+    { icon: Truck, title: "Ücretsiz Kargo", desc: "Tüm siparişlerde" },
     { icon: RotateCcw, title: "Kolay İade", desc: "14 gün içinde" },
     { icon: Zap, title: "Anında Destek", desc: "WhatsApp hattı" },
   ];

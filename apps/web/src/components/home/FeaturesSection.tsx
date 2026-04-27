@@ -23,12 +23,7 @@ const defaultFeatures: Feature[] = [
   {
     icon: 'truck',
     title: 'Ücretsiz Kargo',
-    description: '1000 TL üzeri siparişlerde ücretsiz kargo',
-  },
-  {
-    icon: 'shield',
-    title: '2 Yıl Garanti',
-    description: 'Tüm ürünlerimizde 2 yıl garanti',
+    description: 'Tüm siparişlerde ücretsiz kargo',
   },
   {
     icon: 'clock',

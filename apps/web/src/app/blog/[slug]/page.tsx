@@ -80,7 +80,6 @@ const blogPosts = {
       <ul>
         <li><strong>Kapasite:</strong> Motosikletinizin ağırlığına uygun kapasite seçin</li>
         <li><strong>Malzeme:</strong> Sağlam çelik yapı tercih edin</li>
-        <li><strong>Garanti:</strong> En az 2 yıl garanti olan modelleri seçin</li>
         <li><strong>Kolaylık:</strong> Kurulum ve kullanım kolaylığına dikkat edin</li>
       </ul>
     `,

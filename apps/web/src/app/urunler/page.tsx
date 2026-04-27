@@ -116,7 +116,7 @@ export default function ProductsPage() {
           </h1>
           <p className="text-gray-600 max-w-2xl mx-auto">
             Profesyonel motosiklet kaldırma sehpaları, hidrolik ve manuel modeller.
-            2 yıl garanti, ücretsiz kargo.
+            Ücretsiz kargo.
           </p>
         </div>
 

@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { ShoppingCart, Menu, X, Search, Phone, Truck, Shield, User, LogOut } from 'lucide-react';
+import { ShoppingCart, Menu, X, Search, Phone, Truck, User, LogOut } from 'lucide-react';
 import { useCartStore } from '@/store/cart';
 import { useAuthStore } from '@/store/auth';
 import { cn } from '@/lib/utils';
@@ -69,14 +69,10 @@ export function Header() {
             </a>
             <span className="flex items-center gap-2 text-slate-300">
               <Truck className="w-3.5 h-3.5" />
-              <span>Ücretsiz Kargo - 1000 TL Üzeri</span>
+              <span>Ücretsiz Kargo</span>
             </span>
           </div>
           <div className="flex items-center gap-6 text-slate-300">
-            <span className="flex items-center gap-2">
-              <Shield className="w-3.5 h-3.5 text-green-400" />
-              <span>2 Yıl Garanti</span>
-            </span>
             <span className="flex items-center gap-2">
               <div className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></div>
               <span>Hızlı Teslimat</span>

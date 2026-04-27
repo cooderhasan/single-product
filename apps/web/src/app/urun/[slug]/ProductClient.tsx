@@ -324,12 +324,12 @@ export default function ProductClient({ product }: ProductClientProps) {
                 <div className="text-xs text-gray-600">Ücretsiz Kargo</div>
               </div>
               <div className="text-center">
-                <Shield className="w-8 h-8 text-primary-600 mx-auto mb-2" />
-                <div className="text-xs text-gray-600">2 Yıl Garanti</div>
-              </div>
-              <div className="text-center">
                 <Award className="w-8 h-8 text-primary-600 mx-auto mb-2" />
                 <div className="text-xs text-gray-600">Kalite Garantisi</div>
+              </div>
+              <div className="text-center">
+                <RotateCcw className="w-8 h-8 text-primary-600 mx-auto mb-2" />
+                <div className="text-xs text-gray-600">14 Gün İade</div>
               </div>
             </div>
           </div>

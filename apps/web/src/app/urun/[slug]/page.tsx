@@ -85,7 +85,7 @@ export default async function ProductPage({ params }: { params: { slug: string }
     features: product.description ? product.description.split('.').filter((s: string) => s.trim()).slice(0, 6) : [
       'Profesyonel kalite',
       'Dayanıklı malzeme',
-      '2 yıl garanti',
+      'Hızlı teslimat',
     ],
     specifications: [
       { label: 'SKU', value: product.sku || '-' },

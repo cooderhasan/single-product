@@ -104,7 +104,7 @@ export function Footer() {
             </div>
             <p className="text-gray-400 mb-4">
               Türkiye'nin #1 motosiklet kaldırma sehpası üreticisi. Profesyonel
-              ekipmanlar, 2 yıl garanti.
+              ekipmanlar.
             </p>
             <div className="flex gap-4">
               <a

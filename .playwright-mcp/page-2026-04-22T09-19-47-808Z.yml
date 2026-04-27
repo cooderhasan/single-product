@@ -1,0 +1,60 @@
+- generic [active] [ref=e1]:
+  - main [ref=e3]:
+    - generic [ref=e4]:
+      - generic [ref=e5]:
+        - link [ref=e6] [cursor=pointer]:
+          - /url: /banners
+          - img [ref=e7]
+        - heading "Yeni Banner" [level=1] [ref=e9]
+      - generic [ref=e11]:
+        - generic [ref=e12]:
+          - generic [ref=e13]:
+            - generic [ref=e14]: Başlık *
+            - textbox "Kampanya başlığı..." [ref=e15]
+          - generic [ref=e16]:
+            - generic [ref=e17]: Alt Başlık
+            - textbox "Kampanya alt başlığı..." [ref=e18]
+          - generic [ref=e19]:
+            - generic [ref=e20]: Görsel *
+            - generic [ref=e23] [cursor=pointer]:
+              - img [ref=e63]
+              - paragraph [ref=e26]: Görsel yüklemek için tıklayın veya sürükleyin
+              - paragraph [ref=e65]: JPEG, PNG, WebP (max 5MB)
+          - generic [ref=e28]:
+            - generic [ref=e29]: Mobil Görsel
+            - generic [ref=e32] [cursor=pointer]:
+              - img [ref=e33]
+              - paragraph [ref=e35]: Görsel yüklemek için tıklayın veya sürükleyin
+              - paragraph [ref=e36]: JPEG, PNG, WebP (max 5MB)
+          - generic [ref=e37]:
+            - generic [ref=e38]: Link
+            - textbox "/urun/urun-adı veya https://..." [ref=e39]
+          - generic [ref=e40]:
+            - generic [ref=e41]: Buton Metni
+            - textbox "SATIN AL" [ref=e42]
+          - generic [ref=e43]:
+            - generic [ref=e44]: Pozisyon *
+            - combobox [ref=e45]:
+              - option "Ana Sayfa Hero" [selected]
+              - option "Ana Sayfa Orta"
+              - option "Ana Sayfa Alt"
+              - option "Kategori Sayfası"
+              - option "Ürün Sayfası"
+          - generic [ref=e46]:
+            - generic [ref=e47]: Sıralama
+            - spinbutton [ref=e48]: "0"
+          - generic [ref=e49]:
+            - generic [ref=e50]: Başlangıç Tarihi
+            - textbox [ref=e51]
+          - generic [ref=e52]:
+            - generic [ref=e53]: Bitiş Tarihi
+            - textbox [ref=e54]
+          - generic [ref=e56]:
+            - checkbox "Aktif" [checked] [ref=e57]
+            - generic [ref=e58]: Aktif
+        - generic [ref=e59]:
+          - link "İptal" [ref=e60] [cursor=pointer]:
+            - /url: /banners
+          - button "Kaydet" [ref=e61] [cursor=pointer]
+  - status [ref=e71]: Görsel yüklenirken hata oluştu
+  - alert [ref=e62]

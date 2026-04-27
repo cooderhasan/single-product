@@ -1,0 +1,23 @@
+- generic [active] [ref=e1]:
+  - main [ref=e3]:
+    - generic [ref=e5]:
+      - generic [ref=e6]:
+        - generic [ref=e8]: "360"
+        - heading "360 Sehpa" [level=1] [ref=e9]
+        - paragraph [ref=e10]: Admin Panel
+      - generic [ref=e11]:
+        - heading "Giriş Yap" [level=2] [ref=e12]
+        - generic [ref=e13]:
+          - generic [ref=e14]:
+            - generic [ref=e15]: Email
+            - generic [ref=e16]:
+              - img [ref=e17]
+              - textbox "admin@example.com" [ref=e19]
+          - generic [ref=e20]:
+            - generic [ref=e21]: Şifre
+            - generic [ref=e22]:
+              - img [ref=e23]
+              - textbox "••••••" [ref=e25]
+          - button "Giriş Yap" [ref=e26] [cursor=pointer]
+      - paragraph [ref=e27]: © 2026 360 Sehpa
+  - alert [ref=e28]
