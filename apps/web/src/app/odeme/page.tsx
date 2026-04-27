@@ -48,6 +48,7 @@ export default function CheckoutPage() {
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('CREDIT_CARD');
   const [isLoading, setIsLoading] = useState(false);
   const [step, setStep] = useState<'address' | 'payment'>('address');
+  const [customerNote, setCustomerNote] = useState('');
   
   const [guestAddress, setGuestAddress] = useState<GuestAddress>({
     fullName: '',
@@ -124,7 +125,8 @@ export default function CheckoutPage() {
           address: guestAddress.address
         },
         paymentMethod: paymentMethod === 'CREDIT_CARD' ? 'PAYTR' : 'BANK_TRANSFER',
-        discountAmount: bankTransferDiscount
+        discountAmount: bankTransferDiscount,
+        customerNote: customerNote || undefined
       };
 
       const { data: order } = await ordersApi.create(orderData);
@@ -494,6 +496,20 @@ export default function CheckoutPage() {
                         Siparişi onaylayarak <Link href="/sozlesme" className="underline font-bold">Mesafeli Satış Sözleşmesi</Link>'ni ve 
                         <Link href="/aydinlatma" className="underline font-bold"> Aydınlatma Metni</Link>'ni okuduğunuzu ve kabul ettiğinizi onaylıyorsunuz.
                       </p>
+                    </div>
+
+                    {/* Sipariş Notu */}
+                    <div className="mt-6">
+                      <label className="block text-sm font-bold text-slate-700 mb-2">
+                        Sipariş Notu <span className="text-slate-400 font-normal">(İsteğe bağlı)</span>
+                      </label>
+                      <textarea
+                        value={customerNote}
+                        onChange={(e) => setCustomerNote(e.target.value)}
+                        placeholder="Siparişiniz ile ilgili özel bir notunuz varsa buraya yazabilirsiniz..."
+                        rows={3}
+                        className="w-full px-4 py-3 border-2 border-slate-200 rounded-2xl focus:border-primary-500 focus:ring-0 resize-none text-sm text-slate-700 placeholder:text-slate-400 transition-colors"
+                      />
                     </div>
 
                     <button
