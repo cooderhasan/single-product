@@ -418,22 +418,26 @@ export default function ProductPage() {
 
               {/* Bulk Discount & Gift Info */}
               <div className="space-y-3">
-                {quantity >= 2 && (
-                  <div className="bg-gradient-to-r from-orange-50 to-red-50 border border-orange-200 rounded-2xl p-4 flex items-center gap-3">
-                    <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center flex-shrink-0">
-                      <span className="text-xl">🔥</span>
-                    </div>
-                    <div>
-                      <p className="text-sm font-bold text-orange-800">
-                        {quantity} adet alana özel fiyat!
-                      </p>
-                      <p className="text-xs text-orange-600">
-                        Toplam: <span className="font-bold">{(currentPrice * quantity).toLocaleString('tr-TR')} TL</span>
-                        {' '}<span className="line-through opacity-60">{(currentPrice * quantity * 1.1).toLocaleString('tr-TR')} TL</span>
-                      </p>
-                    </div>
+                <div className="bg-gradient-to-r from-orange-50 to-red-50 border border-orange-200 rounded-2xl p-4 flex items-center gap-3 cursor-pointer hover:shadow-md transition-shadow"
+                  onClick={() => setQuantity(2)}
+                >
+                  <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center flex-shrink-0">
+                    <span className="text-xl">🔥</span>
                   </div>
-                )}
+                  <div className="flex-1">
+                    <p className="text-sm font-bold text-orange-800">
+                      2 adet alana özel fiyat!
+                    </p>
+                    <p className="text-xs text-orange-600">
+                      2 adet: <span className="font-bold">{(currentPrice * 2).toLocaleString('tr-TR')} TL</span>
+                      {' '}<span className="line-through opacity-60">{(currentPrice * 2 * 1.1).toLocaleString('tr-TR')} TL</span>
+                      {' '}<span className="bg-orange-200 text-orange-800 px-1.5 py-0.5 rounded text-[10px] font-bold ml-1">%10 İndirim</span>
+                    </p>
+                  </div>
+                  <div className="text-orange-400">
+                    <ChevronRight className="w-5 h-5" />
+                  </div>
+                </div>
                 
                 <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-2xl p-4 flex items-center gap-3">
                   <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
