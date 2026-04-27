@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Star, Truck, Shield, Award, Check, Heart, ShoppingCart, Minus, Plus } from 'lucide-react';
+import { Star, Truck, Shield, Award, Check, Heart, ShoppingCart, Minus, Plus, RotateCcw } from 'lucide-react';
 import { useCartStore } from '@/store/cart';
 import toast from 'react-hot-toast';
 
