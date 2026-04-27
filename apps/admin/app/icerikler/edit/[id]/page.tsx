@@ -35,6 +35,15 @@ export default function EditContentPage() {
   const [faqs, setFaqs] = useState<any[]>([])
   const [specs, setSpecs] = useState<any[]>([])
   const [homeFeatures, setHomeFeatures] = useState<any[]>([])
+  const [aboutData, setAboutData] = useState<any>({
+    heroTitle: '',
+    heroSubtitle: '',
+    storyTitle: '',
+    storyContent: [''],
+    valuesTitle: '',
+    values: [{ title: '', description: '' }],
+    stats: [{ value: '', label: '' }]
+  })
   const [newFeature, setNewFeature] = useState('')
   const [formData, setFormData] = useState({
     key: '',
@@ -92,6 +101,17 @@ export default function EditContentPage() {
           setFaqs(content.data?.faqs || [])
           setSpecs(content.data?.specs || [])
           setHomeFeatures(content.data?.features || [])
+          if (content.key === 'about_page' && content.data) {
+            setAboutData({
+              heroTitle: content.data.heroTitle || '',
+              heroSubtitle: content.data.heroSubtitle || '',
+              storyTitle: content.data.storyTitle || '',
+              storyContent: content.data.storyContent || [''],
+              valuesTitle: content.data.valuesTitle || '',
+              values: content.data.values || [{ title: '', description: '' }],
+              stats: content.data.stats || [{ value: '', label: '' }]
+            })
+          }
         }
       }
     } catch (error) {
@@ -142,7 +162,9 @@ export default function EditContentPage() {
                         ? { specs }
                         : formData.key === 'features_section'
                           ? { features: homeFeatures }
-                          : { features },
+                          : formData.key === 'about_page'
+                            ? aboutData
+                            : { features },
         }),
       })
 
@@ -303,6 +325,7 @@ export default function EditContentPage() {
               'product_360sehpa_faq',
               'product_360sehpa_specs',
               'features_section',
+              'about_page',
               'policy_privacy',
               'policy_sales_contract',
               'policy_refund',
@@ -954,6 +977,184 @@ export default function EditContentPage() {
                   >
                     <PlusIcon className="h-5 w-5" />
                     Yeni Özellik Ekle
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Hakkımızda Sayfası - Sadece about_page olduğunda göster */}
+            {formData.key === 'about_page' && (
+              <div className="col-span-2 space-y-6 pt-4 border-t">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Hakkımızda Sayfası İçeriği</h3>
+                
+                {/* Hero Bölümü */}
+                <div className="p-4 border border-gray-200 rounded-xl bg-gray-50">
+                  <h4 className="text-sm font-bold text-gray-700 mb-3">Hero Bölümü</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-bold text-gray-500 mb-1">Başlık</label>
+                      <input
+                        type="text"
+                        value={aboutData.heroTitle}
+                        onChange={(e) => setAboutData({ ...aboutData, heroTitle: e.target.value })}
+                        className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white"
+                        placeholder="Hakkımızda"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-gray-500 mb-1">Alt Başlık</label>
+                      <input
+                        type="text"
+                        value={aboutData.heroSubtitle}
+                        onChange={(e) => setAboutData({ ...aboutData, heroSubtitle: e.target.value })}
+                        className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white"
+                        placeholder="10 yıllık tecrübe, 50.000+ mutlu müşteri"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Hikaye Bölümü */}
+                <div className="p-4 border border-gray-200 rounded-xl bg-gray-50">
+                  <h4 className="text-sm font-bold text-gray-700 mb-3">Hikaye Bölümü</h4>
+                  <div className="mb-3">
+                    <label className="block text-xs font-bold text-gray-500 mb-1">Başlık</label>
+                    <input
+                      type="text"
+                      value={aboutData.storyTitle}
+                      onChange={(e) => setAboutData({ ...aboutData, storyTitle: e.target.value })}
+                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white"
+                      placeholder="Hikayemiz"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-gray-500 mb-1">Paragraflar</label>
+                    {aboutData.storyContent.map((paragraph: string, index: number) => (
+                      <div key={index} className="flex gap-2 mb-2">
+                        <textarea
+                          value={paragraph}
+                          onChange={(e) => {
+                            const newContent = [...aboutData.storyContent];
+                            newContent[index] = e.target.value;
+                            setAboutData({ ...aboutData, storyContent: newContent });
+                          }}
+                          className="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white"
+                          rows={2}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setAboutData({ ...aboutData, storyContent: aboutData.storyContent.filter((_: any, i: number) => i !== index) })}
+                          className="p-2 text-red-500 hover:text-red-700"
+                        >
+                          <XMarkIcon className="h-4 w-4" />
+                        </button>
+                      </div>
+                    ))}
+                    <button
+                      type="button"
+                      onClick={() => setAboutData({ ...aboutData, storyContent: [...aboutData.storyContent, ''] })}
+                      className="text-sm text-blue-600 hover:text-blue-800"
+                    >
+                      + Paragraf Ekle
+                    </button>
+                  </div>
+                </div>
+
+                {/* Değerler Bölümü */}
+                <div className="p-4 border border-gray-200 rounded-xl bg-gray-50">
+                  <h4 className="text-sm font-bold text-gray-700 mb-3">Değerler Bölümü</h4>
+                  <div className="mb-3">
+                    <label className="block text-xs font-bold text-gray-500 mb-1">Başlık</label>
+                    <input
+                      type="text"
+                      value={aboutData.valuesTitle}
+                      onChange={(e) => setAboutData({ ...aboutData, valuesTitle: e.target.value })}
+                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white"
+                      placeholder="Değerlerimiz"
+                    />
+                  </div>
+                  {aboutData.values.map((value: any, index: number) => (
+                    <div key={index} className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3 p-3 bg-white rounded-lg">
+                      <div>
+                        <label className="block text-xs font-bold text-gray-500 mb-1">Değer Başlığı</label>
+                        <input
+                          type="text"
+                          value={value.title}
+                          onChange={(e) => {
+                            const newValues = [...aboutData.values];
+                            newValues[index].title = e.target.value;
+                            setAboutData({ ...aboutData, values: newValues });
+                          }}
+                          className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg"
+                          placeholder="Kalite"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-gray-500 mb-1">Açıklama</label>
+                        <input
+                          type="text"
+                          value={value.description}
+                          onChange={(e) => {
+                            const newValues = [...aboutData.values];
+                            newValues[index].description = e.target.value;
+                            setAboutData({ ...aboutData, values: newValues });
+                          }}
+                          className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg"
+                          placeholder="En yüksek kalite standartlarında üretim"
+                        />
+                      </div>
+                    </div>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={() => setAboutData({ ...aboutData, values: [...aboutData.values, { title: '', description: '' }] })}
+                    className="text-sm text-blue-600 hover:text-blue-800"
+                  >
+                    + Değer Ekle
+                  </button>
+                </div>
+
+                {/* İstatistikler Bölümü */}
+                <div className="p-4 border border-gray-200 rounded-xl bg-gray-50">
+                  <h4 className="text-sm font-bold text-gray-700 mb-3">İstatistikler</h4>
+                  {aboutData.stats.map((stat: any, index: number) => (
+                    <div key={index} className="grid grid-cols-2 gap-3 mb-3 p-3 bg-white rounded-lg">
+                      <div>
+                        <label className="block text-xs font-bold text-gray-500 mb-1">Değer</label>
+                        <input
+                          type="text"
+                          value={stat.value}
+                          onChange={(e) => {
+                            const newStats = [...aboutData.stats];
+                            newStats[index].value = e.target.value;
+                            setAboutData({ ...aboutData, stats: newStats });
+                          }}
+                          className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg"
+                          placeholder="10+"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-gray-500 mb-1">Etiket</label>
+                        <input
+                          type="text"
+                          value={stat.label}
+                          onChange={(e) => {
+                            const newStats = [...aboutData.stats];
+                            newStats[index].label = e.target.value;
+                            setAboutData({ ...aboutData, stats: newStats });
+                          }}
+                          className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg"
+                          placeholder="Yıllık Tecrübe"
+                        />
+                      </div>
+                    </div>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={() => setAboutData({ ...aboutData, stats: [...aboutData.stats, { value: '', label: '' }] })}
+                    className="text-sm text-blue-600 hover:text-blue-800"
+                  >
+                    + İstatistik Ekle
                   </button>
                 </div>
               </div>
