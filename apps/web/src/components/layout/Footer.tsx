@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Phone, Mail, MapPin } from 'lucide-react';
 import { useState, useEffect } from 'react';
-import { siteContentApi } from '@/lib/api';
+import { siteContentApi, categoriesApi } from '@/lib/api';
 import toast from 'react-hot-toast';
 import { trackNewsletterSubscription } from '@/components/analytics/dataLayer';
 
@@ -16,6 +16,7 @@ export function Footer() {
     email: 'info@360sehpa.com',
     address: 'Sanayi Mahallesi, 123. Sokak No:45\nİstanbul, Türkiye'
   });
+  const [categories, setCategories] = useState<{ slug: string; name: string }[]>([]);
 
   useEffect(() => {
     const fetchContactInfo = async () => {
@@ -28,7 +29,18 @@ export function Footer() {
         console.error('Footer contact info fetch error:', error);
       }
     };
+    
+    const fetchCategories = async () => {
+      try {
+        const response = await categoriesApi.getAll();
+        setCategories(response.data || []);
+      } catch (error) {
+        console.error('Footer categories fetch error:', error);
+      }
+    };
+    
     fetchContactInfo();
+    fetchCategories();
   }, []);
 
   return (
@@ -150,21 +162,13 @@ export function Footer() {
           <div>
             <h4 className="text-white font-semibold mb-4">Kategoriler</h4>
             <ul className="space-y-2">
-              <li>
-                <Link href="/kategori/hidrolik-sehpalar" className="hover:text-primary-400 transition-colors">
-                  Hidrolik Sehpalar
-                </Link>
-              </li>
-              <li>
-                <Link href="/kategori/manuel-sehpalar" className="hover:text-primary-400 transition-colors">
-                  Manuel Sehpalar
-                </Link>
-              </li>
-              <li>
-                <Link href="/kategori/aksesuarlar" className="hover:text-primary-400 transition-colors">
-                  Aksesuarlar
-                </Link>
-              </li>
+              {categories.map((category) => (
+                <li key={category.slug}>
+                  <Link href={`/kategori/${category.slug}`} className="hover:text-primary-400 transition-colors">
+                    {category.name}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
