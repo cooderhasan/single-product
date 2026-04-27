@@ -417,10 +417,10 @@ export default function ProductPage() {
               </div>
 
               {/* Bulk Discount & Gift Info */}
-              {quantity >= 2 && (
-                <div className="bg-gradient-to-r from-orange-50 to-red-50 border border-orange-200 rounded-2xl p-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center">
+              <div className="space-y-3">
+                {quantity >= 2 && (
+                  <div className="bg-gradient-to-r from-orange-50 to-red-50 border border-orange-200 rounded-2xl p-4 flex items-center gap-3">
+                    <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center flex-shrink-0">
                       <span className="text-xl">🔥</span>
                     </div>
                     <div>
@@ -433,34 +433,21 @@ export default function ProductPage() {
                       </p>
                     </div>
                   </div>
-                </div>
-              )}
-
-              {/* Free Gift - Takoz */}
-              <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-2xl p-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                )}
+                
+                <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-2xl p-4 flex items-center gap-3">
+                  <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
                     <span className="text-xl">🎁</span>
                   </div>
-                  <div>
+                  <div className="flex-1">
                     <p className="text-sm font-bold text-green-800">
                       Sepete ek takoz hediye!
                     </p>
                     <p className="text-xs text-green-600">
-                      Her siparişte 1 adet kaldırma takozu ücretsiz gönderilir.
+                      Uygun takozu seçin - Her siparişte 1 adet ücretsiz gönderilir.
                     </p>
                   </div>
                 </div>
-              </div>
-
-              {/* Adapter Selection Reminder */}
-              <div className="bg-blue-50 border border-blue-200 rounded-xl p-3 flex items-center gap-2">
-                <svg className="w-5 h-5 text-blue-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <p className="text-xs text-blue-700 font-medium">
-                  Uygun takozu seçin: Motosikletinizin alt kısmına uygun ebatta takoz seçimi yapınız.
-                </p>
               </div>
 
               {/* Trust Badges */}
