@@ -409,30 +409,6 @@ export default function ProductPage() {
                   </div>
                 </div>
               </div>
-                <p className="text-gray-600 text-sm mb-4">KDV Dahil - Ücretsiz Kargo</p>
-                
-                {/* Çoklu Adet Fiyat Tablosu */}
-                <div className="bg-white rounded-xl overflow-hidden border border-primary-100">
-                  <div className="grid grid-cols-3 text-center text-xs font-semibold">
-                    <div className="py-2.5 bg-gray-50 text-gray-600">Adet</div>
-                    <div className="py-2.5 bg-gray-50 text-gray-600">Birim Fiyat</div>
-                    <div className="py-2.5 bg-gray-50 text-gray-600">İndirim</div>
-                  </div>
-                  <div className={`grid grid-cols-3 text-center py-3 border-t border-primary-50 ${quantity === 1 ? 'bg-primary-50' : ''}`}>
-                    <div className="text-sm font-medium text-gray-700">1 Adet</div>
-                    <div className="text-sm font-bold text-gray-900">{currentPrice.toLocaleString('tr-TR')} TL</div>
-                    <div className="text-sm text-gray-400">-</div>
-                  </div>
-                  <div 
-                    className={`grid grid-cols-3 text-center py-3 border-t cursor-pointer transition-all ${quantity >= 2 ? 'bg-green-50 border-green-200' : 'hover:bg-green-50/50'}`}
-                    onClick={() => setQuantity(2)}
-                  >
-                    <div className="text-sm font-medium text-green-700">2 Adet</div>
-                    <div className="text-sm font-bold text-green-700">{Math.round(currentPrice * 0.9).toLocaleString('tr-TR')} TL</div>
-                    <div className="text-xs font-bold text-green-600 bg-green-100 rounded-full px-2 py-0.5 mx-auto w-fit">%10</div>
-                  </div>
-                </div>
-              </div>
 
               {/* Variant Selection */}
               <div className="space-y-3">
