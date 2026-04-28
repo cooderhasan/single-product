@@ -470,8 +470,8 @@ export default function ProductPage() {
                 </button>
               </div>
 
-              {/* Bulk Discount & Gift Info */}
-              <div className="space-y-3">
+              {/* Bulk Discount & Gift Info - Side by Side */}
+              <div className="grid grid-cols-2 gap-3">
                 <div className="bg-gradient-to-r from-orange-50 to-red-50 border border-orange-200 rounded-2xl p-4 flex items-center gap-3 cursor-pointer hover:shadow-md transition-shadow"
                   onClick={() => setQuantity(2)}
                 >
@@ -483,13 +483,8 @@ export default function ProductPage() {
                       2 adet alana özel %10 indirim!
                     </p>
                     <p className="text-xs text-orange-600">
-                      2 adet toplam: <span className="font-bold">{Math.round(currentPrice * 2 * 0.9).toLocaleString('tr-TR')} TL</span>
-                      {' '}<span className="line-through opacity-60">{(currentPrice * 2).toLocaleString('tr-TR')} TL</span>
-                      {' '}<span className="bg-orange-200 text-orange-800 px-1.5 py-0.5 rounded text-[10px] font-bold ml-1">Tasarruf: {Math.round(currentPrice * 2 * 0.1).toLocaleString('tr-TR')} TL</span>
+                      2 adet: <span className="font-bold">{Math.round(currentPrice * 2 * 0.9).toLocaleString('tr-TR')} TL</span>
                     </p>
-                  </div>
-                  <div className="text-orange-400">
-                    <ChevronRight className="w-5 h-5" />
                   </div>
                 </div>
                 
@@ -502,7 +497,7 @@ export default function ProductPage() {
                       Sepete ek takoz hediye!
                     </p>
                     <p className="text-xs text-green-600">
-                      Uygun takozu seçin - Her siparişte 1 adet ücretsiz gönderilir.
+                      Her siparişte 1 adet ücretsiz.
                     </p>
                   </div>
                 </div>
@@ -524,17 +519,6 @@ export default function ProductPage() {
                   <div className="flex items-center gap-1.5 text-gray-600">
                     <Lock className="w-4 h-4 text-gray-500" />
                     <span className="text-xs font-medium">Güvenli Ödeme</span>
-                  </div>
-                </div>
-                <div className="flex items-center justify-center gap-4 mt-3">
-                  <div className="h-6 w-16 flex items-center justify-center">
-                    <img src="/images/payment/iyzico.svg" alt="iyzico" className="h-full w-full object-contain opacity-60 grayscale hover:grayscale-0 transition-all" />
-                  </div>
-                  <div className="h-6 w-10 flex items-center justify-center">
-                    <img src="/images/payment/mastercard.svg" alt="Mastercard" className="h-full w-full object-contain opacity-60 grayscale hover:grayscale-0 transition-all" />
-                  </div>
-                  <div className="h-6 w-16 flex items-center justify-center">
-                    <img src="/images/payment/visa.svg" alt="Visa" className="h-full w-full object-contain opacity-60 grayscale hover:grayscale-0 transition-all" />
                   </div>
                 </div>
               </div>
