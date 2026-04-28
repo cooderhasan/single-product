@@ -365,34 +365,35 @@ export default function ProductPage() {
                 </div>
               </div>
 
-              {/* Countdown Timer */}
-              <div className="bg-red-50 border border-red-100 rounded-xl p-3 flex items-center gap-3">
-                <div className="bg-red-100 p-2 rounded-lg text-red-600 animate-pulse">
-                  <Clock className="w-5 h-5" />
-                </div>
-                <div>
-                  <p className="text-sm font-semibold text-red-800 tracking-wide">BUGÜN KARGOYA VERİLMESİ İÇİN</p>
-                  <p className="text-xs text-red-600 font-medium tracking-wider">KALAN SÜRE: <span className="font-bold text-red-700 text-sm">{timeLeft}</span></p>
-                </div>
-              </div>
-
-              {/* Bundle Info - 3 Columns */}
-              <div className="grid grid-cols-3 gap-3">
-                <div className="bg-gradient-to-r from-orange-50 to-red-50 border border-orange-200 rounded-2xl p-3 flex flex-col items-center text-center cursor-pointer hover:shadow-md transition-shadow"
-                  onClick={() => setQuantity(2)}
-                >
-                  <span className="text-2xl mb-1">🔥</span>
-                  <p className="text-xs font-bold text-orange-800">2 Alana %10 İndirim</p>
-                </div>
-                
-                <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-2xl p-3 flex flex-col items-center text-center">
-                  <span className="text-2xl mb-1">🎁</span>
-                  <p className="text-xs font-bold text-green-800">Takoz Hediye</p>
-                </div>
-
-                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-2xl p-3 flex flex-col items-center text-center">
-                  <span className="text-2xl mb-1">🚚</span>
-                  <p className="text-xs font-bold text-blue-800">Ücretsiz Kargo</p>
+              {/* Top Info Bar - Countdown + Bundle Info */}
+              <div className="bg-gray-50 border border-gray-200 rounded-2xl overflow-hidden">
+                <div className="grid grid-cols-2 divide-x divide-gray-200">
+                  {/* Left - Countdown */}
+                  <div className="p-3 flex items-center gap-3">
+                    <div className="bg-red-100 p-2 rounded-lg text-red-600 animate-pulse flex-shrink-0">
+                      <Clock className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <p className="text-xs font-semibold text-red-800">BUGÜN KARGO</p>
+                      <p className="text-xs text-red-600 font-bold">{timeLeft}</p>
+                    </div>
+                  </div>
+                  
+                  {/* Right - Bundle Info */}
+                  <div className="p-3 flex items-center gap-4">
+                    <div className="flex items-center gap-1.5 cursor-pointer" onClick={() => setQuantity(2)}>
+                      <span className="text-lg">🔥</span>
+                      <span className="text-xs font-bold text-orange-800">2 Al %10</span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-lg">🎁</span>
+                      <span className="text-xs font-bold text-green-800">Takoz Hediye</span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-lg">🚚</span>
+                      <span className="text-xs font-bold text-blue-800">Ücretsiz Kargo</span>
+                    </div>
+                  </div>
                 </div>
               </div>
 
