@@ -55,6 +55,7 @@ export default function ProductPage() {
   // Dynamic content state
   const [productId, setProductId] = useState<string>('');
   const [productImages, setProductImages] = useState<string[]>([]);
+  const [productComparePrice, setProductComparePrice] = useState<number>(0);
   const [sixReasons, setSixReasons] = useState<any[]>([]);
   const [comparisonData, setComparisonData] = useState<any[]>([]);
   const [testimonials, setTestimonials] = useState<any[]>([]);
@@ -76,6 +77,9 @@ export default function ProductPage() {
           const productData = await productRes.json();
           if (productData.id) {
             setProductId(productData.id);
+          }
+          if (productData.comparePrice) {
+            setProductComparePrice(Number(productData.comparePrice));
           }
           
           // Varyantları işle
@@ -375,12 +379,12 @@ export default function ProductPage() {
 {/* Price Card */}
               <div className="bg-gradient-to-r from-primary-50 to-primary-100 border border-primary-100 rounded-2xl p-6">
                 {/* Ana fiyat - comparePrice varsa indirimli göster */}
-                {selectedVariant?.comparePrice && Number(selectedVariant.comparePrice) > currentPrice ? (
+                {productComparePrice > currentPrice ? (
                   <div className="mb-4">
                     <div className="flex items-center gap-3 mb-1">
-                      <span className="text-lg text-gray-400 line-through">{Number(selectedVariant.comparePrice).toLocaleString('tr-TR')} TL</span>
+                      <span className="text-lg text-gray-400 line-through">{productComparePrice.toLocaleString('tr-TR')} TL</span>
                       <span className="bg-red-500 text-white px-2 py-0.5 rounded-full text-xs font-bold">
-                        %{Math.round(((Number(selectedVariant.comparePrice) - currentPrice) / Number(selectedVariant.comparePrice)) * 100)} indirim
+                        %{Math.round(((productComparePrice - currentPrice) / productComparePrice) * 100)} indirim
                       </span>
                     </div>
                     <span className="text-4xl font-bold text-primary-600">{currentPrice.toLocaleString('tr-TR')} TL</span>
@@ -402,9 +406,9 @@ export default function ProductPage() {
                   <div className={`grid grid-cols-3 text-center py-3 border-t border-primary-50 ${quantity === 1 ? 'bg-primary-50' : ''}`}>
                     <div className="text-sm font-medium text-gray-700">1 Adet</div>
                     <div className="text-sm font-bold text-gray-900">{currentPrice.toLocaleString('tr-TR')} TL</div>
-                    {selectedVariant?.comparePrice && Number(selectedVariant.comparePrice) > currentPrice ? (
+                    {productComparePrice > currentPrice ? (
                       <div className="text-xs font-bold text-red-600 bg-red-100 rounded-full px-2 py-0.5 mx-auto w-fit">
-                        %{Math.round(((Number(selectedVariant.comparePrice) - currentPrice) / Number(selectedVariant.comparePrice)) * 100)}
+                        %{Math.round(((productComparePrice - currentPrice) / productComparePrice) * 100)}
                       </div>
                     ) : (
                       <div className="text-sm text-gray-400">-</div>
@@ -416,9 +420,9 @@ export default function ProductPage() {
                   >
                     <div className="text-sm font-medium text-green-700">2+ Adet</div>
                     <div className="text-sm font-bold text-green-700">{Math.round(currentPrice * 0.9).toLocaleString('tr-TR')} TL</div>
-                    {selectedVariant?.comparePrice && Number(selectedVariant.comparePrice) > currentPrice ? (
+                    {productComparePrice > currentPrice ? (
                       <div className="text-xs font-bold text-green-600 bg-green-100 rounded-full px-2 py-0.5 mx-auto w-fit">
-                        %{Math.round(((Number(selectedVariant.comparePrice) - Math.round(currentPrice * 0.9)) / Number(selectedVariant.comparePrice)) * 100)}
+                        %{Math.round(((productComparePrice - Math.round(currentPrice * 0.9)) / productComparePrice) * 100)}
                       </div>
                     ) : (
                       <div className="text-xs font-bold text-green-600 bg-green-100 rounded-full px-2 py-0.5 mx-auto w-fit">%10</div>
