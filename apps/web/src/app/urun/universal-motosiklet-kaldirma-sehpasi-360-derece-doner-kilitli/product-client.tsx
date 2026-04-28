@@ -376,6 +376,26 @@ export default function ProductPage() {
                 </div>
               </div>
 
+              {/* Bundle Info - 3 Columns */}
+              <div className="grid grid-cols-3 gap-3">
+                <div className="bg-gradient-to-r from-orange-50 to-red-50 border border-orange-200 rounded-2xl p-3 flex flex-col items-center text-center cursor-pointer hover:shadow-md transition-shadow"
+                  onClick={() => setQuantity(2)}
+                >
+                  <span className="text-2xl mb-1">🔥</span>
+                  <p className="text-xs font-bold text-orange-800">2 Alana %10 İndirim</p>
+                </div>
+                
+                <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-2xl p-3 flex flex-col items-center text-center">
+                  <span className="text-2xl mb-1">🎁</span>
+                  <p className="text-xs font-bold text-green-800">Takoz Hediye</p>
+                </div>
+
+                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-2xl p-3 flex flex-col items-center text-center">
+                  <span className="text-2xl mb-1">🚚</span>
+                  <p className="text-xs font-bold text-blue-800">Ücretsiz Kargo</p>
+                </div>
+              </div>
+
 {/* Price Card */}
               <div className="bg-gradient-to-r from-primary-50 to-primary-100 border border-primary-100 rounded-2xl p-6">
                 {/* Ana fiyat - comparePrice varsa indirimli göster */}
@@ -468,39 +488,6 @@ export default function ProductPage() {
                 <button className="w-14 h-14 border-2 border-gray-200 rounded-xl flex items-center justify-center hover:border-primary-600 hover:text-primary-600 transition-colors">
                   <Heart className="w-6 h-6" />
                 </button>
-              </div>
-
-              {/* Bulk Discount & Gift Info - Side by Side */}
-              <div className="grid grid-cols-2 gap-3">
-                <div className="bg-gradient-to-r from-orange-50 to-red-50 border border-orange-200 rounded-2xl p-4 flex items-center gap-3 cursor-pointer hover:shadow-md transition-shadow"
-                  onClick={() => setQuantity(2)}
-                >
-                  <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center flex-shrink-0">
-                    <span className="text-xl">🔥</span>
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-sm font-bold text-orange-800">
-                      2 adet alana özel %10 indirim!
-                    </p>
-                    <p className="text-xs text-orange-600">
-                      2 adet: <span className="font-bold">{Math.round(currentPrice * 2 * 0.9).toLocaleString('tr-TR')} TL</span>
-                    </p>
-                  </div>
-                </div>
-                
-                <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-2xl p-4 flex items-center gap-3">
-                  <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
-                    <span className="text-xl">🎁</span>
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-sm font-bold text-green-800">
-                      Sepete ek takoz hediye!
-                    </p>
-                    <p className="text-xs text-green-600">
-                      Her siparişte 1 adet ücretsiz.
-                    </p>
-                  </div>
-                </div>
               </div>
 
               {/* Trust Badges */}
