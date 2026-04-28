@@ -533,14 +533,6 @@ export default function ProductPage() {
                 ))}
               </div>
 
-              {/* Shipping Badge */}
-              <div className="flex items-center gap-3 p-4 bg-green-50 border border-green-100 rounded-xl text-green-800">
-                <Truck className="w-6 h-6" />
-                <div>
-                  <p className="font-semibold">Aynı Gün Kargo</p>
-                  <p className="text-sm text-green-600">15:00'dan önceki siparişlerde</p>
-                </div>
-              </div>
             </div>
           </div>
         </div>
