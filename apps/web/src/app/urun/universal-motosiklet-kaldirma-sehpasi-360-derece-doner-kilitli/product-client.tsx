@@ -372,15 +372,66 @@ export default function ProductPage() {
                 </div>
               </div>
 
-              {/* Price Card */}
+{/* Price Card */}
               <div className="bg-gradient-to-r from-primary-50 to-primary-100 border border-primary-100 rounded-2xl p-6">
                 <div className="flex items-baseline gap-3 mb-2">
                   <span className="text-4xl font-bold text-primary-600">{currentPrice.toLocaleString('tr-TR')} TL</span>
-                  {selectedVariant?.comparePrice && (
+                  {selectedVariant?.comparePrice && Number(selectedVariant.comparePrice) > currentPrice && (
                     <span className="text-lg text-gray-400 line-through">{Number(selectedVariant.comparePrice).toLocaleString('tr-TR')} TL</span>
                   )}
                 </div>
-                <p className="text-gray-600 text-sm">KDV Dahil - Ücretsiz Kargo</p>
+                {selectedVariant?.comparePrice && Number(selectedVariant.comparePrice) > currentPrice && (
+                  <div className="inline-flex items-center gap-1 bg-red-100 text-red-700 px-2 py-1 rounded-full text-xs font-bold mb-2">
+                    %{Math.round(((Number(selectedVariant.comparePrice) - currentPrice) / Number(selectedVariant.comparePrice)) * 100)} indirim
+                  </div>
+                )}
+                <p className="text-gray-600 text-sm mb-4">KDV Dahil - Ücretsiz Kargo</p>
+                
+                {/* Çoklu Adet Fiyat Tablosu */}
+                <div className="bg-white rounded-xl overflow-hidden border border-primary-100">
+                  <div className="grid grid-cols-3 text-center text-xs font-semibold">
+                    <div className="py-2.5 bg-gray-50 text-gray-600">Adet</div>
+                    <div className="py-2.5 bg-gray-50 text-gray-600">Birim Fiyat</div>
+                    <div className="py-2.5 bg-gray-50 text-gray-600">İndirim</div>
+                  </div>
+                  <div className={`grid grid-cols-3 text-center py-3 border-t border-primary-50 ${quantity === 1 ? 'bg-primary-50' : ''}`}>
+                    <div className="text-sm font-medium text-gray-700">1 Adet</div>
+                    <div className="text-sm font-bold text-gray-900">{currentPrice.toLocaleString('tr-TR')} TL</div>
+                    <div className="text-sm text-gray-400">-</div>
+                  </div>
+                  <div 
+                    className={`grid grid-cols-3 text-center py-3 border-t cursor-pointer transition-all ${quantity >= 2 ? 'bg-green-50 border-green-200' : 'hover:bg-green-50/50'}`}
+                    onClick={() => setQuantity(2)}
+                  >
+                    <div className="text-sm font-medium text-green-700">2+ Adet</div>
+                    <div className="text-sm font-bold text-green-700">{Math.round(currentPrice * 0.9).toLocaleString('tr-TR')} TL</div>
+                    <div className="text-xs font-bold text-green-600 bg-green-100 rounded-full px-2 py-0.5 mx-auto w-fit">%10</div>
+                  </div>
+                </div>
+              </div>
+                <p className="text-gray-600 text-sm mb-4">KDV Dahil - Ücretsiz Kargo</p>
+                
+                {/* Çoklu Adet Fiyat Tablosu */}
+                <div className="bg-white rounded-xl overflow-hidden border border-primary-100">
+                  <div className="grid grid-cols-3 text-center text-xs font-semibold">
+                    <div className="py-2.5 bg-gray-50 text-gray-600">Adet</div>
+                    <div className="py-2.5 bg-gray-50 text-gray-600">Birim Fiyat</div>
+                    <div className="py-2.5 bg-gray-50 text-gray-600">İndirim</div>
+                  </div>
+                  <div className={`grid grid-cols-3 text-center py-3 border-t border-primary-50 ${quantity === 1 ? 'bg-primary-50' : ''}`}>
+                    <div className="text-sm font-medium text-gray-700">1 Adet</div>
+                    <div className="text-sm font-bold text-gray-900">{currentPrice.toLocaleString('tr-TR')} TL</div>
+                    <div className="text-sm text-gray-400">-</div>
+                  </div>
+                  <div 
+                    className={`grid grid-cols-3 text-center py-3 border-t cursor-pointer transition-all ${quantity >= 2 ? 'bg-green-50 border-green-200' : 'hover:bg-green-50/50'}`}
+                    onClick={() => setQuantity(2)}
+                  >
+                    <div className="text-sm font-medium text-green-700">2 Adet</div>
+                    <div className="text-sm font-bold text-green-700">{Math.round(currentPrice * 0.9).toLocaleString('tr-TR')} TL</div>
+                    <div className="text-xs font-bold text-green-600 bg-green-100 rounded-full px-2 py-0.5 mx-auto w-fit">%10</div>
+                  </div>
+                </div>
               </div>
 
               {/* Variant Selection */}
@@ -432,12 +483,12 @@ export default function ProductPage() {
                   </div>
                   <div className="flex-1">
                     <p className="text-sm font-bold text-orange-800">
-                      2 adet alana özel fiyat!
+                      2 adet alana özel %10 indirim!
                     </p>
                     <p className="text-xs text-orange-600">
-                      2 adet: <span className="font-bold">{(currentPrice * 2).toLocaleString('tr-TR')} TL</span>
-                      {' '}<span className="line-through opacity-60">{(currentPrice * 2 * 1.1).toLocaleString('tr-TR')} TL</span>
-                      {' '}<span className="bg-orange-200 text-orange-800 px-1.5 py-0.5 rounded text-[10px] font-bold ml-1">%10 İndirim</span>
+                      2 adet toplam: <span className="font-bold">{Math.round(currentPrice * 2 * 0.9).toLocaleString('tr-TR')} TL</span>
+                      {' '}<span className="line-through opacity-60">{(currentPrice * 2).toLocaleString('tr-TR')} TL</span>
+                      {' '}<span className="bg-orange-200 text-orange-800 px-1.5 py-0.5 rounded text-[10px] font-bold ml-1">Tasarruf: {Math.round(currentPrice * 2 * 0.1).toLocaleString('tr-TR')} TL</span>
                     </p>
                   </div>
                   <div className="text-orange-400">
