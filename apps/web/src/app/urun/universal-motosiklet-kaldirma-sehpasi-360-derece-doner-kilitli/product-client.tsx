@@ -375,7 +375,7 @@ export default function ProductPage() {
                         <Clock className="w-4 h-4" />
                       </div>
                       <div>
-                        <p className="text-xs font-bold text-red-800">BUGÜN KARGO</p>
+                        <p className="text-xs font-bold text-red-800">BUGÜN KARGOYA VERİLMESİ İÇİN KALAN SÜRE</p>
                         <p className="text-xs text-red-600 font-bold">{timeLeft}</p>
                       </div>
                     </div>
